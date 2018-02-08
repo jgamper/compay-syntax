@@ -4,6 +4,14 @@ import numpy as np
 from skimage import filters, color
 from skimage.morphology import disk
 from skimage.morphology import opening, dilation
+from PIL import Image
+
+
+def pil_show(x):
+    x = x.astype(np.float32)
+    if np.max(x) < 1.01: x *= 255.
+    x_pil = Image.fromarray(x)
+    x_pil.show()
 
 
 class Random_Slide_Sampler(object):
@@ -23,6 +31,8 @@ class Random_Slide_Sampler(object):
                                                                                                       self.size))
         self.width_available = int(self.wsi.dimensions[0] - self.down_sampling * size)
         self.height_available = int(self.wsi.dimensions[1] - self.down_sampling * size)
+
+        self.get_background_mask()
 
     def get_level_and_downsampling(self, threshold=0.1):
         diffs = [abs(self.desired_down_sampling - self.wsi.level_downsamples[i]) for i in
@@ -46,13 +56,7 @@ class Random_Slide_Sampler(object):
         print('with downsampling factors:')
         print(self.wsi.level_downsamples)
 
-    def get_patch(self):
-        w = np.random.choice(self.width_available)
-        h = np.random.choice(self.height_available)
-        patch = self.wsi.read_region(location=(w, h), level=self.level, size=(self.size, self.size)).convert('RGB')
-        return patch
-
-    def get_background_mask_level(self, desired_down_sampling=32, threshold=5):
+    def get_background_mask_level(self, desired_down_sampling=32, threshold=0.1):
         diffs = [abs(desired_down_sampling - self.wsi.level_downsamples[i]) for i in
                  range(len(self.wsi.level_downsamples))]
         minimum = min(diffs)
@@ -63,9 +67,10 @@ class Random_Slide_Sampler(object):
                     self.wsi.level_downsamples))
 
         self.background_mask_level = diffs.index(minimum)
-        self.background_mask_down_sampling = self.wsi.level_downsamples[self.background_mask_level]
+        # self.background_mask_down_sampling = self.wsi.level_downsamples[self.background_mask_level]
 
-    def get_background_mask(self, desired_down_sampling=32, threshold=5, disk_radius=10):
+    def get_background_mask(self, desired_down_sampling=32, threshold=0.1, disk_radius=10):
+        print('\nGetting background mask...')
         self.get_background_mask_level(desired_down_sampling=desired_down_sampling, threshold=threshold)
 
         low_res = self.wsi.read_region(location=(0, 0), level=self.background_mask_level,
@@ -74,13 +79,21 @@ class Random_Slide_Sampler(object):
         low_res_numpy = np.asarray(low_res)
         low_res_numpy_hsv = color.convert_colorspace(low_res_numpy, 'RGB', 'HSV')
         saturation = low_res_numpy_hsv[:, :, 1]
-        value = filters.otsu(saturation)
+        value = filters.threshold_otsu(saturation)
         mask = saturation > value
 
         selem = disk(disk_radius)
         mask = opening(mask, selem)
 
         self.background_mask = mask
+
+    def get_patch(self):
+        w = np.random.choice(self.width_available)
+        h = np.random.choice(self.height_available)
+        patch = self.wsi.read_region(location=(w, h), level=self.level, size=(self.size, self.size)).convert('RGB')
+        return patch
+
+
 
 
 ###
@@ -93,7 +106,12 @@ sampler = Random_Slide_Sampler(file, 4, 256)
 
 sampler.print_slide_properties()
 
-patch = sampler.get_patch()
-# patch.show()
+sampler.get_background_mask()
+
+import matplotlib.pyplot as plt
+
+mask = sampler.background_mask
+plt.imshow(mask)
+plt.show()
 
 c = 2
