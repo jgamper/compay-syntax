@@ -1,6 +1,9 @@
 import openslide
 import os
 import numpy as np
+from skimage import filters, color
+from skimage.morphology import disk
+from skimage.morphology import opening, dilation
 
 
 class Random_Slide_Sampler(object):
@@ -46,9 +49,38 @@ class Random_Slide_Sampler(object):
     def get_patch(self):
         w = np.random.choice(self.width_available)
         h = np.random.choice(self.height_available)
-        patch = self.wsi.read_region(location=(w, h), level=self.level, size=(self.size, self.size)).convert(
-            'RGB')  # returns RGBA PIL image so convert to RGB
+        patch = self.wsi.read_region(location=(w, h), level=self.level, size=(self.size, self.size)).convert('RGB')
         return patch
+
+    def get_background_mask_level(self, desired_down_sampling=32, threshold=5):
+        diffs = [abs(desired_down_sampling - self.wsi.level_downsamples[i]) for i in
+                 range(len(self.wsi.level_downsamples))]
+        minimum = min(diffs)
+
+        if minimum > threshold:
+            raise Exception(
+                '\n\nLevel not found for desired downsampling.\nAvailable downsampling factors are\n{}'.format(
+                    self.wsi.level_downsamples))
+
+        self.background_mask_level = diffs.index(minimum)
+        self.background_mask_down_sampling = self.wsi.level_downsamples[self.background_mask_level]
+
+    def get_background_mask(self, desired_down_sampling=32, threshold=5, disk_radius=10):
+        self.get_background_mask_level(desired_down_sampling=desired_down_sampling, threshold=threshold)
+
+        low_res = self.wsi.read_region(location=(0, 0), level=self.background_mask_level,
+                                       size=self.wsi.level_dimensions[self.background_mask_level]).convert('RGB')
+
+        low_res_numpy = np.asarray(low_res)
+        low_res_numpy_hsv = color.convert_colorspace(low_res_numpy, 'RGB', 'HSV')
+        saturation = low_res_numpy_hsv[:, :, 1]
+        value = filters.otsu(saturation)
+        mask = saturation > value
+
+        selem = disk(disk_radius)
+        mask = opening(mask, selem)
+
+        self.background_mask = mask
 
 
 ###
@@ -59,7 +91,9 @@ mask_file = os.path.join(data_dir, 'Mask_Tumor', 'Tumor_001.tif')
 
 sampler = Random_Slide_Sampler(file, 4, 256)
 
+sampler.print_slide_properties()
+
 patch = sampler.get_patch()
-patch.show()
+# patch.show()
 
 c = 2
