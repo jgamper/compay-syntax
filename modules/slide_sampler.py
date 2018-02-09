@@ -1,9 +1,19 @@
 import openslide
 import os
 import numpy as np
+from skimage.io import imsave
 from skimage import filters, color
 from skimage.morphology import disk
-from skimage.morphology import opening
+from skimage.morphology import opening, dilation
+
+
+def pil2np(x):
+    """
+    Convert a PIL image to a numpy array
+    :param x:
+    :return:
+    """
+    return np.asarray(x).copy()
 
 
 class Slide_Sampler(object):
@@ -11,13 +21,14 @@ class Slide_Sampler(object):
     def __init__(self, wsi_file, desired_downsampling, size):
         super(Slide_Sampler, self).__init__()
         self.wsi_file = wsi_file
+        self.fileID = os.path.splitext(os.path.basename(self.wsi_file))[0]
         self.wsi = openslide.OpenSlide(self.wsi_file)
         self.desired_downsampling = desired_downsampling
         self.size = size
         self.level, self.downsampling = self.get_level_and_downsampling(desired_downsampling, 0.1)
         self.width_available = int(self.wsi.dimensions[0] - self.downsampling * size)
         self.height_available = int(self.wsi.dimensions[1] - self.downsampling * size)
-        print('\nInitialized Slide_Sampler for slide {}'.format(os.path.basename(self.wsi_file)))
+        print('\nInitialized Slide_Sampler for slide {}'.format(self.fileID))
         print('Patches will be sampled at level {0} == downsampling of {1}, with size {2} x {2}.'.format(self.level,
                                                                                                          self.downsampling,
                                                                                                          self.size))
@@ -51,21 +62,51 @@ class Slide_Sampler(object):
         :param disk_radius: for morphological opening
         :return:
         """
-        print('\nAdding background mask...')
+        print('\nAdding background mask.')
         self.background_mask_level, self.background_mask_downsampling = self.get_level_and_downsampling(
             desired_downsampling, threshold)
         low_res = self.wsi.read_region(location=(0, 0), level=self.background_mask_level,
                                        size=self.wsi.level_dimensions[self.background_mask_level]).convert('RGB')
-        low_res_numpy = np.asarray(low_res)
+        low_res_numpy = np.asarray(low_res).copy()
         low_res_numpy_hsv = color.convert_colorspace(low_res_numpy, 'RGB', 'HSV')
         saturation = low_res_numpy_hsv[:, :, 1]
-        value = filters.threshold_otsu(saturation)
-        mask = (saturation > value)
+        thesh1 = filters.threshold_otsu(saturation)
+        high_saturation = (saturation > thesh1)
         selem = disk(disk_radius)
-        mask = opening(mask, selem)
-        self.background_mask = mask.astype(np.uint8)
+        mask = opening(high_saturation, selem)
+        self.background_mask = mask.astype(np.float32)
         self.size_at_background_level = self.level_converter(self.size, self.level, self.background_mask_level)
-        print('...done')
+
+    def view_background_mask(self, dir=os.getcwd(), overlay=1):
+        """
+        Save a visualization of the background mask.
+        :param dir:
+        :param overlay:
+        :return:
+        """
+        file_name = os.path.join(dir, self.fileID + '_background.png')
+        print('\nSaving background mask visualization to {}'.format(file_name))
+        if overlay == 1:
+            dilated = dilation(self.background_mask, disk(25))
+            contour = np.logical_xor(dilated, self.background_mask).astype(np.bool)
+            low_res = self.wsi.read_region(location=(0, 0), level=self.background_mask_level,
+                                           size=self.wsi.level_dimensions[self.background_mask_level]).convert('RGB')
+            low_res_numpy = np.asarray(low_res).copy()
+            low_res_numpy[contour] = 0
+            imsave(file_name, low_res_numpy)
+        else:
+            imsave(file_name, self.background_mask)
+
+    def view_WSI(self, dir=os.getcwd()):
+        """
+        Save a thumbnail of the WSI
+        :param dir:
+        :return:
+        """
+        file_name = os.path.join(dir, self.fileID + '_thumb.png')
+        print('\nSaving WSI thumbnail to {}'.format(file_name))
+        thumb = self.wsi.get_thumbnail(size=(1500, 1500))
+        thumb.save(file_name)
 
     def get_patch(self):
         """
@@ -115,11 +156,16 @@ data_dir = '/media/peter/HDD 1/datasets_peter/Camelyon16/Train/Original/Tumor'
 file = os.path.join(data_dir, 'Tumor_001.tif')
 mask_file = os.path.join(data_dir, 'Mask_Tumor', 'Tumor_001.tif')
 
+###
+
 sampler = Slide_Sampler(file, 4, 256)
 
 sampler.print_slide_properties()
 
+sampler.view_WSI()
+
 sampler.add_background_mask(desired_downsampling=32)
+sampler.view_background_mask()
 
 patch = sampler.get_patch()
 patch.save('./patch.png')
