@@ -1,5 +1,6 @@
-from modules import slide_sampler
 import os
+
+from modules import slide_sampler
 
 ###
 
