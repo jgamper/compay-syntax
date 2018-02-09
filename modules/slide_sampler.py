@@ -19,7 +19,6 @@ class Slide_Sampler(object):
         :param desired_downsampling:
         :param size:
         """
-        super(Slide_Sampler, self).__init__()
         self.wsi_file = wsi_file
         self.fileID = os.path.splitext(os.path.basename(self.wsi_file))[0]
         self.wsi = openslide.OpenSlide(self.wsi_file)
