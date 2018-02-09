@@ -7,15 +7,6 @@ from skimage.morphology import disk
 from skimage.morphology import opening, dilation
 
 
-def pil2np(x):
-    """
-    Convert a PIL image to a numpy array
-    :param x:
-    :return:
-    """
-    return np.asarray(x).copy()
-
-
 class Slide_Sampler(object):
 
     def __init__(self, wsi_file, desired_downsampling, size):
@@ -139,7 +130,7 @@ class Slide_Sampler(object):
         print('with downsampling factors:')
         print(self.wsi.level_downsamples)
 
-    def level_converter(self, x, lvl_in, lvl_out):
+    def level_converter(self, x, lvl_in, lvl_out, round=1):
         """
         Convert a coordinate 'x' at lvl_in from lvl_in to lvl_out
         :param x:
@@ -147,27 +138,8 @@ class Slide_Sampler(object):
         :param lvl_out:
         :return:
         """
-        return np.floor(x * self.wsi.level_downsamples[lvl_in] / self.wsi.level_downsamples[lvl_out]).astype(np.uint32)
-
-
-###
-
-data_dir = '/media/peter/HDD 1/datasets_peter/Camelyon16/Train/Original/Tumor'
-file = os.path.join(data_dir, 'Tumor_001.tif')
-mask_file = os.path.join(data_dir, 'Mask_Tumor', 'Tumor_001.tif')
-
-###
-
-sampler = Slide_Sampler(file, 4, 256)
-
-sampler.print_slide_properties()
-
-sampler.view_WSI()
-
-sampler.add_background_mask(desired_downsampling=32)
-sampler.view_background_mask()
-
-patch = sampler.get_patch()
-patch.save('./patch.png')
-
-c = 2
+        if round:
+            return np.floor(x * self.wsi.level_downsamples[lvl_in] / self.wsi.level_downsamples[lvl_out]).astype(
+                np.uint32)
+        else:
+            return x * self.wsi.level_downsamples[lvl_in] / self.wsi.level_downsamples[lvl_out]
