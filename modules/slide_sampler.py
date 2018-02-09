@@ -7,11 +7,11 @@ from skimage.morphology import opening, dilation
 from PIL import Image
 
 
-def pil_show(x):
-    x = x.astype(np.float32)
-    if np.max(x) < 1.01: x *= 255.
-    x_pil = Image.fromarray(x)
-    x_pil.show()
+# def pil_show(x):
+#     x = x.astype(np.float32)
+#     if np.max(x) < 1.01: x *= 255.
+#     x_pil = Image.fromarray(x)
+#     x_pil.show()
 
 
 class Slide_Sampler(object):
