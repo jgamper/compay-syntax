@@ -121,7 +121,7 @@ class Slide_Sampler(object):
             j = self.level_converter(w, 0, self.background_mask_level)
             background_mask_patch = self.background_mask[i:i + self.size_at_background_level,
                                     j:j + self.size_at_background_level]
-            if np.sum(background_mask_patch) / self.size_at_background_level**2 > 0.9: done = 1
+            if np.sum(background_mask_patch) / (self.size_at_background_level ** 2) > 0.9: done = 1
         return patch
 
     def print_slide_properties(self):
