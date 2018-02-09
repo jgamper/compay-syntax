@@ -5,6 +5,7 @@ from skimage.io import imsave
 from skimage import filters, color
 from skimage.morphology import disk
 from skimage.morphology import opening, dilation
+from PIL import Image
 
 
 class Slide_Sampler(object):
@@ -20,9 +21,9 @@ class Slide_Sampler(object):
         self.width_available = int(self.wsi.dimensions[0] - self.downsampling * size)
         self.height_available = int(self.wsi.dimensions[1] - self.downsampling * size)
         print('\nInitialized Slide_Sampler for slide {}'.format(self.fileID))
-        print('Patches will be sampled at level {0} == downsampling of {1}, with size {2} x {2}.'.format(self.level,
-                                                                                                         self.downsampling,
-                                                                                                         self.size))
+        print('Patches will be sampled at level {0} (downsampling of {1}), with size {2} x {2}.'.format(self.level,
+                                                                                                        self.downsampling,
+                                                                                                        self.size))
 
     def get_level_and_downsampling(self, desired_downsampling, threshold):
         """
@@ -84,9 +85,13 @@ class Slide_Sampler(object):
                                            size=self.wsi.level_dimensions[self.background_mask_level]).convert('RGB')
             low_res_numpy = np.asarray(low_res).copy()
             low_res_numpy[contour] = 0
-            imsave(file_name, low_res_numpy)
+            low_res = Image.fromarray(low_res_numpy)
+            low_res.thumbnail(size=(1500, 1500))
+            low_res.save(file_name)
         else:
-            imsave(file_name, self.background_mask)
+            pil = Image.fromarray(self.background_mask)
+            pil.thumbnail(size=(1500, 1500))
+            pil.save(file_name)
 
     def view_WSI(self, dir=os.getcwd()):
         """
