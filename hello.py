@@ -5,8 +5,8 @@ from modules import slide_sampler
 ###
 
 data_dir = '/media/peter/HDD 1/datasets_peter/Camelyon16/Train/Original/Tumor'
-file = os.path.join(data_dir, 'Tumor_001.tif')
-mask_file = os.path.join(data_dir, 'Mask_Tumor', 'Tumor_001.tif')
+file = os.path.join(data_dir, 'Tumor_004.tif')
+mask_file = os.path.join(data_dir, 'Mask_Tumor', 'Tumor_004.tif')
 
 ###
 
@@ -17,7 +17,7 @@ sampler.print_slide_properties()
 sampler.view_WSI()
 
 sampler.add_background_mask(desired_downsampling=32)
-sampler.view_background_mask(overlay=0)
+sampler.view_background_mask()
 
 patch = sampler.get_patch()
 patch.save('./patch.png')
