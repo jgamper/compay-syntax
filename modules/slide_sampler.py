@@ -3,7 +3,7 @@ import os
 import numpy as np
 from skimage import filters, color
 from skimage.morphology import disk
-from skimage.morphology import opening, dilation
+from skimage.morphology import opening, dilation, closing
 from PIL import Image
 
 
@@ -52,7 +52,7 @@ class Slide_Sampler(object):
     def add_background_mask(self, desired_downsampling=32, threshold=4, disk_radius=10):
         """
         Add a background mask. That is a binary (0.0 vs 1.0), downsampled image where 1.0 denotes a tissue region.
-        This is achieved by otsu thresholding on the saturation channel followed by morphological opening to remove noise.
+        This is achieved by otsu thresholding on the saturation channel followed by morphological closing and opening to remove noise.
         The mask desired downsampling factor has a default of 32. For a WSI captured at 40X this corresponds to 1.25X.
         A moderate threshold is used to account for the fact that the desired downsampling may not be available.
         If an appropriate level is not found an exception is raised.
@@ -72,7 +72,8 @@ class Slide_Sampler(object):
         thesh1 = filters.threshold_otsu(saturation)
         high_saturation = (saturation > thesh1)
         selem = disk(disk_radius)
-        mask = opening(high_saturation, selem)
+        mask = closing(high_saturation, selem)
+        mask = opening(mask, selem)
         self.background_mask = mask.astype(np.float32)
         self.size_at_background_level = self.level_converter(self.size, self.level, self.background_mask_level)
         print('...done.')
