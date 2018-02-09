@@ -17,7 +17,7 @@ sampler.print_slide_properties()
 sampler.view_WSI()
 
 sampler.add_background_mask(desired_downsampling=32)
-sampler.view_background_mask()
+sampler.view_background_mask(overlay=0)
 
 patch = sampler.get_patch()
 patch.save('./patch.png')

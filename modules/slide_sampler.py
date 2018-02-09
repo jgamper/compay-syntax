@@ -1,7 +1,6 @@
 import openslide
 import os
 import numpy as np
-from skimage.io import imsave
 from skimage import filters, color
 from skimage.morphology import disk
 from skimage.morphology import opening, dilation
@@ -11,6 +10,15 @@ from PIL import Image
 class Slide_Sampler(object):
 
     def __init__(self, wsi_file, desired_downsampling, size):
+        """
+        A WSI patch sampler.
+        Important are:
+        self.wsi - an OpenSlide object of the multiresolution WSI specified by wsi_file.
+        self.background_mask - a background mask (generate with self.add_background_mask()). Stored as a numpy array where 1.0 denotes tissue.
+        :param wsi_file:
+        :param desired_downsampling:
+        :param size:
+        """
         super(Slide_Sampler, self).__init__()
         self.wsi_file = wsi_file
         self.fileID = os.path.splitext(os.path.basename(self.wsi_file))[0]
@@ -44,7 +52,7 @@ class Slide_Sampler(object):
 
     def add_background_mask(self, desired_downsampling=32, threshold=4, disk_radius=10):
         """
-        Add a background mask. That is a binary, downsampled image where True denotes a tissue region.
+        Add a background mask. That is a binary (0.0 vs 1.0), downsampled image where 1.0 denotes a tissue region.
         This is achieved by otsu thresholding on the saturation channel followed by morphological opening to remove noise.
         The mask desired downsampling factor has a default of 32. For a WSI captured at 40X this corresponds to 1.25X.
         A moderate threshold is used to account for the fact that the desired downsampling may not be available.
@@ -69,29 +77,23 @@ class Slide_Sampler(object):
         self.background_mask = mask.astype(np.float32)
         self.size_at_background_level = self.level_converter(self.size, self.level, self.background_mask_level)
 
-    def view_background_mask(self, dir=os.getcwd(), overlay=1):
+    def view_background_mask(self, dir=os.getcwd()):
         """
         Save a visualization of the background mask.
         :param dir:
-        :param overlay:
         :return:
         """
         file_name = os.path.join(dir, self.fileID + '_background.png')
         print('\nSaving background mask visualization to {}'.format(file_name))
-        if overlay == 1:
-            dilated = dilation(self.background_mask, disk(25))
-            contour = np.logical_xor(dilated, self.background_mask).astype(np.bool)
-            low_res = self.wsi.read_region(location=(0, 0), level=self.background_mask_level,
-                                           size=self.wsi.level_dimensions[self.background_mask_level]).convert('RGB')
-            low_res_numpy = np.asarray(low_res).copy()
-            low_res_numpy[contour] = 0
-            low_res = Image.fromarray(low_res_numpy)
-            low_res.thumbnail(size=(1500, 1500))
-            low_res.save(file_name)
-        else:
-            pil = Image.fromarray(self.background_mask)
-            pil.thumbnail(size=(1500, 1500))
-            pil.save(file_name)
+        dilated = dilation(self.background_mask, disk(25))
+        contour = np.logical_xor(dilated, self.background_mask).astype(np.bool)
+        low_res = self.wsi.read_region(location=(0, 0), level=self.background_mask_level,
+                                       size=self.wsi.level_dimensions[self.background_mask_level]).convert('RGB')
+        low_res_numpy = np.asarray(low_res).copy()
+        low_res_numpy[contour] = 0
+        pil = Image.fromarray(low_res_numpy)
+        pil.thumbnail(size=(1500, 1500))
+        pil.save(file_name)
 
     def view_WSI(self, dir=os.getcwd()):
         """
@@ -106,7 +108,8 @@ class Slide_Sampler(object):
 
     def get_patch(self):
         """
-        Get a random patch from the WSI
+        Get a random patch from the WSI.
+        Accept if over 90% is non-background
         :return:
         """
         done = 0
@@ -116,10 +119,9 @@ class Slide_Sampler(object):
             patch = self.wsi.read_region(location=(w, h), level=self.level, size=(self.size, self.size)).convert('RGB')
             i = self.level_converter(h, 0, self.background_mask_level)
             j = self.level_converter(w, 0, self.background_mask_level)
-            delta = self.size_at_background_level
-            background_mask_patch = self.background_mask[i:i + delta, j:j + delta]
-            area = background_mask_patch.shape[0] * background_mask_patch.shape[1]
-            if np.sum(background_mask_patch) / area > 0.9: done = 1
+            background_mask_patch = self.background_mask[i:i + self.size_at_background_level,
+                                    j:j + self.size_at_background_level]
+            if np.sum(background_mask_patch) / self.size_at_background_level**2 > 0.9: done = 1
         return patch
 
     def print_slide_properties(self):
