@@ -17,7 +17,6 @@ class Slide_Sampler(object):
         self.level, self.downsampling = self.get_level_and_downsampling(desired_downsampling, 0.1)
         self.width_available = int(self.wsi.dimensions[0] - self.downsampling * size)
         self.height_available = int(self.wsi.dimensions[1] - self.downsampling * size)
-        self.background_mask = None
         print('\nInitialized Slide_Sampler for slide {}'.format(os.path.basename(self.wsi_file)))
         print('Patches will be sampled at level {0} == downsampling of {1}, with size {2} x {2}.'.format(self.level,
                                                                                                          self.downsampling,
@@ -45,12 +44,14 @@ class Slide_Sampler(object):
         Add a background mask. That is a binary, downsampled image where True denotes a tissue region.
         This is achieved by otsu thresholding on the saturation channel followed by morphological opening to remove noise.
         The mask desired downsampling factor has a default of 32. For a WSI captured at 40X this corresponds to 1.25X.
+        A moderate threshold is used to account for the fact that the desired downsampling may not be available.
+        If an appropriate level is not found an exception is raised.
         :param desired_downsampling:
         :param threshold:
-        :param disk_radius:
+        :param disk_radius: for morphological opening
         :return:
         """
-        print('\nGetting background mask...')
+        print('\nAdding background mask...')
         self.background_mask_level, self.background_mask_downsampling = self.get_level_and_downsampling(
             desired_downsampling, threshold)
         low_res = self.wsi.read_region(location=(0, 0), level=self.background_mask_level,
@@ -64,6 +65,7 @@ class Slide_Sampler(object):
         mask = opening(mask, selem)
         self.background_mask = mask.astype(np.uint8)
         self.size_at_background_level = self.level_converter(self.size, self.level, self.background_mask_level)
+        print('...done')
 
     def get_patch(self):
         """
@@ -75,15 +77,12 @@ class Slide_Sampler(object):
             w = np.random.choice(self.width_available)
             h = np.random.choice(self.height_available)
             patch = self.wsi.read_region(location=(w, h), level=self.level, size=(self.size, self.size)).convert('RGB')
-            if self.background_mask==None:
-                done=1
-            else:
-                i = self.level_converter(h, 0, self.background_mask_level)
-                j = self.level_converter(w, 0, self.background_mask_level)
-                delta = self.size_at_background_level
-                background_mask_patch = self.background_mask[i:i + delta, j:j + delta]
-                area = background_mask_patch.shape[0] * background_mask_patch.shape[1]
-                if np.sum(background_mask_patch) / area > 0.9: done = 1
+            i = self.level_converter(h, 0, self.background_mask_level)
+            j = self.level_converter(w, 0, self.background_mask_level)
+            delta = self.size_at_background_level
+            background_mask_patch = self.background_mask[i:i + delta, j:j + delta]
+            area = background_mask_patch.shape[0] * background_mask_patch.shape[1]
+            if np.sum(background_mask_patch) / area > 0.9: done = 1
         return patch
 
     def print_slide_properties(self):
@@ -101,7 +100,7 @@ class Slide_Sampler(object):
 
     def level_converter(self, x, lvl_in, lvl_out):
         """
-        Convert a coordinate 'x' from lvl_in to lvl_out
+        Convert a coordinate 'x' at lvl_in from lvl_in to lvl_out
         :param x:
         :param lvl_in:
         :param lvl_out:
@@ -120,12 +119,9 @@ sampler = Slide_Sampler(file, 4, 256)
 
 sampler.print_slide_properties()
 
-sampler.get_background_mask()
+sampler.add_background_mask(desired_downsampling=32)
 
-import matplotlib.pyplot as plt
-
-mask = sampler.background_mask
-plt.imshow(mask)
-plt.show()
+patch = sampler.get_patch()
+patch.save('./patch.png')
 
 c = 2
