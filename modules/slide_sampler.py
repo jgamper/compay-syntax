@@ -39,10 +39,6 @@ class Slide_Sampler(object):
         Get the level and downsampling for a desired downsampling.
         A threshold is used to allow for not exactly equal desired and true downsampling.
         If an appropriate level is not found an exception is raised.
-
-        :param desired_downsampling:
-        :param threshold:
-        :return:
         """
         diffs = [abs(desired_downsampling - self.wsi.level_downsamples[i]) for i in
                  range(len(self.wsi.level_downsamples))]
@@ -61,10 +57,6 @@ class Slide_Sampler(object):
         The mask desired downsampling factor has a default of 32. For a WSI captured at 40X this corresponds to 1.25X.
         A moderate threshold is used to account for the fact that the desired downsampling may not be available.
         If an appropriate level is not found an exception is raised.
-        :param desired_downsampling:
-        :param threshold:
-        :param disk_radius: for morphological opening
-        :return:
         """
         print('\nAdding background mask.')
         self.background_mask_level, self.background_mask_downsampling = self.get_level_and_downsampling(
@@ -87,8 +79,6 @@ class Slide_Sampler(object):
     def view_background_mask(self, dir=os.getcwd()):
         """
         Save a visualization of the background mask.
-        :param dir:
-        :return:
         """
         file_name = os.path.join(dir, self.fileID + '_background.png')
         print('\nSaving background mask visualization to {}'.format(file_name))
@@ -105,8 +95,6 @@ class Slide_Sampler(object):
     def view_WSI(self, dir=os.getcwd()):
         """
         Save a thumbnail of the WSI
-        :param dir:
-        :return:
         """
         file_name = os.path.join(dir, self.fileID + '_thumb.png')
         print('\nSaving WSI thumbnail to {}'.format(file_name))
@@ -117,7 +105,6 @@ class Slide_Sampler(object):
         """
         Get a random patch from the WSI.
         Accept if over 90% is non-background
-        :return:
         """
         done = 0
         while not done:
@@ -134,7 +121,6 @@ class Slide_Sampler(object):
     def print_slide_properties(self):
         """
         Print some WSI properties
-        :return:
         """
         print('\nSlide properties.')
         print('Dimensions at level 0:')
@@ -147,10 +133,6 @@ class Slide_Sampler(object):
     def level_converter(self, x, lvl_in, lvl_out, round=1):
         """
         Convert a coordinate 'x' at lvl_in from lvl_in to lvl_out
-        :param x:
-        :param lvl_in:
-        :param lvl_out:
-        :return:
         """
         if round:
             return np.floor(x * self.wsi.level_downsamples[lvl_in] / self.wsi.level_downsamples[lvl_out]).astype(
