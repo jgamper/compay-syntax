@@ -61,8 +61,6 @@ class Slide_Sampler(object):
         The mask desired downsampling factor has a default of 32. For a WSI captured at 40X this corresponds to 1.25X.
         A moderate threshold is used to account for the fact that the desired downsampling may not be available.
         If an appropriate level is not found an exception is raised.
-
-        # Parameters
         :param desired_downsampling:
         :param threshold:
         :param disk_radius: for morphological opening
