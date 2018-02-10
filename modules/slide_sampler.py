@@ -152,8 +152,8 @@ class Slide_Sampler(object):
     def get_patch(self, with_info=0):
         """
         Get a random patch from the WSI.
-        Accept if over 90% is non-background
-        *Can also return an info dict if with_info==1*
+        Accept if over 90% is non-background.
+        *Can also return an info dict if with_info==1*.
         """
         done = 0
         while not done:
@@ -175,6 +175,7 @@ class Slide_Sampler(object):
         """
         Get a random, classed patch from the WSI.
         Accept if over 90% is non-background and belonging to a single class.
+        Can specify desired class or just leave as None to get either.
         *Also returns an info dict*
         """
         done = 0
