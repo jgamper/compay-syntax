@@ -77,8 +77,8 @@ class Slide_Sampler(object):
         mask = opening(mask, selem)
         self.background_mask = mask.astype(np.float32)
         self.size_at_background_level = self.level_converter(self.size, self.level, self.background_mask_level)
-        print('Generated background mask at level{} (downsampling of {})'.format(self.background_mask_level,
-                                                                                 self.background_mask_downsampling))
+        print('Generated background mask at level {} (downsampling of {})'.format(self.background_mask_level,
+                                                                                  self.background_mask_downsampling))
         print('Background mask dimensions are {}'.format(self.wsi.level_dimensions[self.background_mask_level]))
 
     def add_annotation_mask(self, annotation_mask_file):
@@ -191,7 +191,7 @@ class Slide_Sampler(object):
         """
         Divide by 255.0 if x.max > 1.0. And ensure float.
         """
-        if x.max > 1.0:
+        if x.max() > 1.0:
             return x.astype(np.float32) / 255.
         else:
             return x.astype(np.float32)
@@ -202,7 +202,9 @@ class Slide_Sampler(object):
         """
         pickle_list = [self.background_mask, self.background_mask_level, self.background_mask_downsampling,
                        self.size_at_background_level]
-        pickling_on = open(os.path.join(dir, 'bgmask.pickle'), 'wb')
+        filename = os.path.join(dir, 'bgmask.pickle')
+        print('\nPickling background mask to {}'.format(filename))
+        pickling_on = open(filename, 'wb')
         pickle.dump(pickle_list, pickling_on)
         pickling_on.close()
 
@@ -211,6 +213,7 @@ class Slide_Sampler(object):
         Load a background mask and meta data
         """
         pickling_off = open(file, 'rb')
+        print('\nUnpickling background mask from {}'.format(file))
         self.background_mask, self.background_mask_level, self.background_mask_downsampling, self.size_at_background_level = pickle.load(
             pickling_off)
         pickling_off.close()
