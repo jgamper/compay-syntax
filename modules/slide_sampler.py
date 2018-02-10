@@ -1,3 +1,7 @@
+"""
+Module for sampling from a slide
+"""
+
 import openslide
 import os
 import numpy as np
@@ -8,13 +12,17 @@ from PIL import Image
 
 
 class Slide_Sampler(object):
+    """
+    # A WSI patch sampler.
+
+    Important are:
+    self.wsi - an OpenSlide object of the multiresolution WSI specified by wsi_file.
+    self.background_mask - a background mask (generate with self.add_background_mask()). Stored as a numpy array where 1.0 denotes tissue.
+    """
 
     def __init__(self, wsi_file, desired_downsampling, size):
         """
-        A WSI patch sampler.
-        Important are:
-        self.wsi - an OpenSlide object of the multiresolution WSI specified by wsi_file.
-        self.background_mask - a background mask (generate with self.add_background_mask()). Stored as a numpy array where 1.0 denotes tissue.
+
         :param wsi_file:
         :param desired_downsampling:
         :param size:

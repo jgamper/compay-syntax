@@ -9,6 +9,7 @@ pages:
 - Documentation:
   - Slide sampler: slide_sampler.md
 
-
 additional_search_paths:
 - ..
+
+site_dir: ../docs
