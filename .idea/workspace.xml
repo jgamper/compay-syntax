@@ -3,33 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="41d61e22-bb71-4a13-88bf-bc297d11ce65" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/../README.md" afterPath="$PROJECT_DIR$/../README.md" />
-      <change beforePath="$PROJECT_DIR$/../docs/404.html" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/css/highlight.css" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/css/theme.css" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/css/theme_extra.css" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/fonts/fontawesome-webfont.eot" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/fonts/fontawesome-webfont.svg" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/fonts/fontawesome-webfont.ttf" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/fonts/fontawesome-webfont.woff" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/img/favicon.ico" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/index.html" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/js/highlight.pack.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/js/jquery-2.1.1.min.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/js/modernizr-2.8.3.min.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/js/theme.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/search.html" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/search/lunr.min.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/search/mustache.min.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/search/require.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/search/search-results-template.mustache" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/search/search.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/search/search_index.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/search/text.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/sitemap.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs/slide_sampler/index.html" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../docs_builder/pydocmd.yml" afterPath="$PROJECT_DIR$/../docs_builder/pydocmd.yml" />
-      <change beforePath="$PROJECT_DIR$/../modules/slide_sampler.py" afterPath="$PROJECT_DIR$/../modules/slide_sampler.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -481,7 +454,14 @@
       <option name="project" value="LOCAL" />
       <updated>1518275065975</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="docs">
+      <created>1518277969633</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1518277969633</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="ToolWindowManager">
