@@ -176,7 +176,7 @@ class Slide_Sampler(object):
         Get a random, classed patch from the WSI.
         Accept if over 90% is non-background and belonging to a single class.
         Can specify desired class or just leave as None to get either.
-        *Also returns an info dict*
+        *Also returns an info dict*.
         """
         done = 0
         while not done:
