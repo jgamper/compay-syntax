@@ -8,3 +8,6 @@ pages:
 - Home: index.md << ../README.md
 - Documentation:
   - Slide sampler: slide_sampler.md
+
+additional_search_paths:
+- ..

@@ -1,0 +1,14 @@
+{
+    "docs": [
+        {
+            "location": "/",
+            "text": "Hello there!",
+            "title": "Home"
+        },
+        {
+            "location": "/slide_sampler/",
+            "text": "modules.slide_sampler",
+            "title": "Slide sampler"
+        }
+    ]
+}
