@@ -143,7 +143,7 @@ class Slide_Sampler(object):
         thumb_wsi = self.wsi.get_thumbnail(size=(1500, 1500))
         thumb_numpy = self.check_patch(np.asarray(thumb).copy())
         thumb_wsi_numpy = np.asarray(thumb_wsi).copy()
-        dilated = dilation(thumb_numpy, disk(8))
+        dilated = dilation(thumb_numpy, disk(5))
         contour = np.logical_xor(thumb_numpy, dilated).astype(np.bool)
         thumb_wsi_numpy[contour] = 0
         pil = Image.fromarray(thumb_wsi_numpy)
