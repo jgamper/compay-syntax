@@ -19,7 +19,7 @@ class Slide_Sampler(object):
     Important are:
 
     - **self.wsi** : an OpenSlide object of the multi-resolution WSI specified by wsi_file.
-    - **self.background_mask** : a background mask (generate with self.generate_background_mask()). Stored as a np.ndumpy array where 1.0 denotes tissue.
+    - **self.background_mask** : a background mask (generate with self.generate_background_mask()). Stored as a np.ndarray where 1.0 denotes tissue.
     - **self.annotation_mask** : a multi-resolution binary annotation mask. Must have a level with the desired downsampling else WSI and annotation mask incompatible.
 
     # Parameters
