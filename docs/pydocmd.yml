@@ -1,0 +1,10 @@
+site_name: WSI sampler
+
+generate:
+- slide_sampler.md:
+  - modules.slide_sampler++
+
+pages:
+- Home: index.md << ../README.md
+- Documentation:
+  - Slide sampler: slide_sampler.md
