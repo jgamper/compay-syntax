@@ -14,10 +14,10 @@ import pickle
 
 class Slide_Sampler(object):
     """
-    A WSI patch sampler.
+    A WSI patch sampler. Samples patches of a given size at desired downsampling
 
     Important are:
-    self.wsi - an OpenSlide object of the multiresolution WSI specified by wsi_file.
+    self.wsi - an OpenSlide object of the multi-resolution WSI specified by wsi_file.
     self.background_mask - a background mask (generate with self.generate_background_mask()). Stored as a numpy array where 1.0 denotes tissue.
     """
 
@@ -78,7 +78,7 @@ class Slide_Sampler(object):
         self.background_mask = mask.astype(np.float32)
         self.size_at_background_level = self.level_converter(self.size, self.level, self.background_mask_level)
         print('Generated background mask at level{} (downsampling of {})'.format(self.background_mask_level,
-                                                                             self.background_mask_downsampling))
+                                                                                 self.background_mask_downsampling))
         print('Background mask dimensions are {}'.format(self.wsi.level_dimensions[self.background_mask_level]))
 
     def add_annotation_mask(self, annotation_mask_file):
@@ -142,18 +142,27 @@ class Slide_Sampler(object):
         else:
             return patch
 
-    def get_classed_patch(self):
+    def get_classed_patch(self, verbose=0):
         """
         Get a random patch from the WSI.
         Accept if over 90% is non-background.
         Also return class as part of info dict. info['class'].
         """
-        patch, info = self.get_patch(with_info=1)
-        w, h = info['w_coordinate'], info['h_coordinate']
-        annotation_mask_patch = self.annotation_mask.read_region(location=(w, h), level=self.annotation_mask_level,
-                                                                 size=self.size).format('L')
-        annotation_mask_patch_numpy = np.asarray(annotation_mask_patch).copy()
-        print(annotation_mask_patch_numpy)
+        done = 0
+        while not done:
+            patch, info = self.get_patch(with_info=1)
+            w, h = info['w_coordinate'], info['h_coordinate']
+            annotation_mask_patch = self.annotation_mask.read_region(location=(w, h), level=self.annotation_mask_level,
+                                                                     size=(self.size, self.size)).convert('L')
+            annotation_mask_patch_numpy = self.check_patch(np.asarray(annotation_mask_patch).copy())
+            area = self.size ** 2
+            if np.sum(annotation_mask_patch_numpy) / area < 0.1:
+                info['class'] = 0
+                done = 1
+            if np.sum(annotation_mask_patch_numpy) / area > 0.9:
+                info['class'] = 1
+                done = 1
+        if verbose: print('\nFound patch with class {}'.format(info['class']))
         return patch, info
 
     def print_slide_properties(self):
@@ -178,6 +187,15 @@ class Slide_Sampler(object):
         else:
             return x * self.wsi.level_downsamples[lvl_in] / self.wsi.level_downsamples[lvl_out]
 
+    def check_patch(self, x):
+        """
+        Divide by 255.0 if x.max > 1.0. And ensure float.
+        """
+        if x.max > 1.0:
+            return x.astype(np.float32) / 255.
+        else:
+            return x.astype(np.float32)
+
     def pickle_background_mask(self, dir=os.getcwd()):
         """
         Save the background mask and meta data
@@ -189,6 +207,9 @@ class Slide_Sampler(object):
         pickling_on.close()
 
     def pickle_load_background_mask(self, file):
+        """
+        Load a background mask and meta data
+        """
         pickling_off = open(file, 'rb')
         self.background_mask, self.background_mask_level, self.background_mask_downsampling, self.size_at_background_level = pickle.load(
             pickling_off)
