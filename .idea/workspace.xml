@@ -2,33 +2,33 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="41d61e22-bb71-4a13-88bf-bc297d11ce65" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/404.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/css/highlight.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/css/theme.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/css/theme_extra.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/fonts/fontawesome-webfont.eot" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/fonts/fontawesome-webfont.svg" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/fonts/fontawesome-webfont.ttf" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/fonts/fontawesome-webfont.woff" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/img/favicon.ico" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/index.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/js/highlight.pack.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/js/jquery-2.1.1.min.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/js/modernizr-2.8.3.min.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/js/theme.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/search.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/search/lunr.min.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/search/mustache.min.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/search/require.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/search/search-results-template.mustache" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/search/search.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/search/search_index.json" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/search/text.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/sitemap.xml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../docs/slide_sampler/index.html" />
-      <change beforePath="$PROJECT_DIR$/../docs/pydocmd.yml" afterPath="$PROJECT_DIR$/../docs_builder/pydocmd.yml" />
-      <change beforePath="$PROJECT_DIR$/../modules/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/../README.md" afterPath="$PROJECT_DIR$/../README.md" />
+      <change beforePath="$PROJECT_DIR$/../docs/404.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/css/highlight.css" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/css/theme.css" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/css/theme_extra.css" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/fonts/fontawesome-webfont.eot" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/fonts/fontawesome-webfont.svg" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/fonts/fontawesome-webfont.ttf" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/fonts/fontawesome-webfont.woff" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/img/favicon.ico" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/index.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/js/highlight.pack.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/js/jquery-2.1.1.min.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/js/modernizr-2.8.3.min.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/js/theme.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/search.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/search/lunr.min.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/search/mustache.min.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/search/require.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/search/search-results-template.mustache" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/search/search.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/search/search_index.json" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/search/text.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/sitemap.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs/slide_sampler/index.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../docs_builder/pydocmd.yml" afterPath="$PROJECT_DIR$/../docs_builder/pydocmd.yml" />
       <change beforePath="$PROJECT_DIR$/../modules/slide_sampler.py" afterPath="$PROJECT_DIR$/../modules/slide_sampler.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -55,8 +55,8 @@
       <file leaf-file-name="slide_sampler.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../modules/slide_sampler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+            <state relative-caret-position="432">
+              <caret line="42" column="0" lean-forward="false" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
               <folding>
                 <element signature="e#42#58#0" expanded="true" />
               </folding>
@@ -64,22 +64,22 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pydocmd.yml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="pydocmd.yml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../docs_builder/pydocmd.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="14" column="17" lean-forward="false" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
+            <state relative-caret-position="144">
+              <caret line="8" column="25" lean-forward="false" selection-start-line="8" selection-start-column="25" selection-end-line="8" selection-end-column="25" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="0">
-                <caret line="0" column="12" lean-forward="false" selection-start-line="0" selection-start-column="12" selection-end-line="0" selection-end-column="12" />
+              <first_editor relative-caret-position="36">
+                <caret line="2" column="0" lean-forward="true" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
                 <folding />
               </first_editor>
               <second_editor>
@@ -112,11 +112,12 @@
         <option value="$PROJECT_DIR$/../modules/laal.py" />
         <option value="$PROJECT_DIR$/../hello.py" />
         <option value="$PROJECT_DIR$/../docs/index.html" />
-        <option value="$PROJECT_DIR$/../README.md" />
         <option value="$PROJECT_DIR$/../docs/pydocmd.yml" />
         <option value="$PROJECT_DIR$/../modules/__init__.py" />
-        <option value="$PROJECT_DIR$/../modules/slide_sampler.py" />
+        <option value="$PROJECT_DIR$/../modules/sampler.py" />
         <option value="$PROJECT_DIR$/../docs_builder/pydocmd.yml" />
+        <option value="$PROJECT_DIR$/../modules/slide_sampler.py" />
+        <option value="$PROJECT_DIR$/../README.md" />
       </list>
     </option>
   </component>
@@ -473,13 +474,21 @@
       <option name="project" value="LOCAL" />
       <updated>1518274022638</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="docs">
+      <created>1518275065975</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1518275065975</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="64" y="-11" width="1857" height="1212" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13646288" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13646288" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293023" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -638,19 +647,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="0">
-            <caret line="0" column="12" lean-forward="false" selection-start-line="0" selection-start-column="12" selection-end-line="0" selection-end-column="12" />
-            <folding />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../modules/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -661,8 +657,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../modules/slide_sampler.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+        <state relative-caret-position="432">
+          <caret line="42" column="0" lean-forward="false" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
           <folding>
             <element signature="e#42#58#0" expanded="true" />
           </folding>
@@ -671,9 +667,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../docs_builder/pydocmd.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="14" column="17" lean-forward="false" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
+        <state relative-caret-position="144">
+          <caret line="8" column="25" lean-forward="false" selection-start-line="8" selection-start-column="25" selection-end-line="8" selection-end-column="25" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="36">
+            <caret line="2" column="0" lean-forward="true" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
         </state>
       </provider>
     </entry>

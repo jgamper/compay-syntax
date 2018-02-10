@@ -11,9 +11,10 @@ from skimage.morphology import opening, dilation, closing
 from PIL import Image
 
 
+
 class Slide_Sampler(object):
     """
-    # A WSI patch sampler.
+    A WSI patch sampler.
 
     Important are:
     self.wsi - an OpenSlide object of the multiresolution WSI specified by wsi_file.
@@ -21,12 +22,6 @@ class Slide_Sampler(object):
     """
 
     def __init__(self, wsi_file, desired_downsampling, size):
-        """
-
-        :param wsi_file:
-        :param desired_downsampling:
-        :param size:
-        """
         self.wsi_file = wsi_file
         self.fileID = os.path.splitext(os.path.basename(self.wsi_file))[0]
         self.wsi = openslide.OpenSlide(self.wsi_file)
@@ -45,6 +40,9 @@ class Slide_Sampler(object):
         Get the level and downsampling for a desired downsampling.
         A threshold is used to allow for not exactly equal desired and true downsampling.
         If an appropriate level is not found an exception is raised.
+
+        :param desired_downsampling:
+        :param threshold:
         :return:
         """
         diffs = [abs(desired_downsampling - self.wsi.level_downsamples[i]) for i in
