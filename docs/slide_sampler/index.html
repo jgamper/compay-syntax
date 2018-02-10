@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>slide_sampler - WSI sampler</title>
+  <title>slide_sampler - Whole-Slide-Image (WSI) sampler</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -35,7 +35,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href=".." class="icon icon-home"> WSI sampler</a>
+        <a href=".." class="icon icon-home"> Whole-Slide-Image (WSI) sampler</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,7 +76,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="..">WSI sampler</a>
+        <a href="..">Whole-Slide-Image (WSI) sampler</a>
       </nav>
 
       
@@ -104,37 +104,51 @@
               
                 <h1 id="modules.slide_sampler">modules.slide_sampler</h1>
 
-<p>slide_sampler.py</p>
+<p>slide_sampler module</p>
 <h2 id="modules.slide_sampler.Slide_Sampler">Slide_Sampler</h2>
 
 <pre><code class="python">Slide_Sampler(self, wsi_file, desired_downsampling, size)
 </code></pre>
 
-<p>A WSI patch sampler. Samples patches of a given size at desired downsampling</p>
-<p>Important are:
-- self.wsi - an OpenSlide object of the multi-resolution WSI specified by wsi_file.
-- self.background_mask - a background mask (generate with self.generate_background_mask()). Stored as a numpy array where 1.0 denotes tissue.
-- self.annotation_mask - a multi-resolution binary annotation mask. Must have a level with the desired downsampling.</p>
+<p>A Whole-Slide-Image (WSI) patch sampler. Samples patches of user defined size at a desired downsampling.</p>
+<p>Important are:</p>
+<ul>
+<li><strong>self.wsi</strong> : an OpenSlide object of the multi-resolution WSI specified by wsi_file.</li>
+<li><strong>self.background_mask</strong> : a background mask (generate with self.generate_background_mask()). Stored as a np.ndumpy array where 1.0 denotes tissue.</li>
+<li><strong>self.annotation_mask</strong> : a multi-resolution binary annotation mask. Must have a level with the desired downsampling else WSI and annotation mask incompatible.</li>
+</ul>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>wsi_file</strong>: path to a WSI readable by openslide</li>
+<li><strong>desired_downsampling</strong>: the desired downsampling for patches</li>
+<li><strong>size</strong>: the requested size for patches</li>
+</ul>
+<h3 id="modules.slide_sampler.Slide_Sampler.get_patch">get_patch</h3>
+
+<pre><code class="python">Slide_Sampler.get_patch(self, with_info=0)
+</code></pre>
+
+<p>Get a random patch from the WSI.
+Accept if over 90% is non-background
+<em>Can also return an info dict if with_info==1</em></p>
+<h3 id="modules.slide_sampler.Slide_Sampler.pickle_background_mask">pickle_background_mask</h3>
+
+<pre><code class="python">Slide_Sampler.pickle_background_mask(self, dir='/home/peter/projects_/slide_loader/docs_builder')
+</code></pre>
+
+<p>Save the background mask and meta data</p>
 <h3 id="modules.slide_sampler.Slide_Sampler.save_WSI_thumbnail">save_WSI_thumbnail</h3>
 
 <pre><code class="python">Slide_Sampler.save_WSI_thumbnail(self, dir='/home/peter/projects_/slide_loader/docs_builder')
 </code></pre>
 
 <p>Save a thumbnail of the WSI</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.get_classed_patch">get_classed_patch</h3>
+<h3 id="modules.slide_sampler.Slide_Sampler.pickle_load_background_mask">pickle_load_background_mask</h3>
 
-<pre><code class="python">Slide_Sampler.get_classed_patch(self, verbose=0)
+<pre><code class="python">Slide_Sampler.pickle_load_background_mask(self, file)
 </code></pre>
 
-<p>Get a random patch from the WSI.
-Accept if over 90% is non-background.
-Also return class as part of info dict. info['class'].</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.check_patch">check_patch</h3>
-
-<pre><code class="python">Slide_Sampler.check_patch(self, x)
-</code></pre>
-
-<p>Divide by 255.0 if x.max &gt; 1.0. And ensure float.</p>
+<p>Load a background mask and meta data</p>
 <h3 id="modules.slide_sampler.Slide_Sampler.print_slide_properties">print_slide_properties</h3>
 
 <pre><code class="python">Slide_Sampler.print_slide_properties(self)
@@ -146,17 +160,54 @@ Also return class as part of info dict. info['class'].</p>
 <pre><code class="python">Slide_Sampler.generate_background_mask(self, desired_downsampling=32, threshold=4, disk_radius=10)
 </code></pre>
 
-<p>Generate a background mask. That is a binary (0.0 vs 1.0), downsampled image where 1.0 denotes a tissue region.
+<p>Generate a <em>background mask</em> (np.ndarray). That is a binary (0.0 vs 1.0), downsampled image where 1.0 denotes a tissue region.
 This is achieved by otsu thresholding on the saturation channel followed by morphological closing and opening to remove noise.
 The mask desired downsampling factor has a default of 32. For a WSI captured at 40X this corresponds to 1.25X.
 A moderate threshold is used to account for the fact that the desired downsampling may not be available.
 If an appropriate level is not found an exception is raised.</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.pickle_load_background_mask">pickle_load_background_mask</h3>
+<p><strong>Builds</strong></p>
+<ul>
+<li>self.background_mask : binary (0.0 vs 1.0) np.ndarray.</li>
+<li>...</li>
+</ul>
+<h3 id="modules.slide_sampler.Slide_Sampler.save_background_mask_visualization">save_background_mask_visualization</h3>
 
-<pre><code class="python">Slide_Sampler.pickle_load_background_mask(self, file)
+<pre><code class="python">Slide_Sampler.save_background_mask_visualization(self, dir='/home/peter/projects_/slide_loader/docs_builder')
 </code></pre>
 
-<p>Load a background mask and meta data</p>
+<p>Save a visualization of the background mask.</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.check_patch">check_patch</h3>
+
+<pre><code class="python">Slide_Sampler.check_patch(self, x)
+</code></pre>
+
+<p>Divide by 255.0 if x.max &gt; 1.0. And ensure float.</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.get_classed_patch">get_classed_patch</h3>
+
+<pre><code class="python">Slide_Sampler.get_classed_patch(self, patch_class=None, verbose=0)
+</code></pre>
+
+<p>Get a random, classed patch from the WSI.
+Accept if over 90% is non-background and belonging to a single class.
+<em>Also returns an info dict</em></p>
+<h3 id="modules.slide_sampler.Slide_Sampler.level_converter">level_converter</h3>
+
+<pre><code class="python">Slide_Sampler.level_converter(self, x, lvl_in, lvl_out, round=1)
+</code></pre>
+
+<p>Convert a coordinate 'x' at lvl_in from lvl_in to lvl_out</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.save_annotation_thumbnail">save_annotation_thumbnail</h3>
+
+<pre><code class="python">Slide_Sampler.save_annotation_thumbnail(self, dir='/home/peter/projects_/slide_loader/docs_builder')
+</code></pre>
+
+<p>Save a thumbnail visualizing the annotation</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.add_annotation_mask">add_annotation_mask</h3>
+
+<pre><code class="python">Slide_Sampler.add_annotation_mask(self, annotation_mask_file)
+</code></pre>
+
+<p>Add a multi-resolution annotation mask. For compatibility must have a level with the desired downsampling.</p>
 <h3 id="modules.slide_sampler.Slide_Sampler.get_level_and_downsampling">get_level_and_downsampling</h3>
 
 <pre><code class="python">Slide_Sampler.get_level_and_downsampling(self, mri, desired_downsampling, threshold)
@@ -169,44 +220,6 @@ If an appropriate level is not found an exception is raised.</p>
 <ul>
 <li><strong>mri</strong>: A multi-resolution-image OpenSlide object</li>
 </ul>
-<h3 id="modules.slide_sampler.Slide_Sampler.save_annotation_thumbnail">save_annotation_thumbnail</h3>
-
-<pre><code class="python">Slide_Sampler.save_annotation_thumbnail(self, dir='/home/peter/projects_/slide_loader/docs_builder')
-</code></pre>
-
-<p>Save a thumbnail visualizing the annotation</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.save_background_mask_visualization">save_background_mask_visualization</h3>
-
-<pre><code class="python">Slide_Sampler.save_background_mask_visualization(self, dir='/home/peter/projects_/slide_loader/docs_builder')
-</code></pre>
-
-<p>Save a visualization of the background mask.</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.level_converter">level_converter</h3>
-
-<pre><code class="python">Slide_Sampler.level_converter(self, x, lvl_in, lvl_out, round=1)
-</code></pre>
-
-<p>Convert a coordinate 'x' at lvl_in from lvl_in to lvl_out</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.get_patch">get_patch</h3>
-
-<pre><code class="python">Slide_Sampler.get_patch(self, with_info=1)
-</code></pre>
-
-<p>Get a random patch from the WSI.
-Accept if over 90% is non-background
-If with_info return patch as well as info dict</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.pickle_background_mask">pickle_background_mask</h3>
-
-<pre><code class="python">Slide_Sampler.pickle_background_mask(self, dir='/home/peter/projects_/slide_loader/docs_builder')
-</code></pre>
-
-<p>Save the background mask and meta data</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.add_annotation_mask">add_annotation_mask</h3>
-
-<pre><code class="python">Slide_Sampler.add_annotation_mask(self, annotation_mask_file)
-</code></pre>
-
-<p>Add a multi-resolution annotation mask</p>
               
             </div>
           </div>

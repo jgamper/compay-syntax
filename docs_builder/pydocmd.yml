@@ -1,4 +1,4 @@
-site_name: WSI sampler
+site_name: Whole-Slide-Image (WSI) sampler
 
 generate:
 - slide_sampler.md: modules.slide_sampler++

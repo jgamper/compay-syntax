@@ -1,5 +1,5 @@
 """
-slide_sampler.py
+slide_sampler module
 """
 
 import openslide
@@ -14,12 +14,19 @@ import pickle
 
 class Slide_Sampler(object):
     """
-    A WSI patch sampler. Samples patches of a given size at desired downsampling
+    A Whole-Slide-Image (WSI) patch sampler. Samples patches of user defined size at a desired downsampling.
 
     Important are:
-    - self.wsi - an OpenSlide object of the multi-resolution WSI specified by wsi_file.
-    - self.background_mask - a background mask (generate with self.generate_background_mask()). Stored as a numpy array where 1.0 denotes tissue.
-    - self.annotation_mask - a multi-resolution binary annotation mask. Must have a level with the desired downsampling.
+
+    - **self.wsi** : an OpenSlide object of the multi-resolution WSI specified by wsi_file.
+    - **self.background_mask** : a background mask (generate with self.generate_background_mask()). Stored as a np.ndumpy array where 1.0 denotes tissue.
+    - **self.annotation_mask** : a multi-resolution binary annotation mask. Must have a level with the desired downsampling else WSI and annotation mask incompatible.
+
+    # Parameters
+    wsi_file: path to a WSI readable by openslide
+    desired_downsampling: the desired downsampling for patches
+    size: the requested size for patches
+
     """
 
     def __init__(self, wsi_file, desired_downsampling, size):
@@ -57,11 +64,16 @@ class Slide_Sampler(object):
 
     def generate_background_mask(self, desired_downsampling=32, threshold=4, disk_radius=10):
         """
-        Generate a background mask. That is a binary (0.0 vs 1.0), downsampled image where 1.0 denotes a tissue region.
+        Generate a *background mask* (np.ndarray). That is a binary (0.0 vs 1.0), downsampled image where 1.0 denotes a tissue region.
         This is achieved by otsu thresholding on the saturation channel followed by morphological closing and opening to remove noise.
         The mask desired downsampling factor has a default of 32. For a WSI captured at 40X this corresponds to 1.25X.
         A moderate threshold is used to account for the fact that the desired downsampling may not be available.
         If an appropriate level is not found an exception is raised.
+
+        # Builds
+
+        - self.background_mask : binary (0.0 vs 1.0) np.ndarray.
+        - ...
         """
         print('\nGenerating background mask.')
         self.background_mask_level, self.background_mask_downsampling = self.get_level_and_downsampling(
@@ -84,7 +96,7 @@ class Slide_Sampler(object):
 
     def add_annotation_mask(self, annotation_mask_file):
         """
-        Add a multi-resolution annotation mask
+        Add a multi-resolution annotation mask. For compatibility must have a level with the desired downsampling.
         """
         self.annotation_mask_file = annotation_mask_file
         self.annotation_mask = openslide.OpenSlide(self.annotation_mask_file)
@@ -137,11 +149,11 @@ class Slide_Sampler(object):
         pil = Image.fromarray(thumb_wsi_numpy)
         pil.save(file_name)
 
-    def get_patch(self, with_info=1):
+    def get_patch(self, with_info=0):
         """
         Get a random patch from the WSI.
         Accept if over 90% is non-background
-        If with_info return patch as well as info dict
+        *Can also return an info dict if with_info==1*
         """
         done = 0
         while not done:
@@ -153,17 +165,17 @@ class Slide_Sampler(object):
             background_mask_patch = self.background_mask[i:i + self.size_at_background_level,
                                     j:j + self.size_at_background_level]
             if np.sum(background_mask_patch) / (self.size_at_background_level ** 2) > 0.9: done = 1
-        info = {'w_coordinate': w, 'h_coordinate': h}
-        if with_info:
-            return patch, info
-        else:
+        if not with_info:
             return patch
+        elif with_info:
+            info = {'w_coordinate': w, 'h_coordinate': h}
+            return patch, info
 
-    def get_classed_patch(self, verbose=0):
+    def get_classed_patch(self, patch_class=None, verbose=0):
         """
-        Get a random patch from the WSI.
-        Accept if over 90% is non-background.
-        Also return class as part of info dict. info['class'].
+        Get a random, classed patch from the WSI.
+        Accept if over 90% is non-background and belonging to a single class.
+        *Also returns an info dict*
         """
         done = 0
         while not done:
@@ -173,10 +185,10 @@ class Slide_Sampler(object):
                                                                      size=(self.size, self.size)).convert('L')
             annotation_mask_patch_numpy = self.check_patch(np.asarray(annotation_mask_patch).copy())
             area = self.size ** 2
-            if np.sum(annotation_mask_patch_numpy) / area < 0.1:
+            if np.sum(annotation_mask_patch_numpy) / area < 0.1 and (patch_class == None or patch_class == 0):
                 info['class'] = 0
                 done = 1
-            if np.sum(annotation_mask_patch_numpy) / area > 0.9:
+            if np.sum(annotation_mask_patch_numpy) / area > 0.9 and (patch_class == None or patch_class == 1):
                 info['class'] = 1
                 done = 1
         if verbose: print('\nFound patch with class {}'.format(info['class']))
