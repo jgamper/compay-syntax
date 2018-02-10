@@ -137,7 +137,6 @@ class Slide_Sampler(object):
         pil = Image.fromarray(thumb_wsi_numpy)
         pil.save(file_name)
 
-
     def get_patch(self, with_info=1):
         """
         Get a random patch from the WSI.
