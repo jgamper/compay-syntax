@@ -11,7 +11,6 @@ from skimage.morphology import opening, dilation, closing
 from PIL import Image
 
 
-
 class Slide_Sampler(object):
     """
     A WSI patch sampler.
@@ -67,7 +66,7 @@ class Slide_Sampler(object):
         :param disk_radius: for morphological opening
         :return:
         """
-        print('\nAdding background mask...')
+        print('\nAdding background mask.')
         self.background_mask_level, self.background_mask_downsampling = self.get_level_and_downsampling(
             desired_downsampling, threshold)
         low_res = self.wsi.read_region(location=(0, 0), level=self.background_mask_level,
@@ -82,7 +81,8 @@ class Slide_Sampler(object):
         mask = opening(mask, selem)
         self.background_mask = mask.astype(np.float32)
         self.size_at_background_level = self.level_converter(self.size, self.level, self.background_mask_level)
-        print('...done.')
+        print('Added background mask at level{} (downsampling of {})'.format(self.background_mask_level,
+                                                                             self.background_mask_downsampling))
 
     def view_background_mask(self, dir=os.getcwd()):
         """

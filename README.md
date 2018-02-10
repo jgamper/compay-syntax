@@ -1,2 +1,2 @@
-# WSI sampler
+# Whole-Slide-Image sampler
 
