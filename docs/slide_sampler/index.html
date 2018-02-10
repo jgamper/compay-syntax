@@ -114,22 +114,6 @@
 <p>Important are:
 self.wsi - an OpenSlide object of the multiresolution WSI specified by wsi_file.
 self.background_mask - a background mask (generate with self.add_background_mask()). Stored as a numpy array where 1.0 denotes tissue.</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.get_patch">get_patch</h3>
-
-<pre><code class="python">Slide_Sampler.get_patch(self)
-</code></pre>
-
-<p>Get a random patch from the WSI.
-Accept if over 90% is non-background
-:return:</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.view_WSI">view_WSI</h3>
-
-<pre><code class="python">Slide_Sampler.view_WSI(self, dir='/home/peter/projects_/slide_loader/docs_builder')
-</code></pre>
-
-<p>Save a thumbnail of the WSI
-:param dir:
-:return:</p>
 <h3 id="modules.slide_sampler.Slide_Sampler.view_background_mask">view_background_mask</h3>
 
 <pre><code class="python">Slide_Sampler.view_background_mask(self, dir='/home/peter/projects_/slide_loader/docs_builder')
@@ -149,26 +133,21 @@ If an appropriate level is not found an exception is raised.</p>
 <p>:param desired_downsampling:
 :param threshold:
 :return:</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.add_background_mask">add_background_mask</h3>
+<h3 id="modules.slide_sampler.Slide_Sampler.view_WSI">view_WSI</h3>
 
-<pre><code class="python">Slide_Sampler.add_background_mask(self, desired_downsampling=32, threshold=4, disk_radius=10)
+<pre><code class="python">Slide_Sampler.view_WSI(self, dir='/home/peter/projects_/slide_loader/docs_builder')
 </code></pre>
 
-<p>Add a background mask. That is a binary (0.0 vs 1.0), downsampled image where 1.0 denotes a tissue region.
-This is achieved by otsu thresholding on the saturation channel followed by morphological closing and opening to remove noise.
-The mask desired downsampling factor has a default of 32. For a WSI captured at 40X this corresponds to 1.25X.
-A moderate threshold is used to account for the fact that the desired downsampling may not be available.
-If an appropriate level is not found an exception is raised.
-:param desired_downsampling:
-:param threshold:
-:param disk_radius: for morphological opening
+<p>Save a thumbnail of the WSI
+:param dir:
 :return:</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.print_slide_properties">print_slide_properties</h3>
+<h3 id="modules.slide_sampler.Slide_Sampler.get_patch">get_patch</h3>
 
-<pre><code class="python">Slide_Sampler.print_slide_properties(self)
+<pre><code class="python">Slide_Sampler.get_patch(self)
 </code></pre>
 
-<p>Print some WSI properties
+<p>Get a random patch from the WSI.
+Accept if over 90% is non-background
 :return:</p>
 <h3 id="modules.slide_sampler.Slide_Sampler.level_converter">level_converter</h3>
 
@@ -179,6 +158,30 @@ If an appropriate level is not found an exception is raised.
 :param x:
 :param lvl_in:
 :param lvl_out:
+:return:</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.add_background_mask">add_background_mask</h3>
+
+<pre><code class="python">Slide_Sampler.add_background_mask(self, desired_downsampling=32, threshold=4, disk_radius=10)
+</code></pre>
+
+<p>Add a background mask. That is a binary (0.0 vs 1.0), downsampled image where 1.0 denotes a tissue region.
+This is achieved by otsu thresholding on the saturation channel followed by morphological closing and opening to remove noise.
+The mask desired downsampling factor has a default of 32. For a WSI captured at 40X this corresponds to 1.25X.
+A moderate threshold is used to account for the fact that the desired downsampling may not be available.
+If an appropriate level is not found an exception is raised.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>:param desired_downsampling</strong>:</li>
+<li><strong>:param threshold</strong>:</li>
+<li><strong>:param disk_radius</strong>: for morphological opening</li>
+<li><strong>:return</strong>:</li>
+</ul>
+<h3 id="modules.slide_sampler.Slide_Sampler.print_slide_properties">print_slide_properties</h3>
+
+<pre><code class="python">Slide_Sampler.print_slide_properties(self)
+</code></pre>
+
+<p>Print some WSI properties
 :return:</p>
               
             </div>
