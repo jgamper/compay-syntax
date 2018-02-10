@@ -17,8 +17,9 @@ class Slide_Sampler(object):
     A WSI patch sampler. Samples patches of a given size at desired downsampling
 
     Important are:
-    self.wsi - an OpenSlide object of the multi-resolution WSI specified by wsi_file.
-    self.background_mask - a background mask (generate with self.generate_background_mask()). Stored as a numpy array where 1.0 denotes tissue.
+    - self.wsi - an OpenSlide object of the multi-resolution WSI specified by wsi_file.
+    - self.background_mask - a background mask (generate with self.generate_background_mask()). Stored as a numpy array where 1.0 denotes tissue.
+    - self.annotation_mask - a multi-resolution binary annotation mask. Must have a level with the desired downsampling.
     """
 
     def __init__(self, wsi_file, desired_downsampling, size):
@@ -119,6 +120,23 @@ class Slide_Sampler(object):
         print('\nSaving WSI thumbnail to {}'.format(file_name))
         thumb = self.wsi.get_thumbnail(size=(1500, 1500))
         thumb.save(file_name)
+
+    def save_annotation_thumbnail(self, dir=os.getcwd()):
+        """
+        Save a thumbnail visualizing the annotation
+        """
+        file_name = os.path.join(dir, self.fileID + '_annotation.png')
+        print('\nSaving annotation thumbnail to {}'.format(file_name))
+        thumb = self.annotation_mask.get_thumbnail(size=(1500, 1500)).convert('L')
+        thumb_wsi = self.wsi.get_thumbnail(size=(1500, 1500))
+        thumb_numpy = self.check_patch(np.asarray(thumb).copy())
+        thumb_wsi_numpy = np.asarray(thumb_wsi).copy()
+        dilated = dilation(thumb_numpy, disk(8))
+        contour = np.logical_xor(thumb_numpy, dilated).astype(np.bool)
+        thumb_wsi_numpy[contour] = 0
+        pil = Image.fromarray(thumb_wsi_numpy)
+        pil.save(file_name)
+
 
     def get_patch(self, with_info=1):
         """

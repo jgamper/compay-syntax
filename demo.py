@@ -23,6 +23,7 @@ sampler.pickle_load_background_mask(file='./bgmask.pickle')
 # sampler.save_background_mask_visualization()
 
 sampler.add_annotation_mask(annotation_mask_file=mask_file)
+sampler.save_annotation_thumbnail()
 
 done = 0
 while not done:
