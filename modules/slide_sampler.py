@@ -108,6 +108,7 @@ class Slide_Sampler(object):
         eps = 1e-3
         if abs(self.annotation_mask_downsampling - self.downsampling) > eps:
             raise Exception('\nInconsistent WSI and annotation mask')
+        print('\nAdded annotation mask file from {}.'.format(self.annotation_mask_file))
 
     def save_background_mask_visualization(self, dir=os.getcwd()):
         """
@@ -252,18 +253,17 @@ class Slide_Sampler(object):
             pickling_off)
         pickling_off.close()
 
-    def get_basic_patchframe(self, number_patches, mode='save', savedir=os.getcwd()):
+    def get_basic_patchframe(self, number_patches, save=0, savedir=os.getcwd()):
         """
-        Get a basic patchframe (pd.DataFrame) for N = number_patches patches and save with pickle (or return if mode=='return').
+        Get a basic patchframe (pd.DataFrame) for N = number_patches patches. If save==True then save the patchframe with pickle.
         """
         print('\nGetting patchframe (pd.DataFrame) for N = {} patches'.format(number_patches))
         frame = pd.DataFrame(data=None, columns=['w', 'h', 'class', 'parent', 'level', 'size'])
         for i in range(number_patches):
             _, info = self.get_classed_patch()
             frame = frame.append(info, ignore_index=1)
-        if mode == 'save':
+        if save:
             filename = os.path.join(savedir, 'patchframe.pickle')
             print('Saving patchframe to {}'.format(filename))
             frame.to_pickle(filename)
-        elif mode == 'return':
-            return frame
+        return frame

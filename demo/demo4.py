@@ -7,7 +7,7 @@ import pandas as pd
 data_dir = '/home/peter/Dropbox/publish-final/WSI_sampler_data'
 
 file = os.path.join(data_dir, 'Tumor_004.tif')
-mask_file = os.path.join(data_dir, 'Tumor_004_bgmask.tif')
+mask_file = os.path.join(data_dir, 'Tumor_004_mask.tif')
 
 ###
 
@@ -21,7 +21,7 @@ sampler.add_annotation_mask(annotation_mask_file=mask_file)
 
 ###
 
-sampler.get_basic_patchframe(number_patches=100)
+sampler.get_basic_patchframe(number_patches=100, save=1)
 
 frame = pd.read_pickle(path='./patchframe.pickle')
 
