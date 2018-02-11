@@ -20,7 +20,7 @@ def save_patchframe_patches(input, save_dir):
         raise Exception('\nInput should be patchframe (pd.DataFrame) or string path to pickled patchframe.')
     os.makedirs(save_dir, exist_ok=1)
     num_patches = patchframe.shape[0]
-    print('\nSaving hard copies of patches in patchframe for viewing to {}'.format(save_dir))
+    print('\nSaving hard copies of patches in patchframe to {}'.format(save_dir))
     for i in range(num_patches):
         info = patchframe.ix[i]
         slide = openslide.OpenSlide(info['parent'])
