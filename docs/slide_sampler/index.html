@@ -127,12 +127,95 @@
 <li><strong>desired_downsampling</strong>: the desired downsampling for patches</li>
 <li><strong>size</strong>: the requested size for patches</li>
 </ul>
+<h3 id="modules.slide_sampler.Slide_Sampler.print_slide_properties">print_slide_properties</h3>
+
+<pre><code class="python">Slide_Sampler.print_slide_properties(self)
+</code></pre>
+
+<p>Print some WSI properties</p>
 <h3 id="modules.slide_sampler.Slide_Sampler.level_converter">level_converter</h3>
 
 <pre><code class="python">Slide_Sampler.level_converter(self, x, lvl_in, lvl_out, round=1)
 </code></pre>
 
 <p>Convert a coordinate 'x' at lvl_in from lvl_in to lvl_out</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.save_annotation_thumbnail">save_annotation_thumbnail</h3>
+
+<pre><code class="python">Slide_Sampler.save_annotation_thumbnail(self, dir='/home/peter/projects_/slide_loader/docs_builder')
+</code></pre>
+
+<p>Save a thumbnail visualizing the annotation</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.get_level_and_downsampling">get_level_and_downsampling</h3>
+
+<pre><code class="python">Slide_Sampler.get_level_and_downsampling(self, mri, desired_downsampling, threshold)
+</code></pre>
+
+<p>Get the level and downsampling for a desired downsampling.
+A threshold is used to allow for not exactly equal desired and true downsampling.
+If an appropriate level is not found an exception is raised.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>mri</strong>: A multi-resolution-image OpenSlide object</li>
+</ul>
+<h3 id="modules.slide_sampler.Slide_Sampler.get_patch">get_patch</h3>
+
+<pre><code class="python">Slide_Sampler.get_patch(self, with_info=0)
+</code></pre>
+
+<p>Get a random patch from the WSI.
+Accept if over 90% is non-background.
+<em>Also returns an info dict with w and h coordinates if with_info==1</em>.</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.add_annotation_mask">add_annotation_mask</h3>
+
+<pre><code class="python">Slide_Sampler.add_annotation_mask(self, annotation_mask_file)
+</code></pre>
+
+<p>Add a multi-resolution annotation mask. For compatibility must have a level with the desired downsampling.</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.save_WSI_thumbnail">save_WSI_thumbnail</h3>
+
+<pre><code class="python">Slide_Sampler.save_WSI_thumbnail(self, dir='/home/peter/projects_/slide_loader/docs_builder')
+</code></pre>
+
+<p>Save a thumbnail of the WSI</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.pickle_load_background_mask">pickle_load_background_mask</h3>
+
+<pre><code class="python">Slide_Sampler.pickle_load_background_mask(self, file)
+</code></pre>
+
+<p>Load a background mask and meta data</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.pickle_background_mask">pickle_background_mask</h3>
+
+<pre><code class="python">Slide_Sampler.pickle_background_mask(self, dir='/home/peter/projects_/slide_loader/docs_builder')
+</code></pre>
+
+<p>Save the background mask and meta data</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.check_patch">check_patch</h3>
+
+<pre><code class="python">Slide_Sampler.check_patch(self, x)
+</code></pre>
+
+<p>Divide by 255.0 if x.max &gt; 1.0. And ensure float.</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.get_classed_patch">get_classed_patch</h3>
+
+<pre><code class="python">Slide_Sampler.get_classed_patch(self, patch_class=None, verbose=0)
+</code></pre>
+
+<p>Get a random, classed patch from the WSI.
+Accept if over 90% is non-background and belonging to a single class.
+Can specify desired class or just leave as None to get either.
+<em>Also returns an info dict with w and h coordinates, class and other data needed for reading patch</em>.</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.get_basic_patchframe">get_basic_patchframe</h3>
+
+<pre><code class="python">Slide_Sampler.get_basic_patchframe(self, number_patches, save=0, savedir='/home/peter/projects_/slide_loader/docs_builder')
+</code></pre>
+
+<p>Get a basic patchframe (pd.DataFrame) for N = number_patches patches. If save==True then save the patchframe with pickle.</p>
+<h3 id="modules.slide_sampler.Slide_Sampler.save_background_mask_visualization">save_background_mask_visualization</h3>
+
+<pre><code class="python">Slide_Sampler.save_background_mask_visualization(self, dir='/home/peter/projects_/slide_loader/docs_builder')
+</code></pre>
+
+<p>Save a visualization of the background mask.</p>
 <h3 id="modules.slide_sampler.Slide_Sampler.generate_background_mask">generate_background_mask</h3>
 
 <pre><code class="python">Slide_Sampler.generate_background_mask(self, desired_downsampling=32, threshold=4, disk_radius=10)
@@ -148,89 +231,6 @@ If an appropriate level is not found an exception is raised.</p>
 <li>self.background_mask : binary (0.0 vs 1.0) np.ndarray.</li>
 <li>...</li>
 </ul>
-<h3 id="modules.slide_sampler.Slide_Sampler.get_patch">get_patch</h3>
-
-<pre><code class="python">Slide_Sampler.get_patch(self, with_info=0)
-</code></pre>
-
-<p>Get a random patch from the WSI.
-Accept if over 90% is non-background.
-<em>Also returns an info dict with w and h coordinates if with_info==1</em>.</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.get_basic_patchframe">get_basic_patchframe</h3>
-
-<pre><code class="python">Slide_Sampler.get_basic_patchframe(self, number_patches, save=0, savedir='/home/peter/projects_/slide_loader/docs_builder')
-</code></pre>
-
-<p>Get a basic patchframe (pd.DataFrame) for N = number_patches patches. If save==True then save the patchframe with pickle.</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.get_level_and_downsampling">get_level_and_downsampling</h3>
-
-<pre><code class="python">Slide_Sampler.get_level_and_downsampling(self, mri, desired_downsampling, threshold)
-</code></pre>
-
-<p>Get the level and downsampling for a desired downsampling.
-A threshold is used to allow for not exactly equal desired and true downsampling.
-If an appropriate level is not found an exception is raised.</p>
-<p><strong>Parameters</strong></p>
-<ul>
-<li><strong>mri</strong>: A multi-resolution-image OpenSlide object</li>
-</ul>
-<h3 id="modules.slide_sampler.Slide_Sampler.save_WSI_thumbnail">save_WSI_thumbnail</h3>
-
-<pre><code class="python">Slide_Sampler.save_WSI_thumbnail(self, dir='/home/peter/projects_/slide_loader/docs_builder')
-</code></pre>
-
-<p>Save a thumbnail of the WSI</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.get_classed_patch">get_classed_patch</h3>
-
-<pre><code class="python">Slide_Sampler.get_classed_patch(self, patch_class=None, verbose=0)
-</code></pre>
-
-<p>Get a random, classed patch from the WSI.
-Accept if over 90% is non-background and belonging to a single class.
-Can specify desired class or just leave as None to get either.
-<em>Also returns an info dict with w and h coordinates, class and other data needed for reading patch</em>.</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.print_slide_properties">print_slide_properties</h3>
-
-<pre><code class="python">Slide_Sampler.print_slide_properties(self)
-</code></pre>
-
-<p>Print some WSI properties</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.add_annotation_mask">add_annotation_mask</h3>
-
-<pre><code class="python">Slide_Sampler.add_annotation_mask(self, annotation_mask_file)
-</code></pre>
-
-<p>Add a multi-resolution annotation mask. For compatibility must have a level with the desired downsampling.</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.pickle_background_mask">pickle_background_mask</h3>
-
-<pre><code class="python">Slide_Sampler.pickle_background_mask(self, dir='/home/peter/projects_/slide_loader/docs_builder')
-</code></pre>
-
-<p>Save the background mask and meta data</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.save_background_mask_visualization">save_background_mask_visualization</h3>
-
-<pre><code class="python">Slide_Sampler.save_background_mask_visualization(self, dir='/home/peter/projects_/slide_loader/docs_builder')
-</code></pre>
-
-<p>Save a visualization of the background mask.</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.check_patch">check_patch</h3>
-
-<pre><code class="python">Slide_Sampler.check_patch(self, x)
-</code></pre>
-
-<p>Divide by 255.0 if x.max &gt; 1.0. And ensure float.</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.pickle_load_background_mask">pickle_load_background_mask</h3>
-
-<pre><code class="python">Slide_Sampler.pickle_load_background_mask(self, file)
-</code></pre>
-
-<p>Load a background mask and meta data</p>
-<h3 id="modules.slide_sampler.Slide_Sampler.save_annotation_thumbnail">save_annotation_thumbnail</h3>
-
-<pre><code class="python">Slide_Sampler.save_annotation_thumbnail(self, dir='/home/peter/projects_/slide_loader/docs_builder')
-</code></pre>
-
-<p>Save a thumbnail visualizing the annotation</p>
               
             </div>
           </div>
