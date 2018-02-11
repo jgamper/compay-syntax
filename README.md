@@ -12,17 +12,21 @@ Some features:
 
 Used to sample patches from a WSI. We can generate a background mask or add a binary multi-resolution annotation mask:
 
-*left: WSI, middle: generated background mask, right: added annotation mask*
+*left: WSI, middle: generated background mask, right: added annotation mask.*
+
+*To do: CHECK annotation as xml files seems to have multiple regions!?*
 
 <img src='demo/Tumor_004_thumb.png' width='20%'/><img src='demo/Tumor_004_background.png' width='20%'/><img src='demo/Tumor_004_annotation.png' width='20%'/>
 
 We can sample patches from the different classes:
 
-*class 0. 256x256 patches at 10X (downsampling of 4.0).* *To do: CHECK annotation as xml files seems to have multiple regions!?*
+*class 0. 256x256 patches at 10X (downsampling of 4.0).*
 
 <img src='demo/class0_1.png' width='30%'/><img src='demo/class0_2.png' width='30%'/><img src='demo/class0_3.png' width='30%'/>
 
-*class 1. 256x256 patches at 10X (downsampling of 4.0).* *To do: CHECK are these really cancer?!*
+*class 1. 256x256 patches at 10X (downsampling of 4.0).*
+
+*To do: CHECK are these really cancer?!*
 
 <img src='demo/class1_1.png' width='30%'/><img src='demo/class1_2.png' width='30%'/><img src='demo/class1_3.png' width='30%'/>
 
