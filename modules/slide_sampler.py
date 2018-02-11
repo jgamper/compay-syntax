@@ -254,7 +254,7 @@ class Slide_Sampler(object):
 
     def get_basic_patchframe(self, number_patches, mode='save', savedir=os.getcwd()):
         """
-        Get a patchframe (pd.DataFrame) for N = number_patches patches and save with pickle (or return if mode=='return').
+        Get a basic patchframe (pd.DataFrame) for N = number_patches patches and save with pickle (or return if mode=='return').
         """
         print('\nGetting patchframe (pd.DataFrame) for N = {} patches'.format(number_patches))
         frame = pd.DataFrame(data=None, columns=['w', 'h', 'class', 'parent', 'level', 'size'])

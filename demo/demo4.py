@@ -25,8 +25,9 @@ sampler.get_basic_patchframe(number_patches=100)
 
 frame = pd.read_pickle(path='./patchframe.pickle')
 
-print(frame.head(n=10))
+print('\npatchframe head:')
+print(frame.head())
 
 ###
 
-utils.save_patchframe_patches(frame_path='./patchframe.pickle',save_dir='./patches')
+utils.save_patchframe_patches(input=frame, save_dir='./patches')

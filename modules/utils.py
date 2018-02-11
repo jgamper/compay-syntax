@@ -7,11 +7,20 @@ import os
 import openslide
 
 
-def save_patchframe_patches(frame_path, save_dir):
-    """For viewing hard copies of the patches in a patch frame"""
-    patchframe = pd.read_pickle(frame_path)
+def save_patchframe_patches(input, save_dir):
+    """
+    For viewing hard copies of the patches in a patch frame.
+    **Input should be a patchframe or a path to a pickled patchframe**.
+    """
+    if isinstance(input, pd.DataFrame):
+        patchframe = input
+    elif isinstance(input, str):
+        patchframe = pd.read_pickle(input)
+    else:
+        raise Exception('\nInput should be patchframe (pd.DataFrame) or string path to pickled patchframe.')
     os.makedirs(save_dir, exist_ok=1)
     num_patches = patchframe.shape[0]
+    print('\nSaving hard copies of patches in patchframe for viewing to {}'.format(save_dir))
     for i in range(num_patches):
         info = patchframe.ix[i]
         slide = openslide.OpenSlide(info['parent'])
