@@ -7,7 +7,7 @@ This respository aims to develop a tool for sampling from Whole-Slide-Images (WS
 When sampling patches we would like to be able to assign a class label (e.g. a binary label with normal==0 vs cancer==1). This is facilitated by adding a multi-resolution annotation mask. WSI annotations can be made efficiently with a program such as [ASAP](https://github.com/GeertLitjens/ASAP) and are often stored as xml files (see the [sample data](https://www.dropbox.com/sh/khsvxpe568f77xm/AABqQYLb6SBonAe77tELccY8a?dl=0) for example). These in turn can be converted to the multi-resolution annotation masks we want. *To do: Detail how to achieve this!*
 
 Some features:
-
+k
 - `modules.slide_sampler.Slide_Sampler()`
 
 Used to sample patches from a WSI. We can generate a background mask or add a binary multi-resolution annotation mask:
