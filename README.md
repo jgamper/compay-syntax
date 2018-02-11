@@ -46,3 +46,8 @@ patchframe head:
 ```
 
 We can get hard copies of the patches in a patchframe for viewing with e.g. `modules.utils.save_patchframe_patches()`.
+
+- *To do: Handling of multiple WSIs*
+- *To do: Class balancing problem?*
+- *To do: Handling of 'normal' slides with no annotation mask*
+
