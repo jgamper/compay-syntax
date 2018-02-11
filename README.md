@@ -41,7 +41,7 @@ patchframe head:
 1  78691  170619     0  /home/peter/Dropbox/publish-final/WSI_sampler_...     2  256
 2  67651  158458     0  /home/peter/Dropbox/publish-final/WSI_sampler_...     2  256
 3  65468  156771     0  /home/peter/Dropbox/publish-final/WSI_sampler_...     2  256
-4  40402  115702     0  /home/peter/Dropbox/publish-final/WSI_sampler_...        2  256
+4  40402  115702     0  /home/peter/Dropbox/publish-final/WSI_sampler_...     2  256
 
 ```
 
