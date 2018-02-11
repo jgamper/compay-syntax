@@ -10,7 +10,7 @@ Some features:
 
 - `modules.slide_sampler.Slide_Sampler()`
 
-Used to sample patches from a WSI. We can generate a background mask or add a binary multi-resolution annotation mask:
+Used to sample patches from a WSI. We can generate a background mask (`self.generate_background_mask()`) or add a binary multi-resolution annotation mask (`self.add_annotation_mask()`):
 
 *left: WSI, middle: generated background mask, right: added annotation mask.*
 
@@ -18,7 +18,7 @@ Used to sample patches from a WSI. We can generate a background mask or add a bi
 
 <img src='demo/Tumor_004_thumb.png' width='20%'/><img src='demo/Tumor_004_background.png' width='20%'/><img src='demo/Tumor_004_annotation.png' width='20%'/>
 
-We can sample patches from the different classes:
+We can sample patches from the different classes (`self.get_classed_patch()`):
 
 *class 0. 256x256 patches at 10X (downsampling of 4.0).*
 
@@ -30,7 +30,7 @@ We can sample patches from the different classes:
 
 <img src='demo/class1_1.png' width='30%'/><img src='demo/class1_2.png' width='30%'/><img src='demo/class1_3.png' width='30%'/>
 
-We can also generate a basic **patchframe** with this class. A patchframe is defined as a datastructure containing coordinates of patches as well as metadata like the patch class and also the patch parent WSI, size, level. Note that the patches themselves are not stored! At present this is implemented with a pd.DataFrame and it is estimated that 100,000 could be represented in this way using a memory of only a few MB on disk.
+We can also generate a basic **patchframe** with this class. A patchframe is defined as a datastructure containing coordinates of patches as well as metadata like the patch class and also the patch parent WSI, size, level. Note that the patches themselves are not stored! At present this is implemented with a pd.DataFrame and it is estimated that 100,000 patches could be represented in this way using a memory of only a few MB on disk.
 
 e.g.
 

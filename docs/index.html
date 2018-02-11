@@ -113,17 +113,17 @@
 <ul>
 <li><code>modules.slide_sampler.Slide_Sampler()</code></li>
 </ul>
-<p>Used to sample patches from a WSI. We can generate a background mask or add a binary multi-resolution annotation mask:</p>
+<p>Used to sample patches from a WSI. We can generate a background mask (<code>self.generate_background_mask()</code>) or add a binary multi-resolution annotation mask (<code>self.add_annotation_mask()</code>):</p>
 <p><em>left: WSI, middle: generated background mask, right: added annotation mask.</em></p>
 <p><em>To do: CHECK annotation as xml file seems to have multiple regions!?</em></p>
 <p><img src='demo/Tumor_004_thumb.png' width='20%'/><img src='demo/Tumor_004_background.png' width='20%'/><img src='demo/Tumor_004_annotation.png' width='20%'/></p>
-<p>We can sample patches from the different classes:</p>
+<p>We can sample patches from the different classes (<code>self.get_classed_patch()</code>):</p>
 <p><em>class 0. 256x256 patches at 10X (downsampling of 4.0).</em></p>
 <p><img src='demo/class0_1.png' width='30%'/><img src='demo/class0_2.png' width='30%'/><img src='demo/class0_3.png' width='30%'/></p>
 <p><em>class 1. 256x256 patches at 10X (downsampling of 4.0).</em></p>
 <p><em>To do: CHECK are these really cancer?!</em></p>
 <p><img src='demo/class1_1.png' width='30%'/><img src='demo/class1_2.png' width='30%'/><img src='demo/class1_3.png' width='30%'/></p>
-<p>We can also generate a basic <strong>patchframe</strong> with this class. A patchframe is defined as a datastructure containing coordinates of patches as well as metadata like the patch class and also the patch parent WSI, size, level. Note that the patches themselves are not stored! At present this is implemented with a pd.DataFrame and it is estimated that 100,000 could be represented in this way using a memory of only a few MB on disk.</p>
+<p>We can also generate a basic <strong>patchframe</strong> with this class. A patchframe is defined as a datastructure containing coordinates of patches as well as metadata like the patch class and also the patch parent WSI, size, level. Note that the patches themselves are not stored! At present this is implemented with a pd.DataFrame and it is estimated that 100,000 patches could be represented in this way using a memory of only a few MB on disk.</p>
 <p>e.g.</p>
 <pre><code>patchframe head:
        w       h class                                             parent level size
@@ -185,5 +185,5 @@
 
 <!--
 MkDocs version : 0.17.2
-Build Date UTC : 2018-02-11 12:07:03
+Build Date UTC : 2018-02-11 12:14:25
 -->
