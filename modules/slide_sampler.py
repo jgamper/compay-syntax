@@ -252,7 +252,7 @@ class Slide_Sampler(object):
             pickling_off)
         pickling_off.close()
 
-    def get_patchframe(self, number_patches, mode='save', savedir=os.getcwd()):
+    def get_basic_patchframe(self, number_patches, mode='save', savedir=os.getcwd()):
         """
         Get a patchframe (pd.DataFrame) for N = number_patches patches and save with pickle (or return if mode=='return').
         """

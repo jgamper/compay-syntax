@@ -1,5 +1,5 @@
 import os
-from modules import slide_sampler
+from modules import slide_sampler,utils
 import pandas as pd
 
 ###
@@ -21,8 +21,12 @@ sampler.add_annotation_mask(annotation_mask_file=mask_file)
 
 ###
 
-sampler.get_patchframe(number_patches=100)
+sampler.get_basic_patchframe(number_patches=100)
 
 frame = pd.read_pickle(path='./patchframe.pickle')
 
 print(frame.head(n=10))
+
+###
+
+utils.save_patchframe_patches(frame_path='./patchframe.pickle',save_dir='./patches')
