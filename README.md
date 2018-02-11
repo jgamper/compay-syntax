@@ -10,7 +10,7 @@ Some features:
 
 - `modules.slide_sampler.Slide_Sampler()`
 
-Used to sample patches from a WSI. We can generate a background mask (`self.generate_background_mask()`) or add a binary multi-resolution annotation mask (`self.add_annotation_mask()`):
+Used to sample patches from a single WSI. We can generate a background mask (`self.generate_background_mask()`) or add a binary multi-resolution annotation mask (`self.add_annotation_mask()`):
 
 *left: WSI, middle: generated background mask, right: added annotation mask.*
 

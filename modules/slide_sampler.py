@@ -263,7 +263,7 @@ class Slide_Sampler(object):
             _, info = self.get_classed_patch()
             frame = frame.append(info, ignore_index=1)
         if save:
-            filename = os.path.join(savedir, 'patchframe.pickle')
+            filename = os.path.join(savedir, self.fileID + '_patchframe.pickle')
             print('Saving patchframe to {}'.format(filename))
             frame.to_pickle(filename)
         return frame
