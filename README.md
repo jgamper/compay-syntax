@@ -14,7 +14,7 @@ Used to sample patches from a WSI. We can generate a background mask or add a bi
 
 *left: WSI, middle: generated background mask, right: added annotation mask.*
 
-*To do: CHECK annotation as xml files seems to have multiple regions!?*
+*To do: CHECK annotation as xml file seems to have multiple regions!?*
 
 <img src='demo/Tumor_004_thumb.png' width='20%'/><img src='demo/Tumor_004_background.png' width='20%'/><img src='demo/Tumor_004_annotation.png' width='20%'/>
 
@@ -34,7 +34,7 @@ We can also generate a basic **patchframe** with this class. A patchframe is def
 
 e.g.
 
-'''
+```
 patchframe head:
        w       h class                                             parent level size
 0  30900  119768     0  /home/peter/Dropbox/publish-final/WSI_sampler_...     2  256
@@ -43,6 +43,6 @@ patchframe head:
 3  65468  156771     0  /home/peter/Dropbox/publish-final/WSI_sampler_...     2  256
 4  40402  115702     0  /home/peter/Dropbox/publish-final/WSI_sampler_...        2  256
 
-'''
+```
 
-We can get hard copies of the patches in a patchframe for viewing with e.g. 'modules.utils.save_patchframe_patches()'.
+We can get hard copies of the patches in a patchframe for viewing with e.g. `modules.utils.save_patchframe_patches()`.
