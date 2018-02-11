@@ -11,11 +11,13 @@ Some features:
 Used to sample patches from a WSI. We can generate a background mask or add a multi-resolution annotation mask:
 
 *left: WSI, middle: generated background mask, right: added annotation mask*
+
 <img src='demo/Tumor_004_thumb.png' width='20%'/><img src='demo/Tumor_004_background.png' width='20%'/><img src='demo/Tumor_004_annotation.png' width='20%'/>
 
 We can sample patches from the different classes:
 
 *left: class 0, right: class 1*
+
 <img src='demo/class0.png' width='30%'/><img src='demo/class1.png' width='30%'/>
 
 
