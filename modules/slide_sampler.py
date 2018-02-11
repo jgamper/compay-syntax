@@ -10,6 +10,7 @@ from skimage.morphology import disk
 from skimage.morphology import opening, dilation, closing
 from PIL import Image
 import pickle
+import pandas as pd
 
 
 class Slide_Sampler(object):
@@ -153,7 +154,7 @@ class Slide_Sampler(object):
         """
         Get a random patch from the WSI.
         Accept if over 90% is non-background.
-        *Can also return an info dict if with_info==1*.
+        *Also returns an info dict with w and h coordinates if with_info==1*.
         """
         done = 0
         while not done:
@@ -168,7 +169,7 @@ class Slide_Sampler(object):
         if not with_info:
             return patch
         elif with_info:
-            info = {'w_coordinate': w, 'h_coordinate': h}
+            info = {'w': w, 'h': h}
             return patch, info
 
     def get_classed_patch(self, patch_class=None, verbose=0):
@@ -176,12 +177,12 @@ class Slide_Sampler(object):
         Get a random, classed patch from the WSI.
         Accept if over 90% is non-background and belonging to a single class.
         Can specify desired class or just leave as None to get either.
-        *Also returns an info dict*.
+        *Also returns an info dict with w and h coordinates, class and other data needed for reading patch*.
         """
         done = 0
         while not done:
             patch, info = self.get_patch(with_info=1)
-            w, h = info['w_coordinate'], info['h_coordinate']
+            w, h = info['w'], info['h']
             annotation_mask_patch = self.annotation_mask.read_region(location=(w, h), level=self.annotation_mask_level,
                                                                      size=(self.size, self.size)).convert('L')
             annotation_mask_patch_numpy = self.check_patch(np.asarray(annotation_mask_patch).copy())
@@ -192,6 +193,9 @@ class Slide_Sampler(object):
             if np.sum(annotation_mask_patch_numpy) / area > 0.9 and (patch_class == None or patch_class == 1):
                 info['class'] = 1
                 done = 1
+        info['parent'] = self.wsi_file
+        info['level'] = self.level
+        info['size'] = self.size
         if verbose: print('\nFound patch with class {}'.format(info['class']))
         return patch, info
 
@@ -247,3 +251,19 @@ class Slide_Sampler(object):
         self.background_mask, self.background_mask_level, self.background_mask_downsampling, self.size_at_background_level = pickle.load(
             pickling_off)
         pickling_off.close()
+
+    def get_patchframe(self, number_patches, mode='save', savedir=os.getcwd()):
+        """
+        Get a patchframe (pd.DataFrame) for N = number_patches patches and save with pickle (or return if mode=='return').
+        """
+        print('\nGetting patchframe (pd.DataFrame) for N = {} patches'.format(number_patches))
+        frame = pd.DataFrame(data=None, columns=['w', 'h', 'class', 'parent', 'level', 'size'])
+        for i in range(number_patches):
+            _, info = self.get_classed_patch()
+            frame = frame.append(info, ignore_index=1)
+        if mode == 'save':
+            filename = os.path.join(savedir, 'patchframe.pickle')
+            print('Saving patchframe to {}'.format(filename))
+            frame.to_pickle(filename)
+        elif mode == 'return':
+            return frame
