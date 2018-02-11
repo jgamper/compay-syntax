@@ -14,6 +14,6 @@ sampler = slide_sampler.Slide_Sampler(wsi_file=file, desired_downsampling=4, siz
 
 ###
 
-sampler.pickle_load_background_mask(file='./bgmask.pickle')
+sampler.pickle_load_background_mask(file='./Tumor_004_bgmask.pickle')
 sampler.save_background_mask_visualization()
 

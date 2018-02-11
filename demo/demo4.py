@@ -15,7 +15,7 @@ sampler = slide_sampler.Slide_Sampler(wsi_file=file, desired_downsampling=4, siz
 
 ###
 
-sampler.pickle_load_background_mask(file='./bgmask.pickle')
+sampler.pickle_load_background_mask(file='./Tumor_004_bgmask.pickle')
 
 sampler.add_annotation_mask(annotation_mask_file=mask_file)
 

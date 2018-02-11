@@ -237,7 +237,7 @@ class Slide_Sampler(object):
         """
         pickle_list = [self.background_mask, self.background_mask_level, self.background_mask_downsampling,
                        self.size_at_background_level]
-        filename = os.path.join(dir, 'bgmask.pickle')
+        filename = os.path.join(dir, self.fileID + '_bgmask.pickle')
         print('\nPickling background mask to {}'.format(filename))
         pickling_on = open(filename, 'wb')
         pickle.dump(pickle_list, pickling_on)

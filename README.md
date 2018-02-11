@@ -30,12 +30,19 @@ We can sample patches from the different classes:
 
 <img src='demo/class1_1.png' width='30%'/><img src='demo/class1_2.png' width='30%'/><img src='demo/class1_3.png' width='30%'/>
 
+We can also generate a basic **patchframe** with this class. A patchframe is defined as a datastructure containing coordinates of patches as well as metadata like the patch class and also the patch parent WSI, size, level. Note that the patches themselves are not stored! At present this is implemented with a pd.DataFrame and it is estimated that 100,000 could be represented in this way using a memory of only a few MB on disk.
 
+e.g.
 
+'''
+patchframe head:
+       w       h class                                             parent level size
+0  30900  119768     0  /home/peter/Dropbox/publish-final/WSI_sampler_...     2  256
+1  78691  170619     0  /home/peter/Dropbox/publish-final/WSI_sampler_...     2  256
+2  67651  158458     0  /home/peter/Dropbox/publish-final/WSI_sampler_...     2  256
+3  65468  156771     0  /home/peter/Dropbox/publish-final/WSI_sampler_...     2  256
+4  40402  115702     0  /home/peter/Dropbox/publish-final/WSI_sampler_...        2  256
 
+'''
 
-
-
-
-
-
+We can get hard copies of the patches in a patchframe for viewing with e.g. 'modules.utils.save_patchframe_patches()'.
