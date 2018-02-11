@@ -4,7 +4,7 @@
 
 This respository aims to develop a tool for sampling from Whole-Slide-Images (WSIs) in an efficient manner. By sampling we mean producing mini-batches of patches which can then be fed to e.g. machine learning algorithms. It aims to work with all WSIs that can be read by [openslide](https://github.com/openslide). Sample data for demos is available [here](https://www.dropbox.com/sh/khsvxpe568f77xm/AABqQYLb6SBonAe77tELccY8a?dl=0) (from [Camelyon 16](https://camelyon17.grand-challenge.org/) dataset).
 
-When sampling patches we would like to be able to assign a class label (e.g. a binary mask with normal==0 vs cancer==1). This is facilitated by adding a multi-resolution annotation mask. WSI annotations can be made efficiently with a program such as [ASAP](https://github.com/GeertLitjens/ASAP) and are often stored as xml files (see the [sample data](https://www.dropbox.com/sh/khsvxpe568f77xm/AABqQYLb6SBonAe77tELccY8a?dl=0) for example). These in turn can be converted to the multi-resolution annotation masks we want. *To do: Detail how to achieve this!*
+When sampling patches we would like to be able to assign a class label (e.g. a binary label with normal==0 vs cancer==1). This is facilitated by adding a multi-resolution annotation mask. WSI annotations can be made efficiently with a program such as [ASAP](https://github.com/GeertLitjens/ASAP) and are often stored as xml files (see the [sample data](https://www.dropbox.com/sh/khsvxpe568f77xm/AABqQYLb6SBonAe77tELccY8a?dl=0) for example). These in turn can be converted to the multi-resolution annotation masks we want. *To do: Detail how to achieve this!*
 
 Some features:
 
@@ -18,11 +18,11 @@ Used to sample patches from a WSI. We can generate a background mask or add a bi
 
 We can sample patches from the different classes:
 
-*class 0. 256x256 patches at 10X (downsampling of 4.0)*
+*class 0. 256x256 patches at 10X (downsampling of 4.0).* *To do: CHECK annotation as xml files seems to have multiple regions!?*
 
 <img src='demo/class0_1.png' width='30%'/><img src='demo/class0_2.png' width='30%'/><img src='demo/class0_3.png' width='30%'/>
 
-*class 1. 256x256 patches at 10X (downsampling of 4.0)* *To do: CHECK are these really cancer?!*
+*class 1. 256x256 patches at 10X (downsampling of 4.0).* *To do: CHECK are these really cancer?!*
 
 <img src='demo/class1_1.png' width='30%'/><img src='demo/class1_2.png' width='30%'/><img src='demo/class1_3.png' width='30%'/>
 
