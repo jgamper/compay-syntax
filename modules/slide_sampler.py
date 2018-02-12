@@ -259,9 +259,6 @@ class Slide_Sampler(object):
 
 
 def generate_background_mask(wsi, level):
-    """
-
-    """
     disk_radius = 10
     low_res = wsi.read_region(location=(0, 0), level=level, size=wsi.level_dimensions[level]).convert('RGB')
     low_res_numpy = np.asarray(low_res).copy()

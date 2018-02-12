@@ -16,12 +16,44 @@ from modules import utils
 
 class Single_Sampler(object):
 
-    def __init__(self, wsi_file, desired_downsampling, size, annotation_file=None, background_file=None):
+    def __init__(self, wsi_file, desired_downsampling, size, background_file=None, annotation_file=None):
         self.wsi_file = wsi_file
         self.desired_downsampling = desired_downsampling
         self.size = size
-        self.annotation_file = annotation_file
         self.background_file = background_file
+        self.annotation_file = annotation_file
 
+        self.fileID = os.path.splitext(os.path.basename(self.wsi_file))[0]
         self.wsi = openslide.OpenSlide(self.wsi_file)
-        self.level, self.downsampling = utils.get_level_and_downsampling(self.wsi, desired_downsampling)
+        self.level = utils.get_level(self.wsi, desired_downsampling)
+
+        if self.background_file is None:
+            # If level 0 is 40X then downsampling of 32 is 1.25X
+            self.background = NumpyBackround(self.wsi, desired_downsampling=32, threshold=4)
+        elif isinstance(self.background_file, str):
+            pickling_off = open(self.background_file, 'rb')
+            self.background = pickle.load(pickling_off)
+            if self.wsi.level_dimensions[self.background.level] != self.background.shape:
+                raise Exception('Error unpickling background mask')
+            pickling_off.close()
+
+        if self.annotation_file is not None:
+            self.annotation = openslide.OpenSlide(self.annotation_file)
+
+    def pickle_NumpyBackground(self, savedir=os.getcwd()):
+        if not isinstance(self.background, NumpyBackround):
+            raise Exception('Only call this method when using a NumpyBackground')
+        filename = os.path.join(savedir, self.fileID + '_NumpyBackground.pickle')
+        print('Pickling NumpyBackground to {}'.format(filename))
+        pickling_on = open(filename, 'wb')
+        pickle.dump(self.background, pickling_on)
+        pickling_on.close()
+
+
+###
+
+class NumpyBackround(object):
+
+    def __init__(self, parent_wsi, desired_downsampling, threshold):
+        self.level = utils.get_level(parent_wsi, desired_downsampling, threshold)
+        self.data = utils.generate_background_mask(parent_wsi, self.level)
