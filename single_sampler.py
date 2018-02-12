@@ -33,8 +33,7 @@ class Single_Sampler(object):
         elif isinstance(self.background_file, str):
             pickling_off = open(self.background_file, 'rb')
             self.background = pickle.load(pickling_off)
-            if self.wsi.level_dimensions[self.background.level] != self.background.shape:
-                raise Exception('Error unpickling background mask')
+            self.validate_NumpyBackground()
             pickling_off.close()
 
         if self.annotation_file is not None:
@@ -48,6 +47,12 @@ class Single_Sampler(object):
         pickling_on = open(filename, 'wb')
         pickle.dump(self.background, pickling_on)
         pickling_on.close()
+
+    def validate_NumpyBackground(self):
+        if self.wsi.level_dimensions[self.background.level][0] != self.background.data.shape[1]:
+            raise Exception('Error unpickling background mask')
+        if self.wsi.level_dimensions[self.background.level][1] != self.background.data.shape[0]:
+            raise Exception('Error unpickling background mask')
 
 
 ###

@@ -16,10 +16,19 @@ mask_file = os.path.join(data_dir, 'Tumor_004_mask.tif')
 
 ###
 
-sampler = single_sampler.Single_Sampler(wsi_file=file, desired_downsampling=4, size=256)
+# sampler = single_sampler.Single_Sampler(wsi_file=file, desired_downsampling=4, size=256)
+# sampler.pickle_NumpyBackground()
 
-mask = utils.generate_background_mask(sampler.wsi, level=5)
-np.save('./mask.npy',mask)
+###
+
+sampler = single_sampler.Single_Sampler(wsi_file=file, desired_downsampling=4, size=256,
+                                        background_file='./Tumor_004_NumpyBackground.pickle', annotation_file=mask_file)
+
+###
+
+
+# mask = utils.generate_background_mask(sampler.wsi, level=5)
+# np.save('./mask.npy',mask)
 
 # sampler.pickle_load_background_mask(file='./demo/Tumor_004_bgmask.pickle')
 # sampler.add_annotation_mask(annotation_mask_file=mask_file)
