@@ -13,11 +13,12 @@ data_dir = '/media/peter/HDD 1/datasets_peter/Camelyon16/Train/Tumor'
 
 file = os.path.join(data_dir, 'Tumor_004.tif')
 bg_dir = os.path.join(data_dir, 'Background')
+mask_dir = os.path.join(data_dir, 'Mask_Tumor')
 
 ###
 
 sampler = single_sampler.Single_Sampler(wsi_file=file, desired_downsampling=4, size=256, background_dir=bg_dir,
-                                        annotation_dir=None)
+                                        annotation_dir=mask_dir)
 
 ###
 

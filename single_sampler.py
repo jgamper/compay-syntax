@@ -16,7 +16,7 @@ from modules import utils
 
 class Single_Sampler(object):
 
-    def __init__(self, wsi_file, desired_downsampling, size, background_dir, annotation_dir):
+    def __init__(self, wsi_file, desired_downsampling, size, background_dir, annotation_dir, level0=40.):
         self.wsi_file = wsi_file
         self.desired_downsampling = desired_downsampling
         self.size = size
@@ -30,8 +30,9 @@ class Single_Sampler(object):
         truth, string = utils.string_in_directory(self.fileID, self.background_dir)
         if not truth:
             print('Background object not found. Generating now.')
-            self.background = NumpyBackround(self.wsi, desired_downsampling=32, threshold=4)
-            # If level 0 is 40X then downsampling of 32 is 1.25X
+            temp = int(level0 / 1.25)
+            self.background = NumpyBackround(self.wsi, desired_downsampling=temp, threshold=15)
+            print('Made background at {}X'.format(level0 / self.wsi.level_downsamples[self.background.level]))
             os.makedirs(self.background_dir, exist_ok=1)
             self.pickle_NumpyBackground(savedir=self.background_dir)
         elif truth:
@@ -40,6 +41,11 @@ class Single_Sampler(object):
             self.validate_NumpyBackground()
             pickling_off.close()
 
+        truth, string = utils.string_in_directory(self.fileID, self.annotation_dir)
+        if truth:
+            self.annotation = openslide.OpenSlide(string)
+        elif not truth:
+            self.annotation = None
 
     def pickle_NumpyBackground(self, savedir=os.getcwd()):
         if not isinstance(self.background, NumpyBackround):
