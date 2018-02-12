@@ -154,11 +154,11 @@ class Slide_Sampler(object):
         pil = Image.fromarray(thumb_wsi_numpy)
         pil.save(file_name)
 
-    def get_patch(self, with_info=0):
+    def get_patch(self):
         """
         Get a random patch from the WSI.
         Accept if over 90% is non-background.
-        *Also returns an info dict with w and h coordinates if with_info==1*.
+        *Also returns an info dict with w and h coordinates and other data needed for reading patch*.
         """
         done = 0
         while not done:
@@ -170,11 +170,8 @@ class Slide_Sampler(object):
             background_mask_patch = self.background_mask[i:i + self.size_at_background_level,
                                     j:j + self.size_at_background_level]
             if np.sum(background_mask_patch) / (self.size_at_background_level ** 2) > 0.9: done = 1
-        if not with_info:
-            return patch
-        elif with_info:
-            info = {'w': w, 'h': h}
-            return patch, info
+        info = {'w': w, 'h': h, 'parent': self.wsi_file, 'level': self.level, 'size': self.size}
+        return patch, info
 
     def get_classed_patch(self, patch_class=None, verbose=0):
         """
@@ -185,7 +182,7 @@ class Slide_Sampler(object):
         """
         done = 0
         while not done:
-            patch, info = self.get_patch(with_info=1)
+            patch, info = self.get_patch()
             w, h = info['w'], info['h']
             annotation_mask_patch = self.annotation_mask.read_region(location=(w, h), level=self.annotation_mask_level,
                                                                      size=(self.size, self.size)).convert('L')
@@ -197,9 +194,6 @@ class Slide_Sampler(object):
             if np.sum(annotation_mask_patch_numpy) / area > 0.9 and (patch_class == None or patch_class == 1):
                 info['class'] = 1
                 done = 1
-        info['parent'] = self.wsi_file
-        info['level'] = self.level
-        info['size'] = self.size
         if verbose: print('\nFound patch with class {}'.format(info['class']))
         return patch, info
 
