@@ -36,7 +36,7 @@
 
 <!-- ``` -->
 <!-- patchframe head: -->
-       <!-- w       h class                                             parent level size -->
+        <!-- w       h class                                             parent level size -->
 <!-- 0  30900  119768     0  /home/peter/Dropbox/publish-final/WSI_sampler_...     2  256 -->
 <!-- 1  78691  170619     0  /home/peter/Dropbox/publish-final/WSI_sampler_...     2  256 -->
 <!-- 2  67651  158458     0  /home/peter/Dropbox/publish-final/WSI_sampler_...     2  256 -->
