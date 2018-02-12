@@ -52,6 +52,9 @@ class Slide_Sampler(object):
 
         # Parameters
         mri: A multi-resolution-image OpenSlide object
+
+        # Returns
+        tuple: level, downsampling
         """
         diffs = [abs(desired_downsampling - mri.level_downsamples[i]) for i in
                  range(len(mri.level_downsamples))]
@@ -141,12 +144,12 @@ class Slide_Sampler(object):
         """
         file_name = os.path.join(dir, self.fileID + '_annotation.png')
         print('\nSaving annotation thumbnail to {}'.format(file_name))
-        thumb = self.annotation_mask.get_thumbnail(size=(1500, 1500)).convert('L')
+        thumb_annotation = self.annotation_mask.get_thumbnail(size=(1500, 1500)).convert('L')
         thumb_wsi = self.wsi.get_thumbnail(size=(1500, 1500))
-        thumb_numpy = self.check_patch(np.asarray(thumb).copy())
+        thumb_annotation_numpy = self.force_patch_float01(np.asarray(thumb_annotation).copy())
         thumb_wsi_numpy = np.asarray(thumb_wsi).copy()
-        dilated = dilation(thumb_numpy, disk(5))
-        contour = np.logical_xor(thumb_numpy, dilated).astype(np.bool)
+        dilated = dilation(thumb_annotation_numpy, disk(5))
+        contour = np.logical_xor(thumb_annotation_numpy, dilated).astype(np.bool)
         thumb_wsi_numpy[contour] = 0
         pil = Image.fromarray(thumb_wsi_numpy)
         pil.save(file_name)
@@ -186,7 +189,7 @@ class Slide_Sampler(object):
             w, h = info['w'], info['h']
             annotation_mask_patch = self.annotation_mask.read_region(location=(w, h), level=self.annotation_mask_level,
                                                                      size=(self.size, self.size)).convert('L')
-            annotation_mask_patch_numpy = self.check_patch(np.asarray(annotation_mask_patch).copy())
+            annotation_mask_patch_numpy = self.force_patch_float01(np.asarray(annotation_mask_patch).copy())
             area = self.size ** 2
             if np.sum(annotation_mask_patch_numpy) / area < 0.1 and (patch_class == None or patch_class == 0):
                 info['class'] = 0
@@ -222,7 +225,8 @@ class Slide_Sampler(object):
         else:
             return x * self.wsi.level_downsamples[lvl_in] / self.wsi.level_downsamples[lvl_out]
 
-    def check_patch(self, x):
+    @staticmethod
+    def force_patch_float01(x):
         """
         Divide by 255.0 if x.max > 1.0. And ensure float.
         """
