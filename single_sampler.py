@@ -16,28 +16,30 @@ from modules import utils
 
 class Single_Sampler(object):
 
-    def __init__(self, wsi_file, desired_downsampling, size, background_file=None, annotation_file=None):
+    def __init__(self, wsi_file, desired_downsampling, size, background_dir, annotation_dir):
         self.wsi_file = wsi_file
         self.desired_downsampling = desired_downsampling
         self.size = size
-        self.background_file = background_file
-        self.annotation_file = annotation_file
+        self.background_dir = background_dir
+        self.annotation_dir = annotation_dir
 
         self.fileID = os.path.splitext(os.path.basename(self.wsi_file))[0]
         self.wsi = openslide.OpenSlide(self.wsi_file)
         self.level = utils.get_level(self.wsi, desired_downsampling)
 
-        if self.background_file is None:
-            # If level 0 is 40X then downsampling of 32 is 1.25X
+        truth, string = utils.string_in_directory(self.fileID, self.background_dir)
+        if not truth:
+            print('Background object not found. Generating now.')
             self.background = NumpyBackround(self.wsi, desired_downsampling=32, threshold=4)
-        elif isinstance(self.background_file, str):
-            pickling_off = open(self.background_file, 'rb')
+            # If level 0 is 40X then downsampling of 32 is 1.25X
+            os.makedirs(self.background_dir, exist_ok=1)
+            self.pickle_NumpyBackground(savedir=self.background_dir)
+        elif truth:
+            pickling_off = open(string, 'rb')
             self.background = pickle.load(pickling_off)
             self.validate_NumpyBackground()
             pickling_off.close()
 
-        if self.annotation_file is not None:
-            self.annotation = openslide.OpenSlide(self.annotation_file)
 
     def pickle_NumpyBackground(self, savedir=os.getcwd()):
         if not isinstance(self.background, NumpyBackround):

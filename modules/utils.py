@@ -9,6 +9,17 @@ import numpy as np
 from skimage import filters, color
 from skimage.morphology import disk
 from skimage.morphology import opening, closing
+import glob
+
+
+def string_in_directory(s, dir):
+    if not os.path.isdir(dir):
+        return 0, 'Not a directory'
+    files_in_dir = glob.glob(os.path.join(dir, '*'))
+    for file in files_in_dir:
+        if s in file:
+            return 1, file
+    return 0, 'Not found'
 
 
 def get_level(OpenSlide, desired_downsampling, threshold=0.01):
@@ -61,10 +72,10 @@ def save_patchframe_patches(input, save_dir):
     elif isinstance(input, str):
         patchframe = pd.read_pickle(input)
     else:
-        raise Exception('\nInput should be patchframe (pd.DataFrame) or string path to pickled patchframe.')
+        raise Exception('Input should be patchframe (pd.DataFrame) or string path to pickled patchframe.')
     os.makedirs(save_dir, exist_ok=1)
     num_patches = patchframe.shape[0]
-    print('\nSaving hard copies of patches in patchframe to {}'.format(save_dir))
+    print('Saving hard copies of patches in patchframe to {}'.format(save_dir))
     for i in range(num_patches):
         info = patchframe.ix[i]
         patch = get_patch_from_info_dict(info)

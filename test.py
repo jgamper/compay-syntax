@@ -9,20 +9,15 @@ import openslide
 
 ###
 
-data_dir = '/home/peter/Dropbox/publish-final/WSI_sampler_data'
+data_dir = '/media/peter/HDD 1/datasets_peter/Camelyon16/Train/Tumor'
 
 file = os.path.join(data_dir, 'Tumor_004.tif')
-mask_file = os.path.join(data_dir, 'Tumor_004_mask.tif')
+bg_dir = os.path.join(data_dir, 'Background')
 
 ###
 
-# sampler = single_sampler.Single_Sampler(wsi_file=file, desired_downsampling=4, size=256)
-# sampler.pickle_NumpyBackground()
-
-###
-
-sampler = single_sampler.Single_Sampler(wsi_file=file, desired_downsampling=4, size=256,
-                                        background_file='./Tumor_004_NumpyBackground.pickle', annotation_file=mask_file)
+sampler = single_sampler.Single_Sampler(wsi_file=file, desired_downsampling=4, size=256, background_dir=bg_dir,
+                                        annotation_dir=None)
 
 ###
 
