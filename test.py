@@ -1,11 +1,5 @@
 import os
-from modules import utils
-import single_sampler
-import pandas as pd
-import numpy as np
-import pickle
-
-import openslide
+from modules import single_sampler
 
 ###
 

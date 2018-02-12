@@ -1,5 +1,6 @@
 import os
-from modules import slide_sampler, utils
+from modules import utils
+from ztrash import slide_sampler
 import pandas as pd
 
 ###

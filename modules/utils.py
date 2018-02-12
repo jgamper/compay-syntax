@@ -22,7 +22,7 @@ def string_in_directory(s, dir):
     return 0, 'Not found'
 
 
-def get_level(OpenSlide, desired_downsampling, threshold=0.01):
+def get_level(OpenSlide, desired_downsampling, threshold):
     number_levels = len(OpenSlide.level_downsamples)
     diffs = [abs(desired_downsampling - OpenSlide.level_downsamples[i]) for i in range(number_levels)]
     minimum = min(diffs)
@@ -49,24 +49,13 @@ def generate_background_mask(wsi, level):
     return mask
 
 
-def read_annotation(tif_file):
-    pass
-
-
 def get_patch_from_info_dict(info):
-    """
-    Get a RGB PIL image from a patch info dict
-    """
     slide = openslide.OpenSlide(info['parent'])
     patch = slide.read_region(location=(info['w'], info['h']), level=info['level'], size=(info['size'], info['size']))
     return patch.convert('RGB')
 
 
-def save_patchframe_patches(input, save_dir):
-    """
-    For viewing hard copies of the patches in a patch frame.
-    **Input should be a patchframe or a path to a pickled patchframe**.
-    """
+def save_patchframe_patches(input, save_dir=os.path.join(os.getcwd(), 'patches')):
     if isinstance(input, pd.DataFrame):
         patchframe = input
     elif isinstance(input, str):
