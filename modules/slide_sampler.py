@@ -30,7 +30,7 @@ class Slide_Sampler(object):
 
     """
 
-    def __init__(self, wsi_file, desired_downsampling, size):
+    def __init__(self, wsi_file, desired_downsampling, size, annotation_file=None, background_file=None):
         self.wsi_file = wsi_file
         self.fileID = os.path.splitext(os.path.basename(self.wsi_file))[0]
         self.wsi = openslide.OpenSlide(self.wsi_file)
@@ -44,29 +44,29 @@ class Slide_Sampler(object):
                                                                                                         self.downsampling,
                                                                                                         self.size))
 
-    def get_level_and_downsampling(self, mri, desired_downsampling, threshold):
+    def get_level_and_downsampling(self, multi_resolution_image, desired_downsampling, threshold):
         """
         Get the level and downsampling for a desired downsampling.
         A threshold is used to allow for not exactly equal desired and true downsampling.
         If an appropriate level is not found an exception is raised.
 
         # Parameters
-        mri: A multi-resolution-image OpenSlide object
+        multi_resolution_image: A multi-resolution-image OpenSlide object
 
         # Returns
         tuple: level, downsampling
         """
-        diffs = [abs(desired_downsampling - mri.level_downsamples[i]) for i in
-                 range(len(mri.level_downsamples))]
+        diffs = [abs(desired_downsampling - multi_resolution_image.level_downsamples[i]) for i in
+                 range(len(multi_resolution_image.level_downsamples))]
         minimum = min(diffs)
         if minimum > threshold:
             raise Exception(
                 '\nLevel not found for desired downsampling.\nAvailable downsampling factors are\n{}'.format(
-                    mri.level_downsamples))
+                    multi_resolution_image.level_downsamples))
         level = diffs.index(minimum)
-        return level, mri.level_downsamples[level]
+        return level, multi_resolution_image.level_downsamples[level]
 
-    def generate_background_mask(self, desired_downsampling=32, threshold=4, disk_radius=10):
+    def generate_background_mask(self, desired_downsampling=32, threshold=0.1, disk_radius=10):
         """
         Generate a *background mask* (np.ndarray). That is a binary (0.0 vs 1.0), downsampled image where 1.0 denotes a tissue region.
         This is achieved by otsu thresholding on the saturation channel followed by morphological closing and opening to remove noise.
@@ -82,16 +82,7 @@ class Slide_Sampler(object):
         print('\nGenerating background mask.')
         self.background_mask_level, self.background_mask_downsampling = self.get_level_and_downsampling(
             self.wsi, desired_downsampling, threshold)
-        low_res = self.wsi.read_region(location=(0, 0), level=self.background_mask_level,
-                                       size=self.wsi.level_dimensions[self.background_mask_level]).convert('RGB')
-        low_res_numpy = np.asarray(low_res).copy()
-        low_res_numpy_hsv = color.convert_colorspace(low_res_numpy, 'RGB', 'HSV')
-        saturation = low_res_numpy_hsv[:, :, 1]
-        thesh1 = filters.threshold_otsu(saturation)
-        high_saturation = (saturation > thesh1)
-        selem = disk(disk_radius)
-        mask = closing(high_saturation, selem)
-        mask = opening(mask, selem)
+
         self.background_mask = mask.astype(np.float32)
         self.size_at_background_level = self.level_converter(self.size, self.level, self.background_mask_level)
         print('Generated background mask at level {} (downsampling of {})'.format(self.background_mask_level,
@@ -105,7 +96,7 @@ class Slide_Sampler(object):
         self.annotation_mask_file = annotation_mask_file
         self.annotation_mask = openslide.OpenSlide(self.annotation_mask_file)
         self.annotation_mask_level, self.annotation_mask_downsampling = self.get_level_and_downsampling(
-            mri=self.annotation_mask,
+            multi_resolution_image=self.annotation_mask,
             desired_downsampling=self.desired_downsampling,
             threshold=0.1)
         eps = 1e-3
@@ -265,3 +256,22 @@ class Slide_Sampler(object):
             print('Saving patchframe to {}'.format(filename))
             frame.to_pickle(filename)
         return frame
+
+
+def generate_background_mask(wsi, level):
+    """
+
+    """
+    disk_radius = 10
+    low_res = wsi.read_region(location=(0, 0), level=level, size=wsi.level_dimensions[level]).convert('RGB')
+    low_res_numpy = np.asarray(low_res).copy()
+    low_res_numpy_hsv = color.convert_colorspace(low_res_numpy, 'RGB', 'HSV')
+    saturation = low_res_numpy_hsv[:, :, 1]
+    theshold = filters.threshold_otsu(saturation)
+    high_saturation = (saturation > theshold)
+    disk_object = disk(disk_radius)
+    mask = closing(high_saturation, disk_object)
+    mask = opening(mask, disk_object)
+    if mask.dtype != bool:
+        raise Exception('\nBackground mask not boolean')
+    return mask

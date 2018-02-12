@@ -7,6 +7,19 @@ import os
 import openslide
 
 
+def get_level_and_downsampling(OpenSlide, desired_downsampling):
+    threshold = 0.1
+    number_levels = len(OpenSlide.level_downsamples)
+    diffs = [abs(desired_downsampling - OpenSlide.level_downsamples[i]) for i in range(number_levels)]
+    minimum = min(diffs)
+    if minimum > threshold:
+        raise Exception('\n\nLevel not found for desired downsampling\nAvailable downsampling levels are:\n{}'.format(
+            OpenSlide.level_downsamples))
+    level = diffs.index(minimum)
+    downsampling = OpenSlide.level_downsamples[level]
+    return level, downsampling
+
+
 def get_patch_from_info_dict(info):
     """
     Get a RGB PIL image from a patch info dict
