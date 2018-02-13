@@ -16,7 +16,6 @@ from modules import utils
 
 class Single_Sampler(object):
     """
-    # Parameters
     :param wsi_file: path to a WSI file
     :param background_dir: directory where we do/will store background masks (NumpyBackground objects)
     :param annotation_dir: directory where we keep annotations
@@ -25,7 +24,6 @@ class Single_Sampler(object):
 
     def __init__(self, wsi_file, background_dir, annotation_dir, level0=40.):
         """
-        # Parameters
         :param wsi_file: path to a WSI file
         :param background_dir: directory where we do/will store background masks (NumpyBackground objects)
         :param annotation_dir: directory where we keep annotations
@@ -63,7 +61,6 @@ class Single_Sampler(object):
 
     def prepare_sampling(self, desired_downsampling, patchsize):
         """
-        # Parameters
         :param desired_downsampling: the desired downsampling. E.g. if level 0 is 40X then a downsampling of 4 is 10X.
         :param patchsize: sample patches of size patchsize x patchsize
         """
@@ -121,12 +118,8 @@ class Single_Sampler(object):
     def class_c_patch_i(self, c, i):
         """
         Try and get the ith patch of class c. If we reject return (None, None).
-
-        # Parameters
         :param c: class
         :param i: index
-
-        # Returns
         :return: (patch, info_dict) or (None, None) if we reject patch.
         """
         idx = self.class_list.index(c)
@@ -168,8 +161,6 @@ class Single_Sampler(object):
     def sample_patches(self, max_per_class=100, savedir=os.getcwd(), verbose=0):
         """
         Sample patches and save in a patchframe
-
-        # Parameters
         :param max_per_class: maximum number of patches per class
         :param savedir: where to save patchframe
         :param verbose: report number of rejected patches?
@@ -194,8 +185,6 @@ class Single_Sampler(object):
     def pickle_NumpyBackground(self, savedir=os.getcwd()):
         """
         Save (pickle) the NumpyBackground object
-
-        # Parameters
         :param savedir: where to save to
         """
         if not isinstance(self.background, NumpyBackround):
@@ -218,8 +207,6 @@ class Single_Sampler(object):
     def level_converter(self, x, lvl_in, lvl_out):
         """
         Convert a length/coordinate 'x' from lvl_in to lvl_out
-
-        # Parameters
         :param x: a length/coordinate
         :param lvl_in: level to convert from
         :param lvl_out: level to convert to
@@ -232,8 +219,6 @@ class Single_Sampler(object):
     def save_background_visualization(self, savedir=os.getcwd()):
         """
         Save a visualization of the background mask
-
-        # Parameters
         :param savedir: where to save to
         """
         size = 3000
@@ -257,8 +242,6 @@ class Single_Sampler(object):
     def save_annotation_visualization(self, savedir=os.getcwd()):
         """
         Save a visualization of the annotation
-
-        # Parameters
         :param savedir: where to save to
         """
         size = 3000
