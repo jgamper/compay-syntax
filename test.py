@@ -1,5 +1,6 @@
 import os
 import pickle
+import time
 from modules import single_sampler
 
 ###
@@ -33,5 +34,3 @@ frame = pickle.load(pickling_off)
 pickling_off.close()
 
 print(frame.head(n=10))
-
-

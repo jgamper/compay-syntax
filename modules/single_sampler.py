@@ -128,7 +128,7 @@ class Single_Sampler(object):
         background_patch = self.background.data[i:i + self.background.patchsize, j:j + self.background.patchsize]
         background_patch = background_patch.astype(int)
         if np.sum(background_patch) / (self.background.patchsize ** 2) < 0.9:
-            print('Patch rejected. Too much background.')
+            # print('Patch rejected. Too much background.')
             return None, None
 
         annotation_patch = self.annotation.read_region((w, h), self.annotation_level, (self.patchsize, self.patchsize))
@@ -136,7 +136,7 @@ class Single_Sampler(object):
         annotation_patch = np.asarray(annotation_patch).copy()
         mask = (annotation_patch != seedclass).astype(int)
         if np.sum(mask) / (self.patchsize ** 2) > 0.9:
-            print('Patch rejected. Too much of other classes.')
+            # print('Patch rejected. Too much of other classes.')
             return None, None
 
         info = {
