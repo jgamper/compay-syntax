@@ -115,7 +115,8 @@ class Single_Sampler(object):
             'parent': self.wsi_file,
             'size': self.patchsize,
             'level': self.level,
-            'class': c
+            'class': c,
+            'id': self.fileID
         }
 
         if self.annotation is None:
@@ -132,7 +133,7 @@ class Single_Sampler(object):
         return patch, info
 
     def sample_patches(self, max_per_class=100, savedir=os.getcwd(), verbose=0):
-        frame = pd.DataFrame(data=None, columns=['w', 'h', 'class', 'parent', 'level', 'size'])
+        frame = pd.DataFrame(data=None, columns=['id', 'w', 'h', 'class', 'level', 'size', 'parent'])
 
         for i, c in enumerate(self.class_list):
             seeds = self.class_seeds[i]

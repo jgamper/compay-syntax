@@ -64,9 +64,9 @@ def save_patchframe_patches(input, save_dir=os.path.join(os.getcwd(), 'patches')
         raise Exception('Input should be patchframe (pd.DataFrame) or string path to pickled patchframe.')
     os.makedirs(save_dir, exist_ok=1)
     num_patches = patchframe.shape[0]
-    print('Saving hard copies of patches in patchframe to {}'.format(save_dir))
+    print('\nSaving hard copies of patches in patchframe to {}'.format(save_dir))
     for i in range(num_patches):
         info = patchframe.ix[i]
         patch = get_patch_from_info_dict(info)
-        filename = os.path.join(save_dir, 'patch{}.png'.format(i))
+        filename = os.path.join(save_dir, 'p{}_class_{}_from_{}.png'.format(i, info['class'], info['id']))
         patch.save(filename)

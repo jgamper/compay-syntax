@@ -11,7 +11,7 @@ data_dir = '/home/peter/Dropbox/publish-final/WSI_sampler_data'
 
 files = glob.glob(os.path.join(data_dir, '*.tif'))
 
-bg_dir = os.path.join(data_dir, 'background')
+bg_dir = './backgrounds'
 mask_dir = os.path.join(data_dir, 'annotation')
 
 ###
