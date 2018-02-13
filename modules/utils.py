@@ -15,9 +15,11 @@ import glob
 def string_in_directory(s, dir):
     """
     Is a string in a filename in the given directory?
+
     # Parameters
     :param s: string
     :param dir: directory
+
     # Returns
     :return: (bool, string)
     """
@@ -33,10 +35,12 @@ def string_in_directory(s, dir):
 def get_level(OpenSlide, desired_downsampling, threshold):
     """
     Get the level for a desired downsampling. Threshold controls how close true and desired downsampling must be.
+
     # Parameters
     :param OpenSlide:
     :param desired_downsampling:
     :param threshold:
+
     # Returns
     :return: level
     """
@@ -54,6 +58,7 @@ def generate_background_mask(wsi, level):
     """
     Generate a background mask.
     This is achieved by otsu thresholding on the saturation channel followed by morphological closing and opening to remove noise.
+
     # Parameters
     :param wsi:
     :param level:
@@ -77,8 +82,10 @@ def generate_background_mask(wsi, level):
 def get_patch_from_info_dict(info):
     """
     Get a patch from an info dict
+
     # Parameters
     :param info: info dict
+
     # Returns
     :return: patch (PIL image)
     """
@@ -90,6 +97,7 @@ def get_patch_from_info_dict(info):
 def save_patchframe_patches(input, save_dir=os.path.join(os.getcwd(), 'patches')):
     """
     Save patches in a patchframe to disk for visualization
+
     # Parameters
     :param input: patchframe or pickled patchframe
     :param save_dir: where to save to

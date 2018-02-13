@@ -121,6 +121,7 @@ class Single_Sampler(object):
     def class_c_patch_i(self, c, i):
         """
         Try and get the ith patch of class c. If we reject return (None, None).
+
         # Parameters
         :param c: class
         :param i: index
@@ -167,6 +168,7 @@ class Single_Sampler(object):
     def sample_patches(self, max_per_class=100, savedir=os.getcwd(), verbose=0):
         """
         Sample patches and save in a patchframe
+
         # Parameters
         :param max_per_class: maximum number of patches per class
         :param savedir: where to save patchframe
@@ -192,6 +194,7 @@ class Single_Sampler(object):
     def pickle_NumpyBackground(self, savedir=os.getcwd()):
         """
         Save (pickle) the NumpyBackground object
+
         # Parameters
         :param savedir: where to save to
         """
@@ -215,6 +218,7 @@ class Single_Sampler(object):
     def level_converter(self, x, lvl_in, lvl_out):
         """
         Convert a length/coordinate 'x' from lvl_in to lvl_out
+
         # Parameters
         :param x: a length/coordinate
         :param lvl_in: level to convert from
@@ -228,6 +232,7 @@ class Single_Sampler(object):
     def save_background_visualization(self, savedir=os.getcwd()):
         """
         Save a visualization of the background mask
+
         # Parameters
         :param savedir: where to save to
         """
@@ -252,6 +257,7 @@ class Single_Sampler(object):
     def save_annotation_visualization(self, savedir=os.getcwd()):
         """
         Save a visualization of the annotation
+
         # Parameters
         :param savedir: where to save to
         """
@@ -287,37 +293,3 @@ class NumpyBackround(object):
     def add_patchsize(self, x):
         self.patchsize = x
 
-###
-
-# class SeedObject(object):
-#
-#     def __init__(self, wsi, npBackground, annotation, level0):
-#         mask = npBackground.data
-#         nonzero = np.nonzero(mask)
-#         factor = wsi.level_downsamples[npBackground.level]
-#         N = nonzero[0].shape[0]
-#         coordinates = [(int(nonzero[0][i] * factor), int(nonzero[1][i] * factor)) for i in range(N)]
-#         shuffle(coordinates)
-#         self.class_list = [0]
-#         self.class_seeds = [coordinates]
-#
-#         if annotation is None:
-#             return
-#
-#         down = int(level0 / 2.5)
-#         level = utils.get_level(annotation, desired_downsampling=down, threshold=20)
-#         annotation_low_res = annotation.read_region((0, 0), level, annotation.level_dimensions[level])
-#         annotation_low_res = annotation_low_res.convert('L')
-#         annotation_low_res = np.asarray(annotation_low_res).copy()
-#         classes = sorted(list(np.unique(annotation_low_res)))
-#         assert classes[0] == 0
-#         classes = classes[1:]
-#         for c in classes:
-#             mask = (annotation_low_res == c)
-#             nonzero = np.nonzero(mask)
-#             factor = annotation.level_downsamples[level]
-#             N = nonzero[0].shape[0]
-#             coordinates = [(int(nonzero[0][i] * factor), int(nonzero[1][i] * factor)) for i in range(N)]
-#             shuffle(coordinates)
-#             self.class_list.append(c)
-#             self.class_seeds.append(coordinates)
