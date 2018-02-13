@@ -166,17 +166,19 @@ class Single_Sampler(object):
         return int(x * self.wsi.level_downsamples[lvl_in] / self.wsi.level_downsamples[lvl_out])
 
     def save_background_visualization(self, savedir=os.getcwd()):
+        size = 3000
+        os.makedirs(savedir, exist_ok=1)
         file_name = os.path.join(savedir, self.fileID + '_background.png')
         print('\nSaving background visualization to {}'.format(file_name))
 
-        bg = Image.fromarray(self.background.data.astype(int)) # a resize hack...
-        bg.thumbnail(size=(1500, 1500))
+        bg = Image.fromarray(self.background.data.astype(float))  # a resize hack...
+        bg.thumbnail(size=(size, size))
         bg = np.asarray(bg).copy()
 
         dilated = dilation(bg, disk(10))
         contour = np.logical_xor(dilated, bg).astype(np.bool)
 
-        wsi_thumb = np.asarray(self.wsi.get_thumbnail(size=(1500, 1500))).copy()
+        wsi_thumb = np.asarray(self.wsi.get_thumbnail(size=(size, size))).copy()
         wsi_thumb[contour] = 0
 
         pil = Image.fromarray(wsi_thumb)
