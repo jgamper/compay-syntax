@@ -5,16 +5,16 @@ single_sampler module
 import openslide
 import os
 import numpy as np
-from skimage.morphology import opening, dilation, closing, disk
-from PIL import Image
 import pickle
 import pandas as pd
+from random import shuffle
+
 from modules import utils
 
 
 class Single_Sampler(object):
 
-    def __init__(self, wsi_file, background_dir, annotation_dir, level0=40.):
+    def __init__(self, wsi_file, background_dir, annotation_dir=None, level0=40.):
         self.wsi_file = wsi_file
         self.background_dir = background_dir
         self.annotation_dir = annotation_dir
@@ -61,21 +61,24 @@ class Single_Sampler(object):
             self.class_seeds = None
             self.classes = None
         else:
-            down = int(self.level0 / 2.5)
-            # annotation must have same level 0 as wsi
+            down = int(self.level0 / 2.5) # annotation must have same level 0 as wsi
             temp_level = utils.get_level(self.annotation, desired_downsampling=down, threshold=15)
             downsample = self.annotation.level_downsamples[temp_level]
             low_res = self.annotation.read_region((0, 0), temp_level,
                                                   self.annotation.level_dimensions[temp_level]).convert('L')
             low_res = np.asarray(low_res).copy()
-            classes = set(np.unique(low_res))
-            classes = classes - {0}
+            classes = sorted(list(np.unique(low_res)))
+            if classes[0] == 0:
+                classes = classes[1:]
+            else:
+                raise Exception('Unannotated regions should have class 0')
             class_seeds = []
             for c in classes:
                 mask = (low_res == c)
                 nonzero = np.nonzero(mask)
                 coordinates = [(int(nonzero[0][i] * downsample), int(nonzero[1][i] * downsample)) for i in
                                range(nonzero[0].shape[0])]
+                shuffle(coordinates) # inplace
                 class_seeds.append(coordinates)
             self.class_seeds = class_seeds
             self.classes = classes
