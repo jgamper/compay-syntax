@@ -50,6 +50,8 @@ class Single_Sampler(object):
         self.desired_downsampling = desired_downsampling
         self.patchsize = patchsize
         self.level = utils.get_level(self.wsi, self.desired_downsampling, threshold=0.01)
+        background_patchsize = self.level_converter(self.patchsize, self.level, self.background.level)
+        self.background.add_patchsize(background_patchsize)
         if self.annotation is not None:
             self.annotation_level = utils.get_level(self.annotation, self.desired_downsampling, threshold=0.01)
         self.get_seeds()
@@ -61,7 +63,7 @@ class Single_Sampler(object):
             self.class_seeds = None
             self.classes = None
         else:
-            down = int(self.level0 / 2.5) # annotation must have same level 0 as wsi
+            down = int(self.level0 / 2.5)  # annotation must have same level 0 as wsi
             temp_level = utils.get_level(self.annotation, desired_downsampling=down, threshold=15)
             downsample = self.annotation.level_downsamples[temp_level]
             low_res = self.annotation.read_region((0, 0), temp_level,
@@ -78,7 +80,7 @@ class Single_Sampler(object):
                 nonzero = np.nonzero(mask)
                 coordinates = [(int(nonzero[0][i] * downsample), int(nonzero[1][i] * downsample)) for i in
                                range(nonzero[0].shape[0])]
-                shuffle(coordinates) # inplace
+                shuffle(coordinates)  # inplace
                 class_seeds.append(coordinates)
             self.class_seeds = class_seeds
             self.classes = classes
@@ -88,13 +90,13 @@ class Single_Sampler(object):
         while not done:
             w = np.random.choice(self.width_available)
             h = np.random.choice(self.height_available)
-            patch = self.wsi.read_region(location=(w, h), level=self.level, size=(self.patchsize, self.patchsize))
+            patch = self.wsi.read_region((w, h), self.level, (self.patchsize, self.patchsize))
             patch = patch.convert('RGB')
             i = self.level_converter(h, 0, self.background.level)
             j = self.level_converter(w, 0, self.background.level)
-            background_patchsize = self.level_converter(self.patchsize, self.level, self.background.level)
-            background_patch = self.background.data[i:i + background_patchsize, j:j + background_patchsize].astype(int)
-            if np.sum(background_patch) / (background_patchsize ** 2) > 0.9:
+            background_patch = self.background.data[i:i + self.background.patchsize, j:j + self.background.patchsize]
+            background_patch = background_patch.astype(int)
+            if np.sum(background_patch) / (self.background.patchsize ** 2) > 0.9:
                 done = 1
         info = {'w': w, 'h': h, 'parent': self.wsi_file, 'level': self.level, 'size': self.patchsize}
         return patch, info
@@ -104,23 +106,51 @@ class Single_Sampler(object):
             patch, info = self.get_random_patch()
             info['class'] = 0
             return patch, info
-        else:
-            done = 0
-            while not done:
-                patch, info = self.get_random_patch()
-                w, h = info['w'], info['h']
-                annotation_patch = self.annotation.read_region(location=(w, h), level=self.annotation_level,
-                                                               size=(self.patchsize, self.patchsize))
-                annotation_patch = annotation_patch.convert('L')
-                annotation_patch = np.asarray(annotation_patch).copy()
-                annotation_patch = (annotation_patch > 0).astype(int)
-                if np.sum(annotation_patch) / (self.patchsize ** 2) < 0.1:
-                    info['class'] = 0
-                    done = 1
-            return patch, info
+        done = 0
+        while not done:
+            patch, info = self.get_random_patch()
+            w, h = info['w'], info['h']
+            annotation_patch = self.annotation.read_region((w, h), self.annotation_level,
+                                                           (self.patchsize, self.patchsize))
+            annotation_patch = annotation_patch.convert('L')
+            annotation_patch = np.asarray(annotation_patch).copy()
+            annotation_patch = (annotation_patch > 0).astype(int)
+            if np.sum(annotation_patch) / (self.patchsize ** 2) < 0.1:
+                info['class'] = 0
+                done = 1
+        return patch, info
+
+    def try_seed(self, seed, seedclass):
+        h, w = seed
+        patch = self.wsi.read_region((w, h), self.level, (self.patchsize, self.patchsize))
+        patch = patch.convert('RGB')
+
+        i = self.level_converter(h, 0, self.background.level)
+        j = self.level_converter(w, 0, self.background.level)
+        background_patch = self.background.data[i:i + self.background.patchsize, j:j + self.background.patchsize]
+        background_patch = background_patch.astype(int)
+        if np.sum(background_patch) / (self.background.patchsize ** 2) < 0.9:
+            return None, None
+
+        annotation_patch = self.annotation.read_region((w, h), self.annotation_level, (self.patchsize, self.patchsize))
+        annotation_patch = annotation_patch.convert('L')
+        annotation_patch = np.asarray(annotation_patch).copy()
+        mask = (annotation_patch != seedclass).astype(int)
+        if np.sum(mask) / (self.patchsize ** 2) > 0.9:
+            return None, None
+
+        info = {
+            'w': w,
+            'h': h,
+            'parent': self.wsi_file,
+            'size': self.patchsize,
+            'level': self.level,
+            'class': seedclass
+        }
+        return patch, info
 
     def sample_patches(self, max_per_class=1000):
-        pass
+
 
     def pickle_NumpyBackground(self, savedir=os.getcwd()):
         if not isinstance(self.background, NumpyBackround):
@@ -148,3 +178,6 @@ class NumpyBackround(object):
     def __init__(self, parent_wsi, approx_downsampling, threshold=15):
         self.level = utils.get_level(parent_wsi, desired_downsampling=approx_downsampling, threshold=threshold)
         self.data = utils.generate_background_mask(parent_wsi, self.level)
+
+    def add_patchsize(self, x):
+        self.patchsize = x
