@@ -13,7 +13,7 @@
 
 Sampling is achieved through a `Single_Sampler` object, which is implemented in the module `single_sampler.py`. We first build an object:
 
-`sampler = single_sampler.Single_Sampler(wsi_file, background_dir, annotation_dir, level0)`
+`sampler = single_sampler.Single_Sampler(wsi_file, background_dir, annotation_dir, level0=40.)`
 
 where
 
@@ -41,7 +41,7 @@ where
 - `savedir` : location to save output patchframe
 - `verbose` : (bool) report number of rejected patches?
 
-The sampled patches are saved to `savedir` in the form of a *patchframe*. A patchframe is defined as a datastructure containing coordinates of patches as well as metadata like the patch class and also the patch parent WSI, size, level. This is implemented with a pd.DataFrame. Note that the patches themselves are not stored! Using this database of patches we can then pass patches to a machine learning algorithm.
+The sampled patches are saved to `savedir` in the form of a *patchframe*. A patchframe is defined as a datastructure containing coordinates of patches as well as metadata like the patch class and also the patch parent WSI, size, level. This is implemented with a [pandas](https://pandas.pydata.org/) pd.DataFrame. Note that the patches themselves are not stored! Using this database of patches we can then pass patches to a machine learning algorithm.
 
 e.g.
 
@@ -57,7 +57,9 @@ patchframe head:
 
 # Background generation
 
-The background mask is stored as a downsampled, boolean numpy array where True denotes tissue and False denotes background. This is generated from the WSI using otsu thresholding on the saturation channel followed by morphological operations. This is inspired by [this paper](https://arxiv.org/abs/1606.05718). The generated background mask can be visualized using e.g. `sampler.save_background_visualization(savedir)`.
+The background mask is stored as a downsampled, boolean numpy array where True denotes tissue and False denotes background. This is generated from the WSI using Otsu thresholding on the saturation channel followed by morphological operations. This is inspired by [this paper](https://arxiv.org/abs/1606.05718), which achieved top results in Camelyon 16 contest. The generated background mask can be visualized using e.g.
+
+`sampler.save_background_visualization(savedir)`.
 
 <img src='./ims/Normal_003_background.png' width='30%'/><img src='./ims/Tumor_004_background.png' width='30%'/>
 
