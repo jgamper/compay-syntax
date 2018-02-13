@@ -8,6 +8,8 @@ import numpy as np
 import pickle
 import pandas as pd
 from random import shuffle
+from skimage.morphology import disk, dilation
+from PIL import Image
 
 from modules import utils
 
@@ -103,7 +105,7 @@ class Single_Sampler(object):
         background_patch = self.background.data[i:i + self.background.patchsize, j:j + self.background.patchsize]
         background_patch = background_patch.astype(int)
         if not np.sum(background_patch) / (self.background.patchsize ** 2) > 0.9:
-            # print('Patch rejected. Too much background.')
+            print('Patch rejected. Too much background.')
             return None, None
 
         info = {
@@ -123,7 +125,7 @@ class Single_Sampler(object):
         annotation_patch = np.asarray(annotation_patch).copy()
         mask = (annotation_patch != c).astype(int)
         if np.sum(mask) / (self.patchsize ** 2) > 0.9:
-            # print('Patch rejected. Too much of other classes.')
+            print('Patch rejected. Too much of other classes.')
             return None, None
 
         return patch, info
@@ -162,6 +164,23 @@ class Single_Sampler(object):
 
     def level_converter(self, x, lvl_in, lvl_out):
         return int(x * self.wsi.level_downsamples[lvl_in] / self.wsi.level_downsamples[lvl_out])
+
+    def save_background_visualization(self, savedir=os.getcwd()):
+        file_name = os.path.join(savedir, self.fileID + '_background.png')
+        print('\nSaving background visualization to {}'.format(file_name))
+
+        bg = Image.fromarray(self.background.data.astype(int)) # a resize hack...
+        bg.thumbnail(size=(1500, 1500))
+        bg = np.asarray(bg).copy()
+
+        dilated = dilation(bg, disk(10))
+        contour = np.logical_xor(dilated, bg).astype(np.bool)
+
+        wsi_thumb = np.asarray(self.wsi.get_thumbnail(size=(1500, 1500))).copy()
+        wsi_thumb[contour] = 0
+
+        pil = Image.fromarray(wsi_thumb)
+        pil.save(file_name)
 
 
 ###
