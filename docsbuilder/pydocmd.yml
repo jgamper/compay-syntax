@@ -1,11 +1,13 @@
 site_name: Whole-Slide-Image (WSI) sampler
 
 generate:
+- single_slide.md: modules.single_sampler++
 - utils.md: modules.utils++
 
 pages:
 - Home: index.md << ../README.md
 - modules:
+  - single_sampler: single_slide.md
   - utils: utils.md
 
 

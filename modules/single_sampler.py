@@ -15,8 +15,22 @@ from modules import utils
 
 
 class Single_Sampler(object):
+    """
+    # Parameters
+    :param wsi_file: path to a WSI file
+    :param background_dir: directory where we do/will store background masks (NumpyBackground objects)
+    :param annotation_dir: directory where we keep annotations
+    :param level0: resolution at level 0 (usually 40X)
+    """
 
     def __init__(self, wsi_file, background_dir, annotation_dir, level0=40.):
+        """
+        # Parameters
+        :param wsi_file: path to a WSI file
+        :param background_dir: directory where we do/will store background masks (NumpyBackground objects)
+        :param annotation_dir: directory where we keep annotations
+        :param level0: resolution at level 0 (usually 40X)
+        """
         self.wsi_file = wsi_file
         self.background_dir = background_dir
         self.annotation_dir = annotation_dir
@@ -28,7 +42,7 @@ class Single_Sampler(object):
         truth, string = utils.string_in_directory(self.fileID, self.background_dir)
         if not truth:
             print('Background object not found. Generating now.')
-            down = int(self.level0 / 1.25)
+            down = int(self.level0 / 1.25) # make background mask at as near to 1.25X as possible
             self.background = NumpyBackround(self.wsi, approx_downsampling=down, threshold=20)
             os.makedirs(self.background_dir, exist_ok=1)
             self.pickle_NumpyBackground(savedir=self.background_dir)
@@ -48,6 +62,11 @@ class Single_Sampler(object):
                 self.annotation = None
 
     def prepare_sampling(self, desired_downsampling, patchsize):
+        """
+        # Parameters
+        :param desired_downsampling: the desired downsampling. E.g. if level 0 is 40X then a downsampling of 4 is 10X.
+        :param patchsize: sample patches of size patchsize x patchsize
+        """
         self.desired_downsampling = desired_downsampling
         self.patchsize = patchsize
         self.level = utils.get_level(self.wsi, self.desired_downsampling, threshold=0.01)
@@ -58,13 +77,15 @@ class Single_Sampler(object):
         if self.annotation is not None:
             self.annotation_level = utils.get_level(self.annotation, self.desired_downsampling, threshold=0.01)
 
-        self.get_classes_and_seeds()
+        self.get_classes_and_seeds() # get classes and approximate coordinates to 'seed' the patch sampling process
 
-        self.width_available = int(self.wsi.dimensions[0] - self.wsi.level_downsamples[self.level] * self.patchsize)
-        self.height_available = int(self.wsi.dimensions[1] - self.wsi.level_downsamples[self.level] * self.patchsize)
-        self.rejected = 0
+        self.rejected = 0 # to count how many patches we reject
 
     def get_classes_and_seeds(self):
+        """
+        Get classes and approximate coordinates to 'seed' the patch sampling process
+        """
+        # do class 0 i.e. unannotated first
         mask = self.background.data
         nonzero = np.nonzero(mask)
         factor = self.wsi.level_downsamples[self.background.level]
@@ -74,10 +95,12 @@ class Single_Sampler(object):
         self.class_list = [0]
         self.class_seeds = [coordinates]
 
+        # If no annotation we're done
         if self.annotation is None:
             return
 
-        down = int(self.level0 / 2.5)  # annotation should have same resolution at level 0 as WSI
+        # now add other classes
+        down = int(self.level0 / 2.5)  #  as near to 2.5X as possible
         level = utils.get_level(self.annotation, desired_downsampling=down, threshold=20)
         annotation_low_res = self.annotation.read_region((0, 0), level, self.annotation.level_dimensions[level])
         annotation_low_res = annotation_low_res.convert('L')
@@ -96,6 +119,15 @@ class Single_Sampler(object):
             self.class_seeds.append(coordinates)
 
     def class_c_patch_i(self, c, i):
+        """
+        Try and get the ith patch of class c. If we reject return (None, None).
+        # Parameters
+        :param c: class
+        :param i: index
+
+        # Returns
+        :return: (patch, info_dict) or (None, None) if we reject patch.
+        """
         idx = self.class_list.index(c)
         h, w = self.class_seeds[idx][i]
         patch = self.wsi.read_region((w, h), self.level, (self.patchsize, self.patchsize))
@@ -118,7 +150,7 @@ class Single_Sampler(object):
             'class': c,
             'id': self.fileID
         }
-
+        # If no annotation we're done
         if self.annotation is None:
             return patch, info
 
@@ -133,6 +165,13 @@ class Single_Sampler(object):
         return patch, info
 
     def sample_patches(self, max_per_class=100, savedir=os.getcwd(), verbose=0):
+        """
+        Sample patches and save in a patchframe
+        # Parameters
+        :param max_per_class: maximum number of patches per class
+        :param savedir: where to save patchframe
+        :param verbose: report number of rejected patches?
+        """
         frame = pd.DataFrame(data=None, columns=['id', 'w', 'h', 'class', 'level', 'size', 'parent'])
 
         for i, c in enumerate(self.class_list):
@@ -151,6 +190,11 @@ class Single_Sampler(object):
         frame.to_pickle(filename)
 
     def pickle_NumpyBackground(self, savedir=os.getcwd()):
+        """
+        Save (pickle) the NumpyBackground object
+        # Parameters
+        :param savedir: where to save to
+        """
         if not isinstance(self.background, NumpyBackround):
             raise Exception('Only call this method when using a NumpyBackground')
         filename = os.path.join(savedir, self.fileID + '_NumpyBackground.pickle')
@@ -160,15 +204,33 @@ class Single_Sampler(object):
         pickling_on.close()
 
     def validate_NumpyBackground(self):
+        """
+        Mini check on NumpyBackground object
+        """
         if self.wsi.level_dimensions[self.background.level][0] != self.background.data.shape[1]:
             raise Exception('Error unpickling background mask')
         if self.wsi.level_dimensions[self.background.level][1] != self.background.data.shape[0]:
             raise Exception('Error unpickling background mask')
 
     def level_converter(self, x, lvl_in, lvl_out):
+        """
+        Convert a length/coordinate 'x' from lvl_in to lvl_out
+        # Parameters
+        :param x: a length/coordinate
+        :param lvl_in: level to convert from
+        :param lvl_out: level to convert to
+
+        # Returns
+        :return: New length/coordinate
+        """
         return int(x * self.wsi.level_downsamples[lvl_in] / self.wsi.level_downsamples[lvl_out])
 
     def save_background_visualization(self, savedir=os.getcwd()):
+        """
+        Save a visualization of the background mask
+        # Parameters
+        :param savedir: where to save to
+        """
         size = 3000
         os.makedirs(savedir, exist_ok=1)
         file_name = os.path.join(savedir, self.fileID + '_background.png')
@@ -188,6 +250,11 @@ class Single_Sampler(object):
         pil.save(file_name)
 
     def save_annotation_visualization(self, savedir=os.getcwd()):
+        """
+        Save a visualization of the annotation
+        # Parameters
+        :param savedir: where to save to
+        """
         size = 3000
         os.makedirs(savedir, exist_ok=1)
         file_name = os.path.join(savedir, self.fileID + '_annotation.png')
@@ -209,6 +276,9 @@ class Single_Sampler(object):
 ###
 
 class NumpyBackround(object):
+    """
+    An object for storing the background mask
+    """
 
     def __init__(self, parent_wsi, approx_downsampling, threshold=20):
         self.level = utils.get_level(parent_wsi, desired_downsampling=approx_downsampling, threshold=threshold)

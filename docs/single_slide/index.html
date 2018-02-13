@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>single_sampler - Whole-Slide-Image (WSI) sampler</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "single_sampler";
+    var mkdocs_page_input_path = "single_slide.md";
+    var mkdocs_page_url = "/single_slide/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Whole-Slide-Image (WSI) sampler</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">modules</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">single_sampler</a>
+    <ul class="subnav">
+            
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../utils/">utils</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Whole-Slide-Image (WSI) sampler</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>modules &raquo;</li>
+        
+      
+    
+    <li>single_sampler</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="modules.single_sampler">modules.single_sampler</h1>
+
+<p>single_sampler module</p>
+<h2 id="modules.single_sampler.Single_Sampler">Single_Sampler</h2>
+
+<pre><code class="python">Single_Sampler(self, wsi_file, background_dir, annotation_dir, level0=40.0)
+</code></pre>
+
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>:param wsi_file</strong>: path to a WSI file</li>
+<li><strong>:param background_dir</strong>: directory where we do/will store background masks (NumpyBackground objects)</li>
+<li><strong>:param annotation_dir</strong>: directory where we keep annotations</li>
+<li><strong>:param level0</strong>: resolution at level 0 (usually 40X)</li>
+</ul>
+<h3 id="modules.single_sampler.Single_Sampler.class_c_patch_i">class_c_patch_i</h3>
+
+<pre><code class="python">Single_Sampler.class_c_patch_i(self, c, i)
+</code></pre>
+
+<p>Try and get the ith patch of class c. If we reject return (None, None).
+<strong>Parameters</strong></p>
+<ul>
+<li><strong>:param c</strong>: class</li>
+<li><strong>:param i</strong>: index</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p><code>:return</code>: (patch, info_dict) or (None, None) if we reject patch.</p>
+<h3 id="modules.single_sampler.Single_Sampler.save_annotation_visualization">save_annotation_visualization</h3>
+
+<pre><code class="python">Single_Sampler.save_annotation_visualization(self, savedir='/home/peter/projects_/slide_loader/docsbuilder')
+</code></pre>
+
+<p>Save a visualization of the annotation
+<strong>Parameters</strong></p>
+<ul>
+<li><strong>:param savedir</strong>: where to save to</li>
+</ul>
+<h3 id="modules.single_sampler.Single_Sampler.save_background_visualization">save_background_visualization</h3>
+
+<pre><code class="python">Single_Sampler.save_background_visualization(self, savedir='/home/peter/projects_/slide_loader/docsbuilder')
+</code></pre>
+
+<p>Save a visualization of the background mask
+<strong>Parameters</strong></p>
+<ul>
+<li><strong>:param savedir</strong>: where to save to</li>
+</ul>
+<h3 id="modules.single_sampler.Single_Sampler.sample_patches">sample_patches</h3>
+
+<pre><code class="python">Single_Sampler.sample_patches(self, max_per_class=100, savedir='/home/peter/projects_/slide_loader/docsbuilder', verbose=0)
+</code></pre>
+
+<p>Sample patches and save in a patchframe
+<strong>Parameters</strong></p>
+<ul>
+<li><strong>:param max_per_class</strong>: maximum number of patches per class</li>
+<li><strong>:param savedir</strong>: where to save patchframe</li>
+<li><strong>:param verbose</strong>: report number of rejected patches?</li>
+</ul>
+<h3 id="modules.single_sampler.Single_Sampler.level_converter">level_converter</h3>
+
+<pre><code class="python">Single_Sampler.level_converter(self, x, lvl_in, lvl_out)
+</code></pre>
+
+<p>Convert a length/coordinate 'x' from lvl_in to lvl_out
+<strong>Parameters</strong></p>
+<ul>
+<li><strong>:param x</strong>: a length/coordinate</li>
+<li><strong>:param lvl_in</strong>: level to convert from</li>
+<li><strong>:param lvl_out</strong>: level to convert to</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p><code>:return</code>: New length/coordinate</p>
+<h3 id="modules.single_sampler.Single_Sampler.get_classes_and_seeds">get_classes_and_seeds</h3>
+
+<pre><code class="python">Single_Sampler.get_classes_and_seeds(self)
+</code></pre>
+
+<p>Get classes and approximate coordinates to 'seed' the patch sampling process</p>
+<h3 id="modules.single_sampler.Single_Sampler.prepare_sampling">prepare_sampling</h3>
+
+<pre><code class="python">Single_Sampler.prepare_sampling(self, desired_downsampling, patchsize)
+</code></pre>
+
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>:param desired_downsampling</strong>: the desired downsampling. E.g. if level 0 is 40X then a downsampling of 4 is 10X.</li>
+<li><strong>:param patchsize</strong>: sample patches of size patchsize x patchsize</li>
+</ul>
+<h3 id="modules.single_sampler.Single_Sampler.pickle_NumpyBackground">pickle_NumpyBackground</h3>
+
+<pre><code class="python">Single_Sampler.pickle_NumpyBackground(self, savedir='/home/peter/projects_/slide_loader/docsbuilder')
+</code></pre>
+
+<p>Save (pickle) the NumpyBackground object
+<strong>Parameters</strong></p>
+<ul>
+<li><strong>:param savedir</strong>: where to save to</li>
+</ul>
+<h3 id="modules.single_sampler.Single_Sampler.validate_NumpyBackground">validate_NumpyBackground</h3>
+
+<pre><code class="python">Single_Sampler.validate_NumpyBackground(self)
+</code></pre>
+
+<p>Mini check on NumpyBackground object</p>
+<h2 id="modules.single_sampler.NumpyBackround">NumpyBackround</h2>
+
+<pre><code class="python">NumpyBackround(self, parent_wsi, approx_downsampling, threshold=20)
+</code></pre>
+
+<p>An object for storing the background mask</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../utils/" class="btn btn-neutral float-right" title="utils">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../utils/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/require.js"></script>
+      <script src="../search/search.js"></script>
+
+</body>
+</html>
