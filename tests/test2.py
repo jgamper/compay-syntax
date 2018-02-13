@@ -1,3 +1,7 @@
+"""
+Make a patchframe and visualize the patches. Also use parallel computation.
+"""
+
 import os
 import glob
 import pandas as pd

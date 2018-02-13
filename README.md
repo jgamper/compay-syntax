@@ -11,6 +11,8 @@
 
 # Usage
 
+*Have a look at the tests in tests folder*
+
 Sampling is achieved through a `Single_Sampler` object, which is implemented in the module `single_sampler.py`. We first build an object:
 
 `sampler = single_sampler.Single_Sampler(wsi_file, background_dir, annotation_dir, level0=40.)`
@@ -61,7 +63,7 @@ The background mask is stored as a downsampled, boolean numpy array where True d
 
 `sampler.save_background_visualization(savedir)`.
 
-*left: Normal slides, right: Cancer slides*
+***left:** Normal slides, **right:** Cancer slides*
 
 <img src='./ims/Normal_106_background.png' width='50%'/><img src='./ims/Tumor_108_background.png' width='50%'/>
 <img src='./ims/Normal_003_background.png' width='25%'/><img src='./ims/Tumor_004_background.png' width='25%'/>
@@ -82,7 +84,7 @@ We might want to inspect the patches listed in a patchframe. To do this we can s
 
 `utils.save_patchframe_patches(patchframe)` (utils module)
 
-*left: two class 0 (Normal) patches, right: two class 1 (cancer) patches (256x256 @ 10X).*
+***left:** two class 0 (Normal) patches, **right:** two class 1 (cancer) patches (256x256 @ 10X).*
 
 <img src='./ims/p17_class_0_from_Tumor_108.png' width='25%'/><img src='./ims/p21_class_0_from_Tumor_004.png' width='25%'/><img src='./ims/p35_class_255_from_Tumor_004.png' width='25%'/><img src='./ims/p45_class_255_from_Tumor_108.png' width='25%'/>
 

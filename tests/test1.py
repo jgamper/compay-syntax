@@ -1,3 +1,7 @@
+"""
+Make a sampler and generate backgrounds. Visualize background and annotation.
+"""
+
 import os
 import glob
 
@@ -20,4 +24,4 @@ for file in files:
     sampler = single_sampler.Single_Sampler(wsi_file=file, background_dir=bg_dir, annotation_dir=mask_dir, level0=40)
     sampler.save_background_visualization(savedir='./bg_vis')
     if sampler.annotation is not None:
-        sampler.save_annotation_visualization(savedir='./annotations')
+        sampler.save_annotation_visualization(savedir='./annotation_vis')
