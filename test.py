@@ -32,10 +32,12 @@ def do_file(file):
     sampler.prepare_sampling(desired_downsampling=downsampling, patchsize=size)
     sampler.sample_patches(max_per_class=per_class, savedir='./patchframes')
 
+###
+
 start=time.time()
 for file in files:
     do_file(file)
-print('Serial time'.format(time.time()-start))
+print('Serial time = {}'.format(time.time()-start))
 
 ###
 
@@ -43,7 +45,7 @@ num_cores = multiprocessing.cpu_count()
 
 start=time.time()
 Parallel(n_jobs=num_cores)(delayed(do_file)(file) for file in files)
-print('Parallel time '.format(time.time()-start))
+print('Parallel time = {}'.format(time.time()-start))
 
 ###
 

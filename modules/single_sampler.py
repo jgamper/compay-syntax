@@ -93,7 +93,8 @@ class Single_Sampler(object):
             self.class_seeds.append(coordinates)
 
     def class_c_patch_i(self, c, i):
-        h, w = self.class_seeds[c][i]
+        idx = self.class_list.index(c)
+        h, w = self.class_seeds[idx][i]
         patch = self.wsi.read_region((w, h), self.level, (self.patchsize, self.patchsize))
         patch = patch.convert('RGB')
 
@@ -105,14 +106,6 @@ class Single_Sampler(object):
             # print('Patch rejected. Too much background.')
             return None, None
 
-        annotation_patch = self.annotation.read_region((w, h), self.annotation_level, (self.patchsize, self.patchsize))
-        annotation_patch = annotation_patch.convert('L')
-        annotation_patch = np.asarray(annotation_patch).copy()
-        mask = (annotation_patch != c).astype(int)
-        if np.sum(mask) / (self.patchsize ** 2) > 0.9:
-            # print('Patch rejected. Too much of other classes.')
-            return None, None
-
         info = {
             'w': w,
             'h': h,
@@ -121,6 +114,18 @@ class Single_Sampler(object):
             'level': self.level,
             'class': c
         }
+
+        if self.annotation is None:
+            return patch, info
+
+        annotation_patch = self.annotation.read_region((w, h), self.annotation_level, (self.patchsize, self.patchsize))
+        annotation_patch = annotation_patch.convert('L')
+        annotation_patch = np.asarray(annotation_patch).copy()
+        mask = (annotation_patch != c).astype(int)
+        if np.sum(mask) / (self.patchsize ** 2) > 0.9:
+            # print('Patch rejected. Too much of other classes.')
+            return None, None
+
         return patch, info
 
     def sample_patches(self, max_per_class=100, savedir=os.getcwd()):
