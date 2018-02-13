@@ -75,4 +75,13 @@ Multi-resolution annotations are best viewed with ASAP but if you want to visual
 <img src='./ims/Tumor_108_annotation.png' width='50%'/>
 <img src='./ims/Tumor_004_annotation.png' width='25%'/>
 
+# Patch viewing
+
+We might want to inspect the patches listed in a patchframe. To do this we can save them to disk with e.g.
+
+`utils.save_patchframe_patches(patchframe)` (utils module)
+
+<img src='./ims/p17_class_0_from_Tumor_108.png' width='25%'/><img src='./ims/p21_class_0_from_Tumor_004.png' width='25%'/><img src='./ims/p35_class_255_from_Tumor_004.png' width='25%'/><img src='./ims/p45_class_255_from_Tumor_108.png' width='25%'/>
+
+
 
