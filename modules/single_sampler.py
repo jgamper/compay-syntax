@@ -62,6 +62,7 @@ class Single_Sampler(object):
 
         self.width_available = int(self.wsi.dimensions[0] - self.wsi.level_downsamples[self.level] * self.patchsize)
         self.height_available = int(self.wsi.dimensions[1] - self.wsi.level_downsamples[self.level] * self.patchsize)
+        self.rejected = 0
 
     def get_classes_and_seeds(self):
         mask = self.background.data
@@ -105,7 +106,7 @@ class Single_Sampler(object):
         background_patch = self.background.data[i:i + self.background.patchsize, j:j + self.background.patchsize]
         background_patch = background_patch.astype(int)
         if not np.sum(background_patch) / (self.background.patchsize ** 2) > 0.9:
-            print('Patch rejected. Too much background.')
+            self.rejected += 1
             return None, None
 
         info = {
@@ -125,12 +126,12 @@ class Single_Sampler(object):
         annotation_patch = np.asarray(annotation_patch).copy()
         mask = (annotation_patch != c).astype(int)
         if np.sum(mask) / (self.patchsize ** 2) > 0.9:
-            print('Patch rejected. Too much of other classes.')
+            self.rejected += 1
             return None, None
 
         return patch, info
 
-    def sample_patches(self, max_per_class=100, savedir=os.getcwd()):
+    def sample_patches(self, max_per_class=100, savedir=os.getcwd(), verbose=0):
         frame = pd.DataFrame(data=None, columns=['w', 'h', 'class', 'parent', 'level', 'size'])
 
         for i, c in enumerate(self.class_list):
@@ -141,7 +142,8 @@ class Single_Sampler(object):
                     frame = frame.append(info, ignore_index=1)
                 if j >= (max_per_class - 1):
                     break
-
+        if verbose:
+            print('Rejected {} patches for file {}'.format(self.rejected, self.fileID))
         os.makedirs(savedir, exist_ok=1)
         filename = os.path.join(savedir, self.fileID + '_patchframe.pickle')
         print('Saving patchframe to {}'.format(filename))
