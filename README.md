@@ -61,6 +61,18 @@ The background mask is stored as a downsampled, boolean numpy array where True d
 
 `sampler.save_background_visualization(savedir)`.
 
+*left: Normal slides, right: Cancer slides*
+
 <img src='./ims/Normal_106_background.png' width='50%'/><img src='./ims/Tumor_108_background.png' width='50%'/>
 <img src='./ims/Normal_003_background.png' width='25%'/><img src='./ims/Tumor_004_background.png' width='25%'/>
+
+# Annotation viewing
+
+Multi-resolution annotations are best viewed with ASAP but if you want to visualize here we can with e.g.
+
+`sampler.save_annotation_visualization(savedir)`
+
+<img src='./ims/Tumor_108_annotation.png' width='50%'/>
+<img src='./ims/Tumor_004_annotation.png' width='25%'/>
+
 
