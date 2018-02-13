@@ -72,8 +72,7 @@ Multi-resolution annotations are best viewed with ASAP but if you want to visual
 
 `sampler.save_annotation_visualization(savedir)`
 
-<img src='./ims/Tumor_108_annotation.png' width='50%'/>
-<img src='./ims/Tumor_004_annotation.png' width='25%'/>
+<img src='./ims/Tumor_108_annotation.png' width='50%'/><img src='./ims/Tumor_004_annotation.png' width='25%'/>
 
 # Patch viewing
 
