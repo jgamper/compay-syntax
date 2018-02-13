@@ -7,7 +7,7 @@
 # Assumptions
 
 - You have WSIs in a format readable by [openslide](https://github.com/openslide).
-- You may also have multi-resolution-image annotation files, such as those exportable by the (excellent) slide annotation tool [ASAP](https://github.com/GeertLitjens/ASAP). For example, see the folder 'annotation' in the [sample data](https://www.dropbox.com/sh/khsvxpe568f77xm/AABqQYLb6SBonAe77tELccY8a?dl=0). The annotations can be multi-class. *The multi-resolution level structure should be the same for both the main WSI and also for the annotation*.
+- You may also have multi-resolution-image annotation files, such as those exportable by the (excellent) slide annotation tool [ASAP](https://github.com/GeertLitjens/ASAP) (which supports all openslide readable images). For example, see the folder 'annotation' in the [sample data](https://www.dropbox.com/sh/khsvxpe568f77xm/AABqQYLb6SBonAe77tELccY8a?dl=0). The annotations can be multi-class. *The multi-resolution level structure should be the same for both the main WSI and also for the annotation*.
 
 # Usage
 
@@ -30,7 +30,7 @@ We then prepare for sampling with something like:
 
 where
 
-- `desired_downsampling` : the desired downsampling. e.g. for a WSI with level0 at 40X a downsampling of 4 gives patches at 10X.
+- `desired_downsampling` : the desired downsampling. e.g. for a WSI with level 0 at 40X a downsampling of 4 gives patches at 10X.
 - `patchsize` : patches sampled at size (patchsize x patchsize).
 
 At this point we are ready to sample patches with:
