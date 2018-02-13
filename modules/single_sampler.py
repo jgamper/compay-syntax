@@ -70,10 +70,8 @@ class Single_Sampler(object):
                                                   self.annotation.level_dimensions[temp_level]).convert('L')
             low_res = np.asarray(low_res).copy()
             classes = sorted(list(np.unique(low_res)))
-            if classes[0] == 0:
-                classes = classes[1:]
-            else:
-                raise Exception('Unannotated regions should have class 0')
+            assert classes[0] == 0
+            classes = classes[1:]
             class_seeds = []
             for c in classes:
                 mask = (low_res == c)
@@ -149,8 +147,27 @@ class Single_Sampler(object):
         }
         return patch, info
 
-    def sample_patches(self, max_per_class=1000):
+    def sample_patches(self, max_per_class=100, savedir=os.getcwd()):
+        frame = pd.DataFrame(data=None, columns=['w', 'h', 'class', 'parent', 'level', 'size'])
+        # get class0 patches
+        for i in range(max_per_class):
+            _, info = self.get_class0_patch()
+            frame = frame.append(info, ignore_index=1)
 
+        # get other patches, if they exist
+        if self.annotation is not None and self.classes is not None:
+            for i, c in enumerate(self.classes):
+                seeds = self.class_seeds[i]
+                for j, seed in enumerate(seeds):
+                    _, info = self.try_seed(seed, c)
+                    if info is not None:
+                        frame = frame.append(info, ignore_index=1)
+                    if j >= (max_per_class - 1):
+                        break
+
+        filename = os.path.join(savedir, self.fileID + '_patchframe.pickle')
+        print('Saving patchframe to {}'.format(filename))
+        frame.to_pickle(filename)
 
     def pickle_NumpyBackground(self, savedir=os.getcwd()):
         if not isinstance(self.background, NumpyBackround):
