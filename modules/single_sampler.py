@@ -187,6 +187,24 @@ class Single_Sampler(object):
         pil = Image.fromarray(wsi_thumb)
         pil.save(file_name)
 
+    def save_annotation_visualization(self, savedir=os.getcwd()):
+        size = 3000
+        os.makedirs(savedir, exist_ok=1)
+        file_name = os.path.join(savedir, self.fileID + '_annotation.png')
+        print('\nSaving annotation visualization to {}'.format(file_name))
+
+        annotation = self.annotation.get_thumbnail(size=(size, size)).convert('L')
+        annotation = np.asarray(annotation).copy().astype(bool).astype(float)
+
+        dilated = dilation(annotation, disk(10))
+        contour = np.logical_xor(annotation, dilated).astype(np.bool)
+
+        wsi_thumb = np.asarray(self.wsi.get_thumbnail(size=(size, size))).copy()
+        wsi_thumb[contour] = 0
+
+        pil = Image.fromarray(wsi_thumb)
+        pil.save(file_name)
+
 
 ###
 
