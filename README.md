@@ -1,4 +1,4 @@
-# Whole-Slide-Image sampler
+# Whole-Slide-Image sampler.
 
  [GitHub](https://github.com/Peter554/WSI_sampler)
 
