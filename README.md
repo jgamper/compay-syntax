@@ -2,12 +2,12 @@
 
  [GitHub](https://github.com/Peter554/WSI_sampler)
 
- This respository aims to develop a tool for sampling from Whole-Slide-Images (WSIs) in an efficient manner. By sampling we mean producing batches of patches which can then be fed to e.g. machine learning algorithms. This should ideally be achieved without storing all the patches on disk (waste of storage). It aims to work with all WSIs that can be read by [openslide](https://github.com/openslide). Sample data for tests is available [here](https://www.dropbox.com/sh/khsvxpe568f77xm/AABqQYLb6SBonAe77tELccY8a?dl=0) (images from the opensource [Camelyon 16](https://camelyon17.grand-challenge.org/) dataset).
+ This respository aims to develop a tool for sampling from Whole-Slide-Images (WSIs) in an efficient manner. By sampling we mean producing batches of patches which can then be fed to e.g. machine learning algorithms. This should ideally be achieved without storing all the patches on disk (waste of storage). It aims to work with all WSIs that can be read by [openslide](https://github.com/openslide). Sample data for tests is available [here](https://www.dropbox.com/sh/hk676r960zxbqcb/AADrnhTuKRH296GTFwdqWKxca?dl=0) (images from the opensource [Camelyon 16](https://camelyon17.grand-challenge.org/) dataset).
 
 # Assumptions
 
 - You have WSIs in a format readable by [openslide](https://github.com/openslide).
-- You may also have multi-resolution-image annotation files, such as those exportable by the (excellent) slide annotation tool [ASAP](https://github.com/GeertLitjens/ASAP) (which supports all openslide readable images). For example, see the folder 'annotation' in the [sample data](https://www.dropbox.com/sh/khsvxpe568f77xm/AABqQYLb6SBonAe77tELccY8a?dl=0). The annotations can be multi-class. *The multi-resolution level structure should be the same for both the main WSI and also for the annotation*.
+- You may also have multi-resolution-image annotation files, such as those exportable by the (excellent) slide annotation tool [ASAP](https://github.com/GeertLitjens/ASAP) (which supports all openslide readable images). For example, see the folder 'annotation' in the [sample data](https://www.dropbox.com/sh/hk676r960zxbqcb/AADrnhTuKRH296GTFwdqWKxca?dl=0). The annotations can be multi-class. *The multi-resolution level structure should be the same for both the main WSI and also for the annotation*.
 
 # Usage
 
@@ -87,6 +87,3 @@ We might want to inspect the patches listed in a patchframe. To do this we can s
 ***left:** two class 0 (Normal) patches, **right:** two class 1 (cancer) patches (256x256 @ 10X).*
 
 <img src='./ims/p17_class_0_from_Tumor_108.png' width='25%'/><img src='./ims/p21_class_0_from_Tumor_004.png' width='25%'/><img src='./ims/p35_class_255_from_Tumor_004.png' width='25%'/><img src='./ims/p45_class_255_from_Tumor_108.png' width='25%'/>
-
-
-
