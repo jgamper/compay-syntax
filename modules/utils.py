@@ -1,5 +1,5 @@
 """
-utils module
+Utils module
 """
 
 import pandas as pd
@@ -22,23 +22,6 @@ def string_in_directory(s, dir):
         if s in file:
             return 1, file
     return 0, 'Not found'
-
-
-def get_level(slide, desired_downsampling, threshold):
-    """
-    Get the level for a desired downsampling. Threshold controls how close true and desired downsampling must be.
-    :param slide:
-    :param desired_downsampling:
-    :param threshold:
-    :return: level
-    """
-    number_levels = len(slide.level_downsamples)
-    diffs = [abs(desired_downsampling - slide.level_downsamples[i]) for i in range(number_levels)]
-    minimum = min(diffs)
-    warn = 'Level not found for desired downsampling\nAvailable downsampling levels are:\n{}'
-    assert minimum > threshold, warn.format(slide.level_downsamples)
-    level = diffs.index(minimum)
-    return level
 
 
 def get_patch_from_info_dict(info):

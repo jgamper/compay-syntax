@@ -4,3 +4,7 @@
 modules/__pycache__/
 
 *.pickle
+
+\.ipynb_checkpoints/
+
+Untitled\.ipynb
