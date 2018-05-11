@@ -9,7 +9,7 @@ from modules import single_sampler
 
 ###
 
-data_dir = '/home/peter/Dropbox/publish-final/WSI_sampler_data'
+data_dir = '/home/peter/Dropbox/SharedMore/WSI_sampler'
 
 ###
 

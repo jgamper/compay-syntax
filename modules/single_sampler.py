@@ -1,5 +1,5 @@
 """
-single_sampler module
+Single sampler module
 """
 
 import openslide
@@ -12,6 +12,7 @@ from skimage.morphology import disk, dilation
 from PIL import Image
 
 from modules import utils
+from modules import background_mask_methods as bgmeths
 
 
 class Single_Sampler(object):
