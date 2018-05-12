@@ -1,5 +1,5 @@
 """
-Sampler module
+Sampler module.
 """
 
 import openslide
@@ -11,8 +11,8 @@ from random import shuffle
 from skimage.morphology import disk, dilation
 from PIL import Image
 
+from modules import tissue_mask_generation as tmg
 from modules import utils as ut
-from modules.numpy_tissue_mask import NumpyTissueMask
 
 
 class Sampler(object):
@@ -20,7 +20,7 @@ class Sampler(object):
     def __init__(self, wsi_file, tissue_mask_dir, annotation_dir, level0_overide=None):
         """
         :param wsi_file: path to a WSI file
-        :param tissue_mask_dir: directory where we do/will store tissue masks (NumpyTissueMask objects)
+        :param tissue_mask_dir: directory where we do/will store tissue masks
         :param annotation_dir: directory where we keep annotations
         :param level0_overide:
         """
@@ -28,41 +28,42 @@ class Sampler(object):
         self.tissue_mask_dir = tissue_mask_dir
         self.annotation_dir = annotation_dir
 
-        if level0_overide is not None:
-            self.level0 = float(level0_overide)
-        else:
-            self.level0 = float(self.wsi.properties['openslide.objective-power'])  # magnification at level 0
-
         self.fileID = os.path.splitext(os.path.basename(self.wsi_file))[0]
         self.wsi = openslide.OpenSlide(self.wsi_file)
 
+        if level0_overide is not None:
+            self.level0 = float(level0_overide)
+        else:
+            self.level0 = float(self.wsi.properties['openslide.objective-power'])
+            print('Level 0 found @ {}X'.format(self.level0))
+
         self.magnifications = [self.level0 / downsample for downsample in self.wsi.level_downsamples]
 
-        # Add tissue mask
+        # Add tissue mask.
         truth, string = ut.string_in_directory(self.fileID, self.tissue_mask_dir)
         if not truth:
             print('Tissue mask not found. Generating now.')
-            down = int(self.level0 / 1.25)  # make background mask at as near to 1.25X as possible
-            self.tml = self.get_level(magnification=1.25, threshold=10.0)
-            self.background = NumpyTissueMask()
-            self.background.generate(self.wsi, approx_downsampling=down)
-            os.makedirs(self.tissue_mask_dir, exist_ok=1)
-            self.background.save(ID=self.fileID, savedir=self.tissue_mask_dir)
+            self.tml = self.get_level(magnification=1.25, threshold=10.0)  # tissue mask level.
+            self.tm = tmg.generate_tissue_mask(self.wsi, self.tml)  # tissue mask (Boolean numpy array).
+
+            # Save for reuse.
+            os.makedirs(self.tissue_mask_dir, exist_ok=True)
+            filename = os.path.join(self.tissue_mask_dir, self.fileID + '_tm.npy')
+            np.save(filename, self.tm)
         if truth:
             print('Tissue mask found. Loading.')
-            self.background = NumpyTissueMask()
-            self.background.load(path=string, validation_wsi=self.wsi)
+            self.tm = np.load(string)
+            # self.tml =
 
-
-        # Add annotation, if present
-        if annotation_dir is None:
-            self.annotation = None
-        else:
-            truth, string = ut.string_in_directory(self.fileID, self.annotation_dir)
-            if truth:
-                self.annotation = openslide.OpenSlide(string)
-            if not truth:
-                self.annotation = None
+        # # Add annotation, if present
+        # if annotation_dir is None:
+        #     self.annotation = None
+        # else:
+        #     truth, string = ut.string_in_directory(self.fileID, self.annotation_dir)
+        #     if truth:
+        #         self.annotation = openslide.OpenSlide(string)
+        #     if not truth:
+        #         self.annotation = None
 
     def prepare_sampling(self, desired_downsampling, patchsize):
         """
@@ -239,3 +240,12 @@ class Sampler(object):
 
         pil = Image.fromarray(wsi_thumb)
         pil.save(file_name)
+
+
+if __name__ == '__main__':
+    data_dir = '/home/peter/Dropbox/SharedMore/WSI_sampler'
+    file = os.path.join(data_dir, 'Normal_106.tif')
+    tm_dir = './tissue_masks'
+    annotation_dir = os.path.join(data_dir, 'annotation')
+
+    sampler = Sampler(file, tm_dir, annotation_dir)

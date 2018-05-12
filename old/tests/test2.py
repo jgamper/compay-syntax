@@ -9,7 +9,7 @@ import pandas as pd
 from joblib import Parallel, delayed
 import multiprocessing
 
-from modules import single_sampler, utils
+from modules import utils
 
 ###
 
@@ -34,7 +34,7 @@ patchframe_dir = './patchframes'
 ###
 
 def do_file(file):
-    sampler = single_sampler.Single_Sampler(wsi_file=file, background_dir=bg_dir, annotation_dir=mask_dir, level0=40.)
+    sampler = sampler.Sampler(wsi_file=file, tissue_mask_dir=bg_dir, annotation_dir=mask_dir, level0=40.)
     sampler.prepare_sampling(desired_downsampling=downsampling, patchsize=size)
     sampler.sample_patches(max_per_class=per_class, savedir=patchframe_dir, verbose=1)
 

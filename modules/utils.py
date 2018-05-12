@@ -16,12 +16,12 @@ def string_in_directory(s, dir):
     :return: (bool, string)
     """
     if not os.path.isdir(dir):
-        return 0, 'Not a directory'
+        return False, 'Not a directory'
     files_in_dir = glob.glob(os.path.join(dir, '*'))
     for file in files_in_dir:
         if s in file:
-            return 1, file
-    return 0, 'Not found'
+            return True, file
+    return False, 'Not found'
 
 
 def get_patch_from_info_dict(info):
@@ -32,7 +32,7 @@ def get_patch_from_info_dict(info):
     """
     slide = openslide.OpenSlide(info['parent'])
     patch = slide.read_region(location=(info['w'], info['h']), level=info['level'], size=(info['size'], info['size']))
-    return patch.convert('RGB')
+    return patch.convert('RGB')  # Make sure it's RGB (not e.g. RGBA).
 
 
 def save_patchframe_patches(input, save_dir=os.path.join(os.getcwd(), 'patches')):
@@ -47,9 +47,9 @@ def save_patchframe_patches(input, save_dir=os.path.join(os.getcwd(), 'patches')
         patchframe = pd.read_pickle(input)
     else:
         raise Exception('Input should be patchframe (pd.DataFrame) or string path to pickled patchframe.')
-    os.makedirs(save_dir, exist_ok=1)
+    os.makedirs(save_dir, exist_ok=True)
     num_patches = patchframe.shape[0]
-    print('\nSaving hard copies of patches in patchframe to {}'.format(save_dir))
+    print('Saving hard copies of patches in patchframe to {}'.format(save_dir))
     for i in range(num_patches):
         info = patchframe.ix[i]
         patch = get_patch_from_info_dict(info)
