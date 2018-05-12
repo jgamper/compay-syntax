@@ -10,3 +10,7 @@ modules/__pycache__/
 Untitled\.ipynb
 
 cat\.JPG
+
+old/tests/bg_vis/Tumor_108_background\.png
+
+*.npy

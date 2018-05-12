@@ -8,6 +8,22 @@ import openslide
 import glob
 
 
+def val_in_list(val, x, tol=0.01):
+    """
+    Is a value in a list?
+    :param val:
+    :param x:
+    :param tol:
+    :return:
+    """
+    diffs = [abs(x[i] - val) for i in range(len(x))]
+    minimum = min(diffs)
+    if minimum > tol:
+        return (False, None)
+    else:
+        return (True, diffs.index(minimum))
+
+
 def string_in_directory(s, dir):
     """
     Is a string in a filename in the given directory?

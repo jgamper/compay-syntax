@@ -17,25 +17,30 @@ from modules import utils as ut
 
 class Sampler(object):
 
-    def __init__(self, wsi_file, tissue_mask_dir, annotation_dir, level0_overide=None):
+    def __init__(self, wsi_file, tissue_mask_dir, annotation_dir=None, level0=None):
         """
         :param wsi_file: path to a WSI file
         :param tissue_mask_dir: directory where we do/will store tissue masks
-        :param annotation_dir: directory where we keep annotations
-        :param level0_overide:
+        :param annotation_dir: directory where we keep annotations. \
+            NOTE: We can specify a value even if no annotation is present for this particular slide.
+        :param level0: 'Magnification' at level 0 (often 40X). If None we attempt to get from metadata.
         """
         self.wsi_file = wsi_file
         self.tissue_mask_dir = tissue_mask_dir
         self.annotation_dir = annotation_dir
 
         self.fileID = os.path.splitext(os.path.basename(self.wsi_file))[0]
+        print('Initializing sampler for {}.'.format(self.fileID))
         self.wsi = openslide.OpenSlide(self.wsi_file)
 
-        if level0_overide is not None:
-            self.level0 = float(level0_overide)
+        if level0 is not None:
+            self.level0 = float(level0)
         else:
-            self.level0 = float(self.wsi.properties['openslide.objective-power'])
-            print('Level 0 found @ {}X'.format(self.level0))
+            try:
+                self.level0 = float(self.wsi.properties['openslide.objective-power'])
+                print('Level 0 found @ {}X'.format(self.level0))
+            except:
+                raise Exception('Slide does not have property objective-power.')
 
         self.magnifications = [self.level0 / downsample for downsample in self.wsi.level_downsamples]
 
@@ -43,34 +48,38 @@ class Sampler(object):
         truth, string = ut.string_in_directory(self.fileID, self.tissue_mask_dir)
         if not truth:
             print('Tissue mask not found. Generating now.')
-            self.tml = self.get_level(magnification=1.25, threshold=10.0)  # tissue mask level.
+            self.tml = self.get_level(magnification=1.25, tolerence=10.0)  # tissue mask level.
             self.tm = tmg.generate_tissue_mask(self.wsi, self.tml)  # tissue mask (Boolean numpy array).
-
             # Save for reuse.
             os.makedirs(self.tissue_mask_dir, exist_ok=True)
             filename = os.path.join(self.tissue_mask_dir, self.fileID + '_tm.npy')
             np.save(filename, self.tm)
-        if truth:
+        elif truth:
             print('Tissue mask found. Loading.')
-            self.tm = np.load(string)
-            # self.tml =
+            self.tm = np.load(string)  # tissue mask (Boolean numpy array).
+            self.tml = self.wsi.level_dimensions.index(self.tm.shape[::-1])  # tissue mask level.
 
-        # # Add annotation, if present
-        # if annotation_dir is None:
-        #     self.annotation = None
-        # else:
-        #     truth, string = ut.string_in_directory(self.fileID, self.annotation_dir)
-        #     if truth:
-        #         self.annotation = openslide.OpenSlide(string)
-        #     if not truth:
-        #         self.annotation = None
+        # Add annotation, if present
+        if annotation_dir is None:
+            self.annotation = None
+        else:
+            truth, string = ut.string_in_directory(self.fileID, self.annotation_dir)
+            if not truth:
+                print('No annotation mask found. Skipping.')
+                self.annotation = None
+            elif truth:
+                print('Annotation mask found. Loading.')
+                self.annotation = openslide.OpenSlide(string)
 
-    def prepare_sampling(self, desired_downsampling, patchsize):
+    def prepare_sampling(self, magnification, patchsize, tolerence=0.01):
         """
-        :param desired_downsampling: the desired downsampling. \
-        E.g. if level 0 is 40X then a downsampling of 4 is 10X.
-        :param patchsize: sample patches of size patchsize x patchsize
+        Prepare to sample patches.
+        :param magnification:
+        :param patchsize:
+        :param tolerence: Magnification tolerence.
+        :return:
         """
+
         self.desired_downsampling = desired_downsampling
         self.patchsize = patchsize
         self.level = ut.get_level(self.wsi, self.desired_downsampling, threshold=0.01)
@@ -191,21 +200,22 @@ class Sampler(object):
 
         return patch, info
 
-    ###
+    ### Sampler specific util methods.
 
-    def get_level(self, magnification, threshold=0.01):
+    def get_level(self, magnification, tolerence=0.01):
         """
         Get the level corresponding to a specified magnification
         :param magnification:
-        :param threshold:
+        :param tolerence:
         :return:
         """
-        diffs = [abs(magnification - self.magnifications[i]) for i in range(len(self.magnifications))]
-        minimum = min(diffs)
-        warn = 'Failed to find a suitable level\nAvailable magnifications are \n{}'
-        assert minimum < threshold, warn.format(self.magnifications)
-        level = diffs.index(minimum)
-        return level
+        truth, idx = ut.val_in_list(magnification, self.magnifications, tol=tolerence)
+        if not truth:
+            warn = 'Failed to find a suitable level\nAvailable magnifications are \n{}'
+            print(warn.format(self.magnifications))
+            return None
+        elif truth:
+            return idx
 
     def level_converter(self, x, lvl_in, lvl_out):
         """
@@ -217,7 +227,7 @@ class Sampler(object):
         """
         return int(x * self.wsi.level_downsamples[lvl_in] / self.wsi.level_downsamples[lvl_out])
 
-    ###
+    ### Visualization methods.
 
     def save_annotation_visualization(self, savedir=os.getcwd()):
         """
@@ -243,9 +253,13 @@ class Sampler(object):
 
 
 if __name__ == '__main__':
-    data_dir = '/home/peter/Dropbox/SharedMore/WSI_sampler'
-    file = os.path.join(data_dir, 'Normal_106.tif')
+    import glob
+
+    data_dir = '/Users/peterb/Dropbox/SharedMore/WSI_sampler'
+    # data_dir = '/home/peter/Dropbox/SharedMore/WSI_sampler'
+    files = glob.glob(os.path.join(data_dir, '*.tif'))
+    file = files[0]
     tm_dir = './tissue_masks'
     annotation_dir = os.path.join(data_dir, 'annotation')
-
-    sampler = Sampler(file, tm_dir, annotation_dir)
+    sampler = Sampler(file, tm_dir, annotation_dir, level0=40)
+    print(sampler.magnifications)
