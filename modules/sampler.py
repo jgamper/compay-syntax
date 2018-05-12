@@ -1,5 +1,5 @@
 """
-Single sampler module
+Sampler module
 """
 
 import openslide
@@ -15,38 +15,47 @@ from modules import utils as ut
 from modules.numpy_tissue_mask import NumpyTissueMask
 
 
-class Single_Sampler(object):
+class Sampler(object):
 
-    def __init__(self, wsi_file, background_dir, annotation_dir):
+    def __init__(self, wsi_file, tissue_mask_dir, annotation_dir, level0_overide=None):
         """
         :param wsi_file: path to a WSI file
-        :param background_dir: directory where we do/will store background masks (NumpyBackground objects)
+        :param tissue_mask_dir: directory where we do/will store tissue masks (NumpyTissueMask objects)
         :param annotation_dir: directory where we keep annotations
+        :param level0_overide:
         """
         self.wsi_file = wsi_file
-        self.background_dir = background_dir
+        self.tissue_mask_dir = tissue_mask_dir
         self.annotation_dir = annotation_dir
 
+        if level0_overide is not None:
+            self.level0 = float(level0_overide)
+        else:
+            self.level0 = float(self.wsi.properties['openslide.objective-power'])  # magnification at level 0
+
         self.fileID = os.path.splitext(os.path.basename(self.wsi_file))[0]
-        self.level0 = float(self.wsi.properties['openslide.objective-power'])  # magnification at level 0
         self.wsi = openslide.OpenSlide(self.wsi_file)
 
         self.magnifications = [self.level0 / downsample for downsample in self.wsi.level_downsamples]
 
-        truth, string = ut.string_in_directory(self.fileID, self.background_dir)
+        # Add tissue mask
+        truth, string = ut.string_in_directory(self.fileID, self.tissue_mask_dir)
         if not truth:
-            print('Background object not found. Generating now.')
+            print('Tissue mask not found. Generating now.')
             down = int(self.level0 / 1.25)  # make background mask at as near to 1.25X as possible
+            self.tml = self.get_level(magnification=1.25, threshold=10.0)
             self.background = NumpyTissueMask()
             self.background.generate(self.wsi, approx_downsampling=down)
-            os.makedirs(self.background_dir, exist_ok=1)
-            self.background.save(ID=self.fileID, savedir=self.background_dir)
+            os.makedirs(self.tissue_mask_dir, exist_ok=1)
+            self.background.save(ID=self.fileID, savedir=self.tissue_mask_dir)
         if truth:
-            print('Background object found. Loading.')
+            print('Tissue mask found. Loading.')
             self.background = NumpyTissueMask()
             self.background.load(path=string, validation_wsi=self.wsi)
 
-        if annotation_dir == None:
+
+        # Add annotation, if present
+        if annotation_dir is None:
             self.annotation = None
         else:
             truth, string = ut.string_in_directory(self.fileID, self.annotation_dir)
@@ -98,6 +107,8 @@ class Single_Sampler(object):
         filename = os.path.join(savedir, self.fileID + '_patchframe.pickle')
         print('Saving patchframe to {}'.format(filename))
         frame.to_pickle(filename)
+
+    ###
 
     def _get_classes_and_seeds(self):
         """
@@ -179,6 +190,8 @@ class Single_Sampler(object):
 
         return patch, info
 
+    ###
+
     def get_level(self, magnification, threshold=0.01):
         """
         Get the level corresponding to a specified magnification
@@ -189,7 +202,7 @@ class Single_Sampler(object):
         diffs = [abs(magnification - self.magnifications[i]) for i in range(len(self.magnifications))]
         minimum = min(diffs)
         warn = 'Failed to find a suitable level\nAvailable magnifications are \n{}'
-        assert minimum < threshold, warn.format(self.magnifications))
+        assert minimum < threshold, warn.format(self.magnifications)
         level = diffs.index(minimum)
         return level
 
@@ -202,6 +215,8 @@ class Single_Sampler(object):
         :return: New length/coordinate
         """
         return int(x * self.wsi.level_downsamples[lvl_in] / self.wsi.level_downsamples[lvl_out])
+
+    ###
 
     def save_annotation_visualization(self, savedir=os.getcwd()):
         """
