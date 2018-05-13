@@ -17,13 +17,13 @@ from modules import utils as ut
 
 class Sampler(object):
 
-    def __init__(self, wsi_file, tissue_mask_dir, annotation_dir=None, level0=None):
+    def __init__(self, wsi_file, level0, tissue_mask_dir, annotation_dir=None):
         """
         :param wsi_file: path to a WSI file
+        :param level0: 'Magnification' at level 0 (often 40X). If 'infer' we attempt to get from metadata.
         :param tissue_mask_dir: directory where we do/will store tissue masks
         :param annotation_dir: directory where we keep annotations. \
             NOTE: We can specify a value even if no annotation is present for this particular slide.
-        :param level0: 'Magnification' at level 0 (often 40X). If None we attempt to get from metadata.
         """
         self.wsi_file = wsi_file
         self.tissue_mask_dir = tissue_mask_dir
@@ -33,31 +33,36 @@ class Sampler(object):
         print('Initializing sampler for {}.'.format(self.fileID))
         self.wsi = openslide.OpenSlide(self.wsi_file)
 
-        if level0 is not None:
-            self.level0 = float(level0)
-        else:
+        if level0 == 'infer':
             try:
                 self.level0 = float(self.wsi.properties['openslide.objective-power'])
                 print('Level 0 found @ {}X'.format(self.level0))
             except:
                 raise Exception('Slide does not have property objective-power.')
+        else:
+            self.level0 = float(level0)
 
         self.magnifications = [self.level0 / downsample for downsample in self.wsi.level_downsamples]
 
         # Add tissue mask.
         truth, string = ut.string_in_directory(self.fileID, self.tissue_mask_dir)
         if not truth:
-            print('Tissue mask not found. Generating now.')
-            self.tml = self.get_level(magnification=1.25, tolerence=10.0)  # tissue mask level.
-            self.tm = tmg.generate_tissue_mask(self.wsi, self.tml)  # tissue mask (Boolean numpy array).
+            self.tissue_mask_level = self.get_level(magnification=1.25, tol=10.0)
+            self.tissue_mask_mag = self.magnifications[self.tissue_mask_level]
+            print('Tissue mask not found. Generating now @ {}X.'.format(self.tissue_mask_mag))
+            self.tissue_mask = tmg.generate_tissue_mask(self.wsi, self.tissue_mask_level)
+            assert self.tissue_mask.dtype == bool, 'Tissue mask not Boolean.'
+
             # Save for reuse.
             os.makedirs(self.tissue_mask_dir, exist_ok=True)
             filename = os.path.join(self.tissue_mask_dir, self.fileID + '_tm.npy')
-            np.save(filename, self.tm)
+            np.save(filename, self.tissue_mask)
         elif truth:
             print('Tissue mask found. Loading.')
-            self.tm = np.load(string)  # tissue mask (Boolean numpy array).
-            self.tml = self.wsi.level_dimensions.index(self.tm.shape[::-1])  # tissue mask level.
+            self.tissue_mask = np.load(string)
+            assert self.tissue_mask.dtype == bool, 'Tissue mask not Boolean.'
+            self.tissue_mask_level = self.wsi.level_dimensions.index(self.tissue_mask.shape[::-1])
+            self.tissue_mask_mag = self.magnifications[self.tissue_mask_level]
 
         # Add annotation, if present
         if annotation_dir is None:
@@ -71,28 +76,26 @@ class Sampler(object):
                 print('Annotation mask found. Loading.')
                 self.annotation = openslide.OpenSlide(string)
 
-    def prepare_sampling(self, magnification, patchsize, tolerence=0.01):
+    def prepare_sampling(self, magnification, patchsize):
         """
         Prepare to sample patches.
         :param magnification:
         :param patchsize:
-        :param tolerence: Magnification tolerence.
         :return:
         """
+        self.level = self.get_level(magnification)  # level for patch extraction.
+        self.leveldim = self.wsi.level_dimensions[self.level]  # dimensions of that level.
+        self.ps = patchsize  # patch size
 
-        self.desired_downsampling = desired_downsampling
-        self.patchsize = patchsize
-        self.level = ut.get_level(self.wsi, self.desired_downsampling, threshold=0.01)
-
-        background_patchsize = self.level_converter(self.patchsize, self.level, self.background.level)
-        self.background.set_patchsize(background_patchsize)
+        self.ps_tm = self.level_converter(self.ps, self.level, self.tissue_mask_level) \
+            # patch size in tissue mask reference frame
 
         if self.annotation is not None:
-            self.annotation_level = ut.get_level(self.annotation, self.desired_downsampling, threshold=0.01)
+            assert self.leveldim in self.annotation.level_dimensions, 'Annotation mask does not have matching level.'
+            self.annotation_level = self.annotation.level_dimensions.index(self.leveldim)
 
-        self._get_classes_and_seeds()  # get classes and approximate coordinates to 'seed' the patch sampling process
-
-        self.rejected = 0  # to count how many patches we reject
+        self._get_classes_and_seeds()  # get classes and approximate coordinates to 'seed' the patch sampling process.
+        self.rejected = 0  # to count how many patches we reject.
 
     def sample_patches(self, max_per_class=100, savedir=os.getcwd(), verbose=0):
         """
@@ -122,12 +125,13 @@ class Sampler(object):
 
     def _get_classes_and_seeds(self):
         """
-        Get classes and approximate coordinates to 'seed' the patch sampling process
+        Get classes and approximate coordinates to 'seed' the patch sampling process.
+        Builds the objects self.class_list and self.class_seeds.
         """
         # do class 0 i.e. unannotated first
-        mask = self.background.data
+        mask = self.tissue_mask
         nonzero = np.nonzero(mask)
-        factor = self.wsi.level_downsamples[self.background.level]
+        factor = self.wsi.level_downsamples[self.tissue_mask_level]
         N = nonzero[0].shape[0]
         coordinates = [(int(nonzero[0][i] * factor), int(nonzero[1][i] * factor)) for i in range(N)]
         shuffle(coordinates)
@@ -139,7 +143,6 @@ class Sampler(object):
             return
 
         # now add other classes
-        down = int(self.level0 / 2.5)  # as near to 2.5X as possible
         level = ut.get_level(self.annotation, desired_downsampling=down, threshold=20)
         annotation_low_res = self.annotation.read_region((0, 0), level, self.annotation.level_dimensions[level])
         annotation_low_res = annotation_low_res.convert('L')
@@ -166,7 +169,7 @@ class Sampler(object):
         """
         idx = self.class_list.index(c)
         h, w = self.class_seeds[idx][i]
-        patch = self.wsi.read_region((w, h), self.level, (self.patchsize, self.patchsize))
+        patch = self.wsi.read_region((w, h), self.level, (self.ps, self.ps))
         patch = patch.convert('RGB')
 
         i = self.level_converter(h, 0, self.background.level)
@@ -181,7 +184,7 @@ class Sampler(object):
             'w': w,
             'h': h,
             'parent': self.wsi_file,
-            'size': self.patchsize,
+            'size': self.ps,
             'level': self.level,
             'class': c,
             'id': self.fileID
@@ -190,11 +193,11 @@ class Sampler(object):
         if self.annotation is None:
             return patch, info
 
-        annotation_patch = self.annotation.read_region((w, h), self.annotation_level, (self.patchsize, self.patchsize))
+        annotation_patch = self.annotation.read_region((w, h), self.annotation_level, (self.ps, self.ps))
         annotation_patch = annotation_patch.convert('L')
         annotation_patch = np.asarray(annotation_patch).copy()
         mask = (annotation_patch != c).astype(int)
-        if np.sum(mask) / (self.patchsize ** 2) > 0.9:
+        if np.sum(mask) / (self.ps ** 2) > 0.9:
             self.rejected += 1
             return None, None
 
@@ -202,14 +205,14 @@ class Sampler(object):
 
     ### Sampler specific util methods.
 
-    def get_level(self, magnification, tolerence=0.01):
+    def get_level(self, magnification, tol=0.01):
         """
-        Get the level corresponding to a specified magnification
+        Get the level corresponding to a specified magnification.
         :param magnification:
-        :param tolerence:
+        :param tol:
         :return:
         """
-        truth, idx = ut.val_in_list(magnification, self.magnifications, tol=tolerence)
+        truth, idx = ut.val_in_list(magnification, self.magnifications, tol=tol)
         if not truth:
             warn = 'Failed to find a suitable level\nAvailable magnifications are \n{}'
             print(warn.format(self.magnifications))
@@ -219,7 +222,7 @@ class Sampler(object):
 
     def level_converter(self, x, lvl_in, lvl_out):
         """
-        Convert a length/coordinate 'x' from lvl_in to lvl_out
+        Convert a length/coordinate 'x' from lvl_in to lvl_out.
         :param x: a length/coordinate
         :param lvl_in: level to convert from
         :param lvl_out: level to convert to
@@ -255,11 +258,16 @@ class Sampler(object):
 if __name__ == '__main__':
     import glob
 
-    data_dir = '/Users/peterb/Dropbox/SharedMore/WSI_sampler'
-    # data_dir = '/home/peter/Dropbox/SharedMore/WSI_sampler'
+    mac = True
+    if mac:
+        data_dir = '/Users/peterb/Dropbox/SharedMore/WSI_sampler'
+    else:
+        data_dir = '/home/peter/Dropbox/SharedMore/WSI_sampler'
+
     files = glob.glob(os.path.join(data_dir, '*.tif'))
-    file = files[0]
+    file = files[1]
     tm_dir = './tissue_masks'
     annotation_dir = os.path.join(data_dir, 'annotation')
-    sampler = Sampler(file, tm_dir, annotation_dir, level0=40)
-    print(sampler.magnifications)
+
+    sampler = Sampler(file, level0=40, tissue_mask_dir=tm_dir, annotation_dir=annotation_dir)
+    sampler.prepare_sampling(10, 100)
