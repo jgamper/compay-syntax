@@ -4,19 +4,20 @@ Utils module
 
 import pandas as pd
 import os
-import openslide
 import glob
 
+from modules import openslideplus
 
-def val_in_list(val, x, tol=0.01):
+
+def val_in_list(val, search_list, tol=0.01):
     """
     Is a value in a list?
     :param val:
-    :param x:
+    :param search_list:
     :param tol:
     :return:
     """
-    diffs = [abs(x[i] - val) for i in range(len(x))]
+    diffs = [abs(search_list[i] - val) for i in range(len(search_list))]
     minimum = min(diffs)
     if minimum > tol:
         return (False, None)
@@ -24,10 +25,22 @@ def val_in_list(val, x, tol=0.01):
         return (True, diffs.index(minimum))
 
 
-def string_in_directory(s, dir):
+def index_last_non_zero(x):
     """
-    Is a string in a filename in the given directory?
-    :param s: string
+    Index of last non-zero element of list
+    e.g. for [1,4,3,7,0,0,0,...] would return 3
+    :param x:
+    :return:
+    """
+    for idx in range(len(x)):
+        if not x[idx]:
+            return idx - 1
+
+
+def item_in_directory(search_key, dir):
+    """
+    Search for file in a given directory by a substring.
+    :param search_key: string
     :param dir: directory
     :return: (bool, string)
     """
@@ -35,9 +48,21 @@ def string_in_directory(s, dir):
         return False, 'Not a directory'
     files_in_dir = glob.glob(os.path.join(dir, '*'))
     for file in files_in_dir:
-        if s in file:
+        if search_key in file:
             return True, file
     return False, 'Not found'
+
+
+def level_converter(wsi, x, lvl_in, lvl_out):
+    """
+    Convert a length/coordinate 'x' from lvl_in to lvl_out.
+    :param wsi:
+    :param x: a length/coordinate
+    :param lvl_in: level to convert from
+    :param lvl_out: level to convert to
+    :return: New length/coordinate
+    """
+    return int(x * wsi.level_downsamples[lvl_in] / wsi.level_downsamples[lvl_out])
 
 
 def get_patch_from_info_dict(info):
@@ -46,9 +71,9 @@ def get_patch_from_info_dict(info):
     :param info: info dict
     :return: patch (PIL image)
     """
-    slide = openslide.OpenSlide(info['parent'])
-    patch = slide.read_region(location=(info['w'], info['h']), level=info['level'], size=(info['size'], info['size']))
-    return patch.convert('RGB')  # Make sure it's RGB (not e.g. RGBA).
+    slide = openslideplus.OpenSlidePlus(info['parent'], info['lvl0'])
+    patch = slide.get_patch(info['w'], info['h'], info['mag'], info['size'])
+    return patch
 
 
 def save_patchframe_patches(input, save_dir=os.path.join(os.getcwd(), 'patches')):
@@ -63,11 +88,18 @@ def save_patchframe_patches(input, save_dir=os.path.join(os.getcwd(), 'patches')
         patchframe = pd.read_pickle(input)
     else:
         raise Exception('Input should be patchframe (pd.DataFrame) or string path to pickled patchframe.')
+
     os.makedirs(save_dir, exist_ok=True)
+
     num_patches = patchframe.shape[0]
-    print('Saving hard copies of patches in patchframe to {}'.format(save_dir))
+    print('Saving hard copies of patches in patchframe to {}.'.format(save_dir))
     for i in range(num_patches):
         info = patchframe.ix[i]
         patch = get_patch_from_info_dict(info)
         filename = os.path.join(save_dir, 'p{}_class_{}_from_{}.png'.format(i, info['class'], info['id']))
         patch.save(filename)
+
+
+if __name__ == '__main__':
+    x = [2, 5, 4, 3, 0, 0]
+    assert index_last_non_zero(x) == 3

@@ -9,7 +9,7 @@ import pandas as pd
 from joblib import Parallel, delayed
 import multiprocessing
 
-from modules import utils
+from modules import misc
 
 ###
 
@@ -55,4 +55,4 @@ print('\n', frame.head())
 
 ###
 
-utils.save_patchframe_patches(frame)
+misc.save_patchframe_patches(frame)

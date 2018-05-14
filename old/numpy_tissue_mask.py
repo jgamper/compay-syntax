@@ -6,7 +6,7 @@ import os
 from PIL import Image
 import pickle
 
-import modules.utils as ut
+import modules.misc as ut
 
 
 class NumpyTissueMask(object):
