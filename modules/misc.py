@@ -64,6 +64,19 @@ def level_converter(wsi, x, lvl_in, lvl_out):
     """
     return int(x * wsi.level_downsamples[lvl_in] / wsi.level_downsamples[lvl_out])
 
+def get_level(mag, mags, threshold=0.01):
+    """
+    Get the level closest to a specified magnification.
+    :param mag:
+    :param threshold:
+    :return:
+    """
+    diffs = [abs(mag - mags[i]) for i in range(len(mags))]
+    minimum = min(diffs)
+    assert minimum < threshold, 'Suitable level not found.'
+    level = diffs.index(minimum)
+    return level
+
 
 def get_patch_from_info_dict(info):
     """

@@ -52,15 +52,3 @@ class OpenSlidePlus(OpenSlide):
             patch.thumbnail((size, size))  # Resize inplace.
         return patch
 
-    def _get_level(self, mag, threshold=0.01):
-        """
-        Get the level corresponding to a specified magnification.
-        :param mag:
-        :param threshold:
-        :return:
-        """
-        diffs = [abs(mag - self.mags[i]) for i in range(len(self.mags))]
-        minimum = min(diffs)
-        assert minimum < threshold, 'Suitable level not found.'
-        level = diffs.index(minimum)
-        return level

@@ -30,7 +30,7 @@ class Sampler(object):
         self.annotation_dir = annotation_dir
 
         # Add tissue mask.
-        self.tissue_mask = TissueMask(self.wsi, search_dir=tissue_mask_dir)
+        self.tissue_mask = TissueMask(search_dir=tissue_mask_dir, reference_wsi=self.wsi)
 
         # Add annotation, if present
         if annotation_dir is None:
@@ -77,12 +77,12 @@ class Sampler(object):
 
         print('Rejected {} patches for file {}'.format(self.rejected, self.wsi.ID))
 
-        self.frame = frame
-
         os.makedirs(savedir, exist_ok=1)
         filename = os.path.join(savedir, self.wsi.ID + '_patchframe.pickle')
         print('Saving patchframe to {}'.format(filename))
         frame.to_pickle(filename)
+
+        return frame
 
     ###
 
@@ -132,7 +132,7 @@ class Sampler(object):
         h, w = self.class_seeds[idx][i]
         patch = self.wsi.get_patch(w, h, self.mag, self.patchsize)
 
-        tissue_mask_patch = self.tissue_mask.get_reduced_patch(w, h, self.mag, self.patchsize)
+        tissue_mask_patch = self.tissue_mask.get_patch(w, h, self.mag, self.patchsize)
         if np.sum(tissue_mask_patch) / np.prod(tissue_mask_patch.shape) < 0.9:
             self.rejected += 1
             return None, None

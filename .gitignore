@@ -18,3 +18,5 @@ old/tests/bg_vis/Tumor_108_background\.png
 __pycache__/
 
 patches/
+
+\.DS_Store

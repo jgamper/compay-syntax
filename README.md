@@ -1,1 +1,1 @@
-**Please see [readme.ipynb]()**
+**Please see [readme.ipynb](https://github.com/Peter554/WholeSlideImageSampler/blob/master/README.ipynb).**

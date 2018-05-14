@@ -1,9 +1,10 @@
 import numpy as np
 from skimage import filters, color
 from skimage.morphology import disk
-from skimage.morphology import opening, closing
+from skimage.morphology import opening, closing, dilation
 import pickle
 import os
+from PIL import Image
 
 import modules.misc as ut
 from modules.openslideplus import OpenSlidePlus
@@ -11,27 +12,27 @@ from modules.openslideplus import OpenSlidePlus
 
 class TissueMask(object):
 
-    def __init__(self, reference_wsi, search_dir):
+    def __init__(self, search_dir, reference_wsi):
         """
         An object for computing and storing tissue masks.
-        :param reference_wsi:
         :param search_dir: Where we store tissue masks.
+        :param reference_wsi:
         """
         assert isinstance(reference_wsi, OpenSlidePlus), 'Reference WSI should be OpenSlidePlus.'
 
         truth, filename = ut.item_in_directory(reference_wsi.ID, search_dir)
         if truth:
             print('Tissue mask found. Loading.')
-            self._load(filename)
+            self.load(filename)
         else:
             print('Tissue mask not found. Generating now.')
-            self.level = reference_wsi._get_level(mag=1.25, threshold=5.0)
+            self.level = ut.get_level(mag=1.25, mags=reference_wsi.mags, threshold=5.0)
             self.mag = reference_wsi.mags[self.level]
             self.ref_factor = self.mag / reference_wsi.level0  # Use to convert coordinates.
             self.data = self._generate_tissue_mask_basic(reference_wsi, self.level)
-            self._save(reference_wsi.ID, search_dir)
+            self.save(reference_wsi.ID, search_dir)
 
-    def get_reduced_patch(self, w_ref, h_ref, mag, effective_size):
+    def get_patch(self, w_ref, h_ref, mag, effective_size):
         """
         Get a patch.
         :param w_ref: Width coordinate in frame of reference WSI level 0.
@@ -47,7 +48,7 @@ class TissueMask(object):
         patch = self.data[h:h + patchsize, w:w + patchsize].astype(float)
         return patch
 
-    def _save(self, ID, savedir):
+    def save(self, ID, savedir):
         """
         Save (pickle) the TissueMask
         :param ID:
@@ -60,7 +61,7 @@ class TissueMask(object):
         pickle.dump(self, pickling_on)
         pickling_on.close()
 
-    def _load(self, path):
+    def load(self, path):
         """
         Load TissueMask object.
         :return:
@@ -72,6 +73,28 @@ class TissueMask(object):
         self.ref_factor = tm.ref_factor
         self.data = tm.data
         pickling_off.close()
+
+    def visualize(self, reference_wsi):
+        """
+        Get a thumbnail visualization.
+        :param reference_wsi:
+        :return:
+        """
+        assert isinstance(reference_wsi, OpenSlidePlus), 'Reference WSI should be OpenSlidePlus.'
+        size = 3000
+        # A resize hack...
+        tm = Image.fromarray(self.data.astype(float))
+        tm.thumbnail(size=(size, size))
+        tm = np.asarray(tm)
+
+        dilated = dilation(tm, disk(10))
+        contour = np.logical_xor(dilated, tm).astype(np.bool)
+
+        wsi_thumb = np.asarray(reference_wsi.get_thumbnail(size=(size, size))).copy()  # Copy to avoid read-only issue.
+        wsi_thumb[contour] = 0
+
+        pil = Image.fromarray(wsi_thumb)
+        return pil
 
     ### Tissue mask generation methods. Could add some more?
 
