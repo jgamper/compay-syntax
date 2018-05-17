@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name='wsisampler',
-    version='0.0.1',
+    version='0.0.2',
     description='A package for WSI sampling.',
     long_description=readme,
     author='Peter Byfield',
@@ -18,7 +18,9 @@ setup(
                       'matplotlib',
                       'jupyter',
                       'future',
-                      'cython'
+                      'cython',
+                      'pandas',
+                      'scikit-image'
                       ],
     classifiers=[
         # Specify the Python versions you support here. In particular, ensure

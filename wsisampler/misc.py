@@ -64,6 +64,7 @@ def level_converter(wsi, x, lvl_in, lvl_out):
     """
     return int(x * wsi.level_downsamples[lvl_in] / wsi.level_downsamples[lvl_out])
 
+
 def get_level(mag, mags, threshold=0.01):
     """
     Get the level closest to a specified magnification.
@@ -111,8 +112,3 @@ def save_patchframe_patches(input, save_dir=os.path.join(os.getcwd(), 'patches')
         patch = get_patch_from_info_dict(info)
         filename = os.path.join(save_dir, 'p{}_class_{}_from_{}.png'.format(i, info['class'], info['id']))
         patch.save(filename)
-
-
-if __name__ == '__main__':
-    x = [2, 5, 4, 3, 0, 0]
-    assert index_last_non_zero(x) == 3
