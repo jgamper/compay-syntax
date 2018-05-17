@@ -1,11 +1,8 @@
 from openslide import OpenSlide
 import numpy as np
-from skimage.morphology import dilation
-from skimage.morphology import disk
-from PIL import Image
 
-from modules.openslideplus import OpenSlidePlus
-import modules.misc as ut
+from .openslideplus import OpenSlidePlus
+from .misc import get_level
 
 
 class Annotation(OpenSlide):
@@ -41,7 +38,7 @@ class Annotation(OpenSlide):
         w = int(w_ref * self.ref_factor)
         h = int(h_ref * self.ref_factor)
 
-        extraction_level = ut.get_level(mag, self.mags, threshold=5.0)
+        extraction_level = get_level(mag, self.mags, threshold=5.0)
         extraction_mag = self.mags[extraction_level]
         extraction_size = int(size * extraction_mag / mag)
 
@@ -56,7 +53,7 @@ class Annotation(OpenSlide):
         Also returns a factor for converting lengths back to reference WSI level 0 frame.
         :return:
         """
-        level = ut.get_level(mag=1.25, mags=self.mags, threshold=5.0)
+        level = get_level(mag=1.25, mags=self.mags, threshold=5.0)
         size = self.level_dimensions[level]
         low_res = self.read_region((0, 0), level, size).convert('L')  # Mode 'L' is uint8 grayscale.
         low_res_np = np.asarray(low_res)

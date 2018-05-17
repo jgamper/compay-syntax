@@ -6,8 +6,8 @@ import pickle
 import os
 from PIL import Image
 
-import modules.misc as ut
-from modules.openslideplus import OpenSlidePlus
+from .misc import item_in_directory, get_level
+from .openslideplus import OpenSlidePlus
 
 
 class TissueMask(object):
@@ -20,13 +20,13 @@ class TissueMask(object):
         """
         assert isinstance(reference_wsi, OpenSlidePlus), 'Reference WSI should be OpenSlidePlus.'
 
-        truth, filename = ut.item_in_directory(reference_wsi.ID, search_dir)
+        truth, filename = item_in_directory(reference_wsi.ID, search_dir)
         if truth:
             print('Tissue mask found. Loading.')
             self.load(filename)
         else:
             print('Tissue mask not found. Generating now.')
-            self.level = ut.get_level(mag=1.25, mags=reference_wsi.mags, threshold=5.0)
+            self.level = get_level(mag=1.25, mags=reference_wsi.mags, threshold=5.0)
             self.mag = reference_wsi.mags[self.level]
             self.ref_factor = self.mag / reference_wsi.level0  # Use to convert coordinates.
             self.data = self._generate_tissue_mask_basic(reference_wsi, self.level)

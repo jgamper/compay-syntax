@@ -6,7 +6,7 @@ import pandas as pd
 import os
 import glob
 
-from modules import openslideplus
+from wsisampler import openslideplus
 
 
 def val_in_list(val, search_list, tol=0.01):

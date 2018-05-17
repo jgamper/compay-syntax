@@ -1,7 +1,7 @@
 from openslide import OpenSlide
 import os
 
-import modules.misc as ut
+from .misc import index_last_non_zero
 
 
 class OpenSlidePlus(OpenSlide):
@@ -43,7 +43,7 @@ class OpenSlidePlus(OpenSlide):
         assert self.level0 >= mag, 'Magnification not available.'
 
         higher_mags = [self.mags[i] >= mag for i in range(len(self.mags))]
-        extraction_level = ut.index_last_non_zero(higher_mags)
+        extraction_level = index_last_non_zero(higher_mags)
         extraction_mag = self.mags[extraction_level]
         extraction_size = int(size * extraction_mag / mag)
 

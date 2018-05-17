@@ -7,10 +7,10 @@ import numpy as np
 import pandas as pd
 from random import shuffle
 
-from modules.openslideplus import OpenSlidePlus
-from modules.tissuemask import TissueMask
-from modules.annotation import Annotation
-import modules.misc as ut
+from .openslideplus import OpenSlidePlus
+from .tissuemask import TissueMask
+from .annotation import Annotation
+from .misc import item_in_directory
 
 
 class Sampler(object):
@@ -36,7 +36,7 @@ class Sampler(object):
         if annotation_dir is None:
             self.annotation = None
         else:
-            truth, filename = ut.item_in_directory(self.wsi.ID, self.annotation_dir)
+            truth, filename = item_in_directory(self.wsi.ID, self.annotation_dir)
             if not truth:
                 print('No annotation mask found. Skipping.')
                 self.annotation = None
