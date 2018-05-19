@@ -7,3 +7,4 @@ from . import tissuemask
 # For Convenience
 from .sampler import Sampler
 from .openslideplus import OpenSlidePlus
+from .openslideplus import assign_wsi_plus

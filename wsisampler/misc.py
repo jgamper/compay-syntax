@@ -6,7 +6,7 @@ import pandas as pd
 import os
 import glob
 
-from wsisampler import openslideplus
+from wsisampler.openslideplus import assign_wsi_plus
 
 
 def val_in_list(val, search_list, tol=0.01):
@@ -79,13 +79,13 @@ def get_level(mag, mags, threshold=0.01):
     return level
 
 
-def get_patch_from_info_dict(info):
+def get_patch_from_info_dict(info, engine=None):
     """
     Get a patch from an info dict
     :param info: info dict
     :return: patch (PIL image)
     """
-    slide = openslideplus.OpenSlidePlus(info['parent'], info['lvl0'])
+    slide = assign_wsi_plus(info['parent'], info['lvl0'], engine=engine)
     patch = slide.get_patch(info['w'], info['h'], info['mag'], info['size'])
     return patch
 
