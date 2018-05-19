@@ -1,3 +1,4 @@
+from . import jp2
 from . import annotation
 from . import misc
 from . import openslideplus

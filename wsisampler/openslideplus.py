@@ -1,7 +1,7 @@
 from openslide import OpenSlide
 import os
 from PIL import Image
-
+from jp2 import OpenJP2
 from .misc import index_last_non_zero
 
 
