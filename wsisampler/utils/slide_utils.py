@@ -1,27 +1,13 @@
 import pandas as pd
 import os
-import glob
-from wsisampler.openslideplus import assign_wsi_plus
 
-def item_in_directory(search_key, dir):
-    """
-    Search for file in a given directory by a substring.
-    :param search_key: string
-    :param dir: directory
-    :return: (bool, string)
-    """
-    if not os.path.isdir(dir):
-        return False, 'Not a directory'
-    files_in_dir = glob.glob(os.path.join(dir, '*'))
-    for file in files_in_dir:
-        if search_key in file:
-            return True, file
-    return False, 'Not found'
+from wsisampler.slides.assign import get_wsi_plus
 
 
 def level_converter(wsi, x, lvl_in, lvl_out):
     """
     Convert a length/coordinate 'x' from lvl_in to lvl_out.
+
     :param wsi:
     :param x: a length/coordinate
     :param lvl_in: level to convert from
@@ -34,6 +20,7 @@ def level_converter(wsi, x, lvl_in, lvl_out):
 def get_level(mag, mags, threshold=0.01):
     """
     Get the level closest to a specified magnification.
+
     :param mag:
     :param threshold:
     :return:
@@ -47,18 +34,20 @@ def get_level(mag, mags, threshold=0.01):
 
 def get_patch_from_info_dict(info, engine=None):
     """
-    Get a patch from an info dict
+    Get a patch from an info dict.
+
     :param info: info dict
     :return: patch (PIL image)
     """
-    slide = assign_wsi_plus(info['parent'], info['lvl0'], engine=engine)
+    slide = get_wsi_plus(info['parent'], info['lvl0'], engine=engine)
     patch = slide.get_patch(info['w'], info['h'], info['mag'], info['size'])
     return patch
 
 
 def save_patchframe_patches(input, save_dir=os.path.join(os.getcwd(), 'patches'), engine=None):
     """
-    Save patches in a patchframe to disk for visualization
+    Save patches in a patchframe to disk for visualization.
+
     :param input: patchframe or pickled patchframe
     :param save_dir: where to save to
     """

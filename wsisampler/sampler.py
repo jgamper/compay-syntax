@@ -7,10 +7,10 @@ import numpy as np
 import pandas as pd
 from random import shuffle
 
-from wsisampler.openslideplus import assign_wsi_plus
-from wsisampler.tissuemask import TissueMask
-from wsisampler.annotation import Annotation
-from wsisampler.misc_slide_specific import item_in_directory
+from .slides.assign import get_wsi_plus
+from .tissuemask import TissueMask
+from .annotation import Annotation
+from wsisampler.utils.misc_utils import item_in_directory
 
 
 class Sampler(object):
@@ -18,6 +18,7 @@ class Sampler(object):
     def __init__(self, wsi_file, level0, tissue_mask_dir, annotation_dir=None, engine=None):
         """
         Sampler object.
+
         :param wsi_file: path to a WSI file
         :param level0: 'Magnification' at level 0 (often 40X). If 'infer' we attempt to get from metadata.
         :param tissue_mask_dir: directory where we do/will store tissue masks.
@@ -25,7 +26,7 @@ class Sampler(object):
             NOTE: We can specify a value even if no annotation is present for this particular slide.
         """
         self.wsi_file = wsi_file
-        self.wsi = assign_wsi_plus(wsi_file, level0, engine)
+        self.wsi = get_wsi_plus(wsi_file, level0, engine)
         self.tissue_mask_dir = tissue_mask_dir
         self.annotation_dir = annotation_dir
 
@@ -47,6 +48,7 @@ class Sampler(object):
     def prepare_sampling(self, magnification, patchsize):
         """
         Prepare to sample patches.
+
         :param magnification:
         :param patchsize:
         :return:
@@ -60,7 +62,8 @@ class Sampler(object):
 
     def sample_patches(self, max_per_class=100, savedir=os.getcwd()):
         """
-        Sample patches and save in a patchframe
+        Sample patches and save in a patchframe.
+
         :param max_per_class: maximum number of patches per class
         :param savedir: where to save patchframe
         """
@@ -124,6 +127,7 @@ class Sampler(object):
     def _class_c_patch_i(self, c, i):
         """
         Try and get the ith patch of class c. If we reject return (None, None).
+
         :param c: class
         :param i: index
         :return: (patch, info_dict) or (None, None) if we reject patch.

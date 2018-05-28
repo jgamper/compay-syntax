@@ -1,8 +1,8 @@
 from openslide import OpenSlide
 import numpy as np
 
-from .openslideplus import OpenSlidePlus
-from .misc_slide_specific import get_level
+from .slides.openslideplus import OpenSlidePlus
+from wsisampler.utils.slide_utils import get_level
 
 
 class Annotation(OpenSlide):
@@ -15,7 +15,7 @@ class Annotation(OpenSlide):
         """
         super(Annotation, self).__init__(file)
 
-        assert isinstance(reference_wsi, OpenSlidePlus) or isinstance(reference_wsi, JP2Plus), 'Reference WSI should be OpenSlidePlus.'
+        assert isinstance(reference_wsi, OpenSlidePlus) #or isinstance(reference_wsi, JP2Plus)
         self.ref_factor = self.level_dimensions[0][0] / reference_wsi.level_dimensions[0][0] \
             # Use to convert coordinates.
 

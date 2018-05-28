@@ -1,4 +1,4 @@
-# from . import jp2
+# from . import matlab_files
 # from . import annotation
 # from . import misc
 # from . import openslideplus

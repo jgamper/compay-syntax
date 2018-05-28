@@ -1,15 +1,11 @@
-from wsisampler.openslideplus import assign_wsi_plus
-from wsisampler.tissuemask import TissueMask
 from wsisampler.sampler import Sampler
 import matlab
-import matplotlib.pyplot as plt
-import numpy as np
 import os
-from wsisampler.misc_slide_specific import save_patchframe_patches
+from wsisampler.utils.slide_utils import save_patchframe_patches
 
 engine = matlab.engine.start_matlab()
 
-path = '/media/jevjev/HDD Storage 1/ColonData/Raw/G16-28741_B2LEV1-3G16-28741B21L-1-3_1.jp2'
+path = '/media/jevjev/HDD Storage 1/ColonData/Raw/G16-28741_B2LEV1-3G16-28741B21L-1-3_1.matlab_files'
 tissue_mask_dir = '/home/jevjev/Dropbox/Projects/ImageSampler/Peters/WholeSlideImage_Sampler/toydir'
 # slide = assign_wsi_plus(path, 20, engine)
 # tissue_mask = TissueMask(tissue_mask_dir, reference_wsi=slide)

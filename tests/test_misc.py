@@ -1,4 +1,4 @@
-from wsisampler.misc import *
+from wsisampler.utils.misc_utils import *
 
 
 def test_index_last_non_zero():
