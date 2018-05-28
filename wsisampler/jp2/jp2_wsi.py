@@ -13,9 +13,11 @@ class OpenJP2(object):
         :param wsi_file: path to a WSI file
         :param m_path: path to where matlab functions are
         """
+        call_path = os.path.dirname(os.path.realpath(__file__))
         self.wsi_file = wsi_file
         self.jp2 = True
         self.engine = engine
+        self.engine.addpath(r'{}'.format(call_path),nargout=0)
         self.load_wsi_properties()
 
     def load_wsi_properties(self):

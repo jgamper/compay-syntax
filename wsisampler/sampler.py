@@ -7,15 +7,15 @@ import numpy as np
 import pandas as pd
 from random import shuffle
 
-from .openslideplus import OpenSlidePlus
-from .tissuemask import TissueMask
-from .annotation import Annotation
-from .misc import item_in_directory
+from wsisampler.openslideplus import assign_wsi_plus
+from wsisampler.tissuemask import TissueMask
+from wsisampler.annotation import Annotation
+from wsisampler.misc_slide_specific import item_in_directory
 
 
 class Sampler(object):
 
-    def __init__(self, wsi_file, level0, tissue_mask_dir, annotation_dir=None):
+    def __init__(self, wsi_file, level0, tissue_mask_dir, annotation_dir=None, engine=None):
         """
         Sampler object.
         :param wsi_file: path to a WSI file
@@ -25,7 +25,7 @@ class Sampler(object):
             NOTE: We can specify a value even if no annotation is present for this particular slide.
         """
         self.wsi_file = wsi_file
-        self.wsi = OpenSlidePlus(wsi_file, level0)
+        self.wsi = assign_wsi_plus(wsi_file, level0, engine)
         self.tissue_mask_dir = tissue_mask_dir
         self.annotation_dir = annotation_dir
 

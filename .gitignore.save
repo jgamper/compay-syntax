@@ -1,0 +1,9 @@
+path_out = '/media/jevjev/HDD Storage 2/kovacheva_samples'
+for i in range(10000):
+    print(i)
+    if i % 10 == 0:
+        mat_engine = engine.start_matlab()
+        mat_engine.addpath(r'/home/jevjev/Dropbox/Projects/GANS/ColonTissueDGM/kovachevaEnhanced/thecot-code',nargout=0)
+    out = np.array(mat_engine.thecot())
+    out = resize(out, (128, 128))
+    np.save(os.path.join(path_out,'{}'.format(i)), out)

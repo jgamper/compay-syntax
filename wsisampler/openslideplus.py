@@ -1,7 +1,7 @@
 from openslide import OpenSlide
 import os
 from PIL import Image
-from jp2 import OpenJP2
+from wsisampler.jp2.jp2_wsi import OpenJP2
 from .misc import index_last_non_zero
 
 
@@ -62,7 +62,7 @@ class JP2Plus(OpenJP2):
         :param level0: The 'magnification' at level 0.
         :param engine: Matlab engine object.
         """
-        super(OpenJP2, self).__init__(file, engine)
+        super(JP2Plus, self).__init__(file, engine)
 
         # ID (name) of the WSI
         self.ID = os.path.splitext(os.path.basename(file))[0]
@@ -86,13 +86,13 @@ class JP2Plus(OpenJP2):
         assert self.level0 >= mag, 'Magnification not available.'
 
         higher_mags = [self.mags[i] >= mag for i in range(len(self.mags))]
-        exctraction_level = index_last_non_zero(higher_mags)
-        exctraction_mag = self.mags[exctraction_level]
+        extraction_level = index_last_non_zero(higher_mags)
+        extraction_mag = self.mags[extraction_level]
         extraction_size = int(size * extraction_mag / mag)
 
         patch = self.read_region((w, h), extraction_level, (extraction_size, extraction_size))
         patch = Image.fromarray(patch, 'RGB')
-        if exctraction_size != size:
+        if extraction_size != size:
             patch.thumbnail((size, size)) # Resize inplace.
         return patch
 
