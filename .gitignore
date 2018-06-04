@@ -26,3 +26,7 @@ patches/
 dist/
 
 wsisampler\.egg-info/
+
+*.jp2
+
+*.tif

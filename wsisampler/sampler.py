@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from random import shuffle
 
-from .slides.assign import get_wsi_plus
+from .slides.assign import assign_wsi_plus
 from .tissuemask import TissueMask
 from .annotation import Annotation
 from wsisampler.utils.misc_utils import item_in_directory
@@ -26,7 +26,7 @@ class Sampler(object):
             NOTE: We can specify a value even if no annotation is present for this particular slide.
         """
         self.wsi_file = wsi_file
-        self.wsi = get_wsi_plus(wsi_file, level0, engine)
+        self.wsi = assign_wsi_plus(wsi_file, level0, engine)
         self.tissue_mask_dir = tissue_mask_dir
         self.annotation_dir = annotation_dir
 

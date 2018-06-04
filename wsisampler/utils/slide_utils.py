@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-from wsisampler.slides.assign import get_wsi_plus
+from wsisampler.slides.assign import assign_wsi_plus
 
 
 def level_converter(wsi, x, lvl_in, lvl_out):
@@ -39,7 +39,7 @@ def get_patch_from_info_dict(info, engine=None):
     :param info: info dict
     :return: patch (PIL image)
     """
-    slide = get_wsi_plus(info['parent'], info['lvl0'], engine=engine)
+    slide = assign_wsi_plus(info['parent'], info['lvl0'], engine=engine)
     patch = slide.get_patch(info['w'], info['h'], info['mag'], info['size'])
     return patch
 

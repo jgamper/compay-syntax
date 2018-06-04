@@ -2,7 +2,7 @@ from .openslideplus import OpenSlidePlus
 from .jp2plus import JP2Plus
 
 
-def get_wsi_plus(file, level0, engine=None):
+def assign_wsi_plus(file, level0, engine=None):
     """
     Function to select if JP2Plus or OpenSlidePlus should be used for a given image.
 
