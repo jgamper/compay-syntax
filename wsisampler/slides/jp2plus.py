@@ -34,7 +34,7 @@ class OpenJP2(object):
         ### Get slide info
         level_dim, level_downsamples, level_count = self.engine.get_jp2_info(self.wsi_file, nargout=3)
         # Make sure we have the right formats
-        level_dim, level_downsamples, level_count = int(level_dim), float(level_downsamples), int(level_count)
+        level_dim, level_downsamples, level_count = np.array(level_dim), np.array(level_downsamples), int(level_count)
 
         self.level_downsamples = [float(downsample[0]) for downsample in level_downsamples]
         self.level_dimensions = [(level_dim[level, 1], level_dim[level, 0]) for level in range(level_count)]
