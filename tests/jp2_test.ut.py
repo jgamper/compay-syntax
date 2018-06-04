@@ -25,3 +25,39 @@ sampler.prepare_sampling(magnification=20, patchsize=200)
 
 patchframe = sampler.sample_patches(max_per_class=20, savedir=os.getcwd())
 save_patchframe_patches(patchframe, './patches', engine=engine) # look in this directory
+
+import unittest
+import os
+from wsisampler.slides.assign import get_wsi_plus
+from wsisampler.matlab_files.engine import get_matlab_engine
+from wsisampler.sampler import Sampler
+from wsisampler.tissue_mask import TissueMask
+from wsisampler.utils.slide_utils import save_patchframe_patches
+from wsisampler.jp2plus import JP2Plus
+
+class TestJP2slides(unittest.TestCase):
+
+    def setUp(self):
+
+        # Assume testing data is in the root directory
+        self.path = './test_data/G16-28741_B2LEV1-3G16-28741B21L-1-3_1.jp2'
+        self.tissue_mask_dir = './test_data/'
+        self.engine = get_matlab_engine()
+
+    def test_assign_wsi_plus(self):
+
+        self.slide = assign_wsi_plus(path, 20, engine)
+        self.assertIsInstance(self.slide,
+                              JP2Plus)
+
+    def test_TissueMask(self):
+
+        tissue_mask = TissueMask(tissue_mask_dir, reference_wsi=slide)
+        self.assertIsInstance(tissue_mask, TissueMask)
+
+    def test_Sampler(self):
+
+
+
+if __name__=='__main__':
+    unittest.main()
