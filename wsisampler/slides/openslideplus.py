@@ -1,7 +1,7 @@
 from openslide import OpenSlide
 import os
 
-from .misc import index_last_non_zero
+from ..utils.misc_utils import index_last_non_zero
 
 
 class OpenSlidePlus(OpenSlide):
@@ -9,6 +9,7 @@ class OpenSlidePlus(OpenSlide):
     def __init__(self, file, level0):
         """
         An extension to the OpenSlide class with a method to get a patch by magnification.
+
         :param file: Path to the WSI readable by openslide.
         :param level0: The 'magnification' at level 0. If 'infer' we attempt to get from metadata.
         """
@@ -34,6 +35,7 @@ class OpenSlidePlus(OpenSlide):
         """
         Get a patch.
         If required magnification not available will use a higher magnification and resize.
+
         :param w: Width coordinate in level 0 frame.
         :param h: Height coordinate in level 0 frame.
         :param mag: Desired magnification.
@@ -51,4 +53,3 @@ class OpenSlidePlus(OpenSlide):
         if extraction_size != size:
             patch.thumbnail((size, size))  # Resize inplace.
         return patch
-

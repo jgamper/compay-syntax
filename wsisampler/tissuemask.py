@@ -6,8 +6,10 @@ import pickle
 import os
 from PIL import Image
 
-from .misc import item_in_directory, get_level
-from .openslideplus import OpenSlidePlus
+from .utils.slide_utils import get_level
+from .utils.misc_utils import item_in_directory
+from .slides.openslideplus import OpenSlidePlus
+from .slides.jp2plus import JP2Plus
 
 
 class TissueMask(object):
@@ -15,10 +17,11 @@ class TissueMask(object):
     def __init__(self, search_dir, reference_wsi):
         """
         An object for computing and storing tissue masks.
+
         :param search_dir: Where we store tissue masks.
         :param reference_wsi:
         """
-        assert isinstance(reference_wsi, OpenSlidePlus), 'Reference WSI should be OpenSlidePlus.'
+        assert isinstance(reference_wsi, OpenSlidePlus) or isinstance(reference_wsi, JP2Plus), 'Reference WSI should be OpenSlidePlus or JP2Plus.'
 
         truth, filename = item_in_directory(reference_wsi.ID, search_dir)
         if truth:
@@ -35,6 +38,7 @@ class TissueMask(object):
     def get_patch(self, w_ref, h_ref, mag, effective_size):
         """
         Get a patch.
+
         :param w_ref: Width coordinate in frame of reference WSI level 0.
         :param h_ref: Height coordinate in frame of reference WSI level 0.
         :param mag: Desired magnification.
@@ -50,7 +54,8 @@ class TissueMask(object):
 
     def save(self, ID, savedir):
         """
-        Save (pickle) the TissueMask
+        Save (pickle) the TissueMask.
+
         :param ID:
         :param savedir: where to save to
         """
@@ -64,6 +69,7 @@ class TissueMask(object):
     def load(self, path):
         """
         Load TissueMask object.
+
         :return:
         """
         pickling_off = open(path, 'rb')
@@ -77,10 +83,11 @@ class TissueMask(object):
     def visualize(self, reference_wsi):
         """
         Get a thumbnail visualization.
+
         :param reference_wsi:
         :return:
         """
-        assert isinstance(reference_wsi, OpenSlidePlus), 'Reference WSI should be OpenSlidePlus.'
+        assert isinstance(reference_wsi, OpenSlidePlus) or isinstance(reference_wsi, JP2Plus), 'Reference WSI should be OpenSlidePlus or JP2Plus.'
         size = 3000
         # A resize hack...
         tm = Image.fromarray(self.data.astype(float))
@@ -104,13 +111,17 @@ class TissueMask(object):
         Generate a tissue mask.
         This is achieved by Otsu thresholding on the saturation channel \
         followed by morphological closing and opening to remove noise.
+
         :param wsi:
         :param level:
         :return:
         """
-        low_res = wsi.read_region(location=(0, 0), level=level, size=wsi.level_dimensions[level]).convert('RGB') \
-            # Read slide at low resolution and make sure it's RGB (not e.g. RGBA).
-        low_res_numpy = np.asarray(low_res)  # Convert to numpy array.
+        if not hasattr(wsi, 'jp2'):
+            low_res = wsi.read_region(location=(0, 0), level=level, size=wsi.level_dimensions[level]).convert('RGB') \
+                # Read slide at low resolution and make sure it's RGB (not e.g. RGBA).
+            low_res_numpy = np.asarray(low_res)  # Convert to numpy array.
+        else:
+            low_res_numpy = wsi.read_region(location=(0, 0), level=level, size=wsi.level_dimensions[level])
         low_res_numpy_hsv = color.convert_colorspace(low_res_numpy, 'RGB', 'HSV')  # Convert to Hue-Saturation-Value.
         saturation = low_res_numpy_hsv[:, :, 1]  # Get saturation channel.
         threshold = filters.threshold_otsu(saturation)  # Otsu threshold.

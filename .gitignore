@@ -31,4 +31,10 @@ wsisampler\.egg-info/
 
 *.tif
 
-./test_data/*
+./test_data/
+
+*.svs
+
+*.png
+
+*.xml
