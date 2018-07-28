@@ -1,6 +1,7 @@
 import os
 import xmltodict
 import numpy as np
+from skimage.draw import polygon
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 

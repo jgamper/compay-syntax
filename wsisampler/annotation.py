@@ -1,7 +1,4 @@
 from openslide import open_slide
-from skimage.draw import polygon
-from skimage.morphology import dilation, disk
-from skimage.measure import find_contours
 from PIL import Image
 import numpy as np
 import os
