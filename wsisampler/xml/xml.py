@@ -109,13 +109,11 @@ class XMLVirtualSlideMaker(XMLPolygons):
         polygons = []
         classes = []
         for polygon_dict in xml['ZAS']['POI']['LABELS']['LABEL']:
-            try:
+            if polygon_dict['@MEDIATYPE'] == "freehand":
                 coords = np.array([[float(_['@Y']), float(_['@X'])] for _ in polygon_dict['POLYGON']['POINT']])
-            except KeyError as e:
-                continue
-            color = polygon_dict['@LINECOLOR']
-            polygons.append(coords)
-            classes.append(color)
+                color = polygon_dict['@LINECOLOR']
+                polygons.append(coords)
+                classes.append(color)
         # Return sorted polygons and their classes
         return sort_polygons(polygons, classes)
 
