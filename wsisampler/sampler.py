@@ -75,20 +75,26 @@ class Sampler(object):
         :param savedir: where to save patchframe
         :param anno_threshold: threshold for annotation
         """
+        self.max_per_class = max_per_class
         self.anno_threshold = anno_threshold
         frame = pd.DataFrame(data=None, columns=['id', 'w', 'h', 'class', 'mag', 'size', 'parent', 'lvl0'])
         if ignore_bg:
             _class_list = self.class_list[1:]
         else:
             _class_list = self.class_list
-        for i, c in enumerate(self.class_list):
-            seeds = self.class_seeds[i]
+        for c in _class_list:
+            index = self.class_list.index(c)
+            seeds = self.class_seeds[index]
+            count = 0
             for j, seed in enumerate(seeds):
                 _, info = self._class_c_patch_i(c, j)
                 if info is not None:
                     frame = frame.append(info, ignore_index=1)
-                if isinstance(max_per_class, int):
-                    if j >= (max_per_class - 1):
+                if isinstance(self.max_per_class, int):
+                    # If not rejected increment count
+                    if info is not None:
+                        count += 1
+                    if count >= (self.max_per_class - 1):
                         break
 
         print('Rejected {} patches for file {}'.format(self.rejected, self.wsi.ID))
@@ -171,6 +177,7 @@ class Sampler(object):
 
         annotation_patch = self.annotation.get_patch(w, h, self.mag, self.patchsize)
         annotation_patch = np.asarray(annotation_patch)
+        print(annotation_patch.shape)
         pixel_pattern = self.xml_reader.label_to_pixel(c)
         mask = (annotation_patch == pixel_pattern)
         if np.sum(mask) / np.prod(mask.shape) < self.anno_threshold:

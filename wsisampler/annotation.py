@@ -2,8 +2,6 @@ from openslide import open_slide
 from skimage.draw import polygon
 from skimage.morphology import dilation, disk
 from skimage.measure import find_contours
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
 from PIL import Image
 import numpy as np
 import os
@@ -12,6 +10,7 @@ import cv2
 from .slides.openslideplus import OpenSlidePlus
 from .slides.jp2plus import JP2Plus
 from .utils.slide_utils import get_level
+from .xml.xml_utils import generate_annotation_mask
 from .xml.xml_utils import XMLDirectoryMissing, XMLFileMissing
 from .utils.misc_utils import item_in_directory
 
@@ -139,38 +138,7 @@ class Annotation(object):
             # Check if corresponding xml exists
             truth, filename = item_in_directory(reference_wsi.ID, xml_dir)
             if truth:
-                self._generate_annotation_mask(filename, search_dir, reference_wsi, xml_reader)
+                generate_annotation_mask(filename, search_dir, reference_wsi, xml_reader)
             else:
                 # Catching this exception can be used for processing in batch
                 raise XMLFileMissing('XML file for wsi {} cannot be found'.format(reference_wsi.ID))
-
-    ### Annotation mask generation method
-
-    @staticmethod
-    def _generate_annotation_mask(file, save_dir, wsi, xml_reader):
-        """
-        Generates annotation mask from XML file
-        :param file: path to xml file
-        :param save_dir: directory to save the annotation mask
-        :param wsi: reference whole slide image
-        :param xml_reader: an object to deal with XML file
-        """
-        # Prepare mask template
-        level = get_level(mag=1.25, mags=wsi.mags, threshold=5.0)
-        w, h = wsi.level_dimensions[level]
-        mask = np.ones((h, w, 3), dtype=np.uint8)*255
-        ref_factor = mask.shape[1] / wsi.level_dimensions[0][0]
-
-        # Get sorted polygon coordinates and classes
-        polygons, classes = xml_reader.get_freehand_polygons(file)
-
-        # Iterate over polygons and populate the mask
-        for i, pts in enumerate(polygons):
-            pts *= ref_factor
-            code = xml_reader.hex_to_pixel(classes[i])
-            rr, cc = polygon(pts[:,0], pts[:,1], mask.shape)
-            mask[rr, cc, :] = code
-
-        # Save the mask
-        filename = os.path.join(save_dir, wsi.ID + '_AnnotationMask.png')
-        plt.imsave(filename, mask, cmap=cm.gray)

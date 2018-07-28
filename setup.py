@@ -20,7 +20,8 @@ setup(
                       'future',
                       'cython',
                       'pandas',
-                      'scikit-image'
+                      'scikit-image',
+                      'xmltodict'
                       ],
     classifiers=[
         # Specify the Python versions you support here. In particular, ensure

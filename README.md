@@ -2,6 +2,8 @@
 
 Tools for sampling patches from Whole-Slide-Images (WSIs) readable by [openslide](https://openslide.org/) using Python ('tested' on 3.5).
 
+If matlab engine is setup, then all of the same functionality applies to `jp2` WSIs.
+
 # Install
 
 `pip install wsisampler`
