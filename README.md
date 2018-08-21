@@ -4,6 +4,9 @@ Tools for sampling patches from Whole-Slide-Images (WSIs) readable by [openslide
 
 If matlab engine is setup, then all of the same functionality applies to `jp2` WSIs.
 
+Including objects to handle xml files produced by ASAP, or other annotation tools.
+
+
 # Install
 
 `pip install wsisampler`
@@ -19,4 +22,4 @@ pip install openslide-python
 
 # Example usage
 
-Please see demo.ipynb [here](https://github.com/Peter554/WholeSlideImageSampler/blob/master/demo.ipynb).
+Please see demo.ipynb [here](https://github.com/jgamper/WholeSlideImageSampler/blob/master/demo.ipynb).
