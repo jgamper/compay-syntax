@@ -3,31 +3,38 @@ Sampler module.
 """
 
 import os
+import copy
 import numpy as np
 import pandas as pd
 from random import shuffle
 
-from .openslideplus import OpenSlidePlus
+from .slides.assign import assign_wsi_plus
 from .tissuemask import TissueMask
 from .annotation import Annotation
-from .misc import item_in_directory
+from .utils.misc_utils import item_in_directory
 
 
 class Sampler(object):
 
-    def __init__(self, wsi_file, level0, tissue_mask_dir, annotation_dir=None):
+    def __init__(self, wsi_file, level0, tissue_mask_dir, annotation_dir=None, xml_dir=None, engine=None, xml_reader=None):
         """
         Sampler object.
+
         :param wsi_file: path to a WSI file
         :param level0: 'Magnification' at level 0 (often 40X). If 'infer' we attempt to get from metadata.
         :param tissue_mask_dir: directory where we do/will store tissue masks.
         :param annotation_dir: directory where we keep annotations. \
-            NOTE: We can specify a value even if no annotation is present for this particular slide.
+            NOTE: We can specify a value even if no annotation is present for this particular slide
+        :param xml_dir: directory where xml files are stored
+        :param engine: matlab engine
+        :param xml_reader: an object to deal with XML file
         """
         self.wsi_file = wsi_file
-        self.wsi = OpenSlidePlus(wsi_file, level0)
+        self.wsi = assign_wsi_plus(wsi_file, level0, engine)
         self.tissue_mask_dir = tissue_mask_dir
         self.annotation_dir = annotation_dir
+        self.xml_dir = xml_dir
+        self.xml_reader = xml_reader
 
         # Add tissue mask.
         self.tissue_mask = TissueMask(search_dir=tissue_mask_dir, reference_wsi=self.wsi)
@@ -42,11 +49,12 @@ class Sampler(object):
                 self.annotation = None
             elif truth:
                 print('Annotation mask found. Loading.')
-                self.annotation = Annotation(filename, self.wsi)
+                self.annotation = Annotation(self.annotation_dir, self.wsi, self.xml_dir, self.xml_reader)
 
     def prepare_sampling(self, magnification, patchsize):
         """
         Prepare to sample patches.
+
         :param magnification:
         :param patchsize:
         :return:
@@ -58,22 +66,36 @@ class Sampler(object):
 
         self._get_classes_and_seeds()  # get classes and approximate coordinates to 'seed' the patch sampling process.
 
-    def sample_patches(self, max_per_class=100, savedir=os.getcwd()):
+    def sample_patches(self, ignore_bg=True, max_per_class='ALL', savedir=os.getcwd(), anno_threshold=0.9):
         """
-        Sample patches and save in a patchframe
+        Sample patches and save in a patchframe.
+
+        :param ignore_bg: if true will ignore class 0, which is a background class
         :param max_per_class: maximum number of patches per class
         :param savedir: where to save patchframe
+        :param anno_threshold: threshold for annotation
         """
+        self.max_per_class = max_per_class
+        self.anno_threshold = anno_threshold
         frame = pd.DataFrame(data=None, columns=['id', 'w', 'h', 'class', 'mag', 'size', 'parent', 'lvl0'])
-
-        for i, c in enumerate(self.class_list):
-            seeds = self.class_seeds[i]
+        if ignore_bg:
+            _class_list = self.class_list[1:]
+        else:
+            _class_list = self.class_list
+        for c in _class_list:
+            index = self.class_list.index(c)
+            seeds = self.class_seeds[index]
+            count = 0
             for j, seed in enumerate(seeds):
                 _, info = self._class_c_patch_i(c, j)
                 if info is not None:
                     frame = frame.append(info, ignore_index=1)
-                if j >= (max_per_class - 1):
-                    break
+                if isinstance(self.max_per_class, int):
+                    # If not rejected increment count
+                    if info is not None:
+                        count += 1
+                    if count >= (self.max_per_class - 1):
+                        break
 
         print('Rejected {} patches for file {}'.format(self.rejected, self.wsi.ID))
 
@@ -106,7 +128,7 @@ class Sampler(object):
             return
 
         # Now add other classes.
-        annotation_low_res, factor = self.annotation.get_low_res_numpy()
+        annotation_low_res, factor = self.annotation.get_low_res_numpy(self.xml_reader)
         classes = sorted(list(np.unique(annotation_low_res)))
 
         assert classes[0] == 0
@@ -124,6 +146,7 @@ class Sampler(object):
     def _class_c_patch_i(self, c, i):
         """
         Try and get the ith patch of class c. If we reject return (None, None).
+
         :param c: class
         :param i: index
         :return: (patch, info_dict) or (None, None) if we reject patch.
@@ -154,8 +177,10 @@ class Sampler(object):
 
         annotation_patch = self.annotation.get_patch(w, h, self.mag, self.patchsize)
         annotation_patch = np.asarray(annotation_patch)
-        mask = (annotation_patch == c).astype(float)
-        if np.sum(mask) / np.prod(mask.shape) < 0.9:
+        print(annotation_patch.shape)
+        pixel_pattern = self.xml_reader.label_to_pixel(c)
+        mask = (annotation_patch == pixel_pattern)
+        if np.sum(mask) / np.prod(mask.shape) < self.anno_threshold:
             self.rejected += 1
             return None, None
 
