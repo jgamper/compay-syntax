@@ -5,12 +5,12 @@ with open('README.md') as f:
 
 setup(
     name='wsisampler',
-    version='0.0.2',
-    description='A package for WSI sampling.',
+    version='0.0.3',
+    description='A package for WSI sampling and annotations processing',
     long_description=readme,
-    author='Peter Byfield',
-    author_email='byfield554@gmail.com',
-    url='https://github.com/Peter554/WholeSlideImageSampler',
+    author='Jevgenij Gamper & Peter Byfield',
+    author_email='jevgenij.gamper5@gmail.com',
+    url='https://github.com/jgamper/WholeSlideImageSampler',
     packages=find_packages(),
     install_requires=['numpy',
                       'opencv-python',
