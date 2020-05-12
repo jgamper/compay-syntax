@@ -1,4 +1,8 @@
-# WholeSlideImageSampler
+<p align="center">
+    <br>
+    <img src="https://raw.githubusercontent.com/jgamper/wsi-syntax/master/docs/source/imgs/syntax_logo.png" width="400"/>
+    <br>
+<p>
 
 Tools for sampling patches from Whole-Slide-Images (WSIs) readable by [openslide](https://openslide.org/) using Python ('tested' on 3.5).
 
