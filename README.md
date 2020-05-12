@@ -1,8 +1,11 @@
 <p align="center">
     <br>
-    <img src="syntax_logo.png" width="400"/>
+    <img src="docs/source/imgs/syntax_logo_text.png" width="400"/>
     <br>
 <p>
+<h3 align="center">
+<p>Making computational pathology pipelines simple, yet structured 🤗🤗:hugging_face:
+</h3>
 
 Tools for sampling patches from Whole-Slide-Images (WSIs) readable by [openslide](https://openslide.org/) using Python ('tested' on 3.5).
 
