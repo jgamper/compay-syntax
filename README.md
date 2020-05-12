@@ -1,6 +1,6 @@
 <p align="center">
     <br>
-    <img src="https://raw.githubusercontent.com/jgamper/wsi-syntax/master/docs/source/imgs/syntax_logo.png" width="400"/>
+    <img src="docs/source/imgs/syntax_logo.png" width="400"/>
     <br>
 <p>
 
