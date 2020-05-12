@@ -1,6 +1,6 @@
 <p align="center">
     <br>
-    <img src="/docs/source/imgs/syntax_logo.png" width="400"/>
+    <img src="syntax_logo.png" width="400"/>
     <br>
 <p>
 
