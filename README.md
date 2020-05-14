@@ -9,43 +9,52 @@
 ### Generate tissue mask
 ```python
 from syntax.slides import assign_wsi
-from sytnax.tissuemask import TissueMask
+from sytnax.transformers import TissueMask
+from syntax.transformers.tissue_mask import visualise
 
-slide = assign_slide(slide=file, level0=40, frame=None)
-tissue_mask = TissueMask(save_path=path_to_save_tissue_mask, reference_slide=slide)
-vis = tissue_mask.visualize(reference_slide=slide)
+slide = assign_slide(slide=file, level0=40, hdf5=None)
+slide = TissueMask().fit_transform(X=slide)
+vis = visualise(slide=slide, tissue_mask=slide.tissue_mask)
 show_PIL(vis, size=8)
+
+# Save tissue mask
+slide.save_tissue_mask(path=path_to_tissue_mask)
 ```
 
-### View ASAP annotation
+### Sample tiles from whole slide image
 ```python
 from syntax.slides import assign_wsi
-from syntax.annotation import Annotation
-from syntax.annotation.xml import Asap
+from syntax.transformers.samplers import Sampler
 
-slide = assign_slide(slide=file, level0=40, frame=None)
-asap_handler = Asap(xml_file)
-annotation = Annotation(reference_slide=slide,
-                      annotation_handler=asap_handler)
-vis = annotation.visualize(reference_slide=slide)
+slide = assign_slide(slide=file, level0=40, hdf5=None)
+sampler = Sampler(dataset_name=dataset_name, magnification=40, tile_size=256, ignore_bg=True, max_per_class=20)
+slide = sampler.fit_transform(X=slide)
 show_PIL(vis, size=8)
 ```
 
-### Sample from whole slide image
+### Extract neural features from whole slide image using torchvision resnet18
 ```python
 from syntax.slides import assign_wsi
-from syntax.sample import Sampler
-from syntax.annotation import Annotation
-from syntax.annotation.xml import Asap
+from syntax.transformers.base import StaticTransformer
+from torchvision import models
 
-slide = assign_slide(slide=file, level0=40, frame=None)
-asap_handler = Asap(xml_file)
-annotation = Annotation(reference_slide=slide,
-                      annotation_handler=asap_handler)
-vis = annotation.visualize(reference_slide=slide)
-show_PIL(vis, size=8)
+class ResnetFeatureTransformer(BaseTransformer):
+
+    def fit(X, y=None):
+
+        resnet18 = models.resnet18(pretrained=True)
+
+        self.model = nn.Sequential(*list(resnet18.children())[:-1])
+
+    def transform(X, y=None):
+
+
+
+
+
+slide = assign_slide(slide=file, level0=40, hdf5=None)
+
 ```
-
 
 # Install
 

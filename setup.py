@@ -4,7 +4,7 @@ with open('README.md') as f:
     readme = f.read()
 
 setup(
-    name='wsisampler',
+    name='syntax',
     version='0.0.3',
     description='A package for WSI sampling and annotations processing',
     long_description=readme,
