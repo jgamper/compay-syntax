@@ -14,7 +14,7 @@
         <img alt="Documentation" src="https://img.shields.io/website/http/jgamper.github.io/syntax.svg?down_color=red&down_message=offline&up_message=online">
     </a>
     <a href="https://github.com/jgamper/wsi-syntax/releases">
-        <img alt="GitHub release" src="https://img.shields.io/github/release/huggingface/transformers.svg">
+        <img alt="GitHub release" src="https://img.shields.io/github/release/jgamper/wsi-syntax.svg">
     </a>
 </p>
 
