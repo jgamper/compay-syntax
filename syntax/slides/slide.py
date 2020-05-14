@@ -53,15 +53,15 @@ class Slide(OpenSlide):
         # Compute level magnifications.
         self._magnification_list = [self.level0 / downsample for downsample in self.level_downsamples]
 
-    def get_patch(self, w: int, h: int, magnification: int, size: int):
+    def get_tile(self, w: int, h: int, magnification: int, size: int):
         """
-        Get a patch.
+        Get a tile.
         If required magnification not available will use a higher magnification and resize.
         Args:
             w: Width coordinate in level 0 frame.
             h: Height coordinate in level 0 frame.
             magnification: Desired magnification.
-            size: Desired patch size (square patch).
+            size: Desired tile size (square tile).
 
         Returns:
 
@@ -74,10 +74,10 @@ class Slide(OpenSlide):
         extraction_size = int(size * extraction_mag / magnification)
 
         # Make sure it's RGB (not e.g. RGBA).
-        patch = self.read_region((w, h), extraction_level, (extraction_size, extraction_size)).convert('RGB')
+        tile = self.read_region((w, h), extraction_level, (extraction_size, extraction_size)).convert('RGB')
         if extraction_size != size:
-            patch.thumbnail((size, size))  # Resize inplace.
-        return patch
+            tile.thumbnail((size, size))  # Resize inplace.
+        return tile
 
     @property
     def magnifications(self):
