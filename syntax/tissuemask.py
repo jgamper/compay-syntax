@@ -6,9 +6,9 @@ import pickle
 import os
 from PIL import Image
 
-from .utils.slide_utils import get_level
-from .utils.misc_utils import item_in_directory
-from .slides.openslideplus import OpenSlidePlus
+from ._utils.slide_utils import get_level
+from ._utils.misc import item_in_directory
+from .slides.slide import OpenSlidePlus
 from .slides.jp2plus import JP2Plus
 
 

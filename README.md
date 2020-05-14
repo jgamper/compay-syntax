@@ -4,6 +4,14 @@
     <br>
 <p>
 
+# Help building our code and community!
+
+Add sourcerer link here.
+
+All contributions are welcome! Please see our [Contributing Guide](https://github.com/jgamper/wsi-syntax) for more details.
+
+Join community discussions on [something]()!
+
 # Usage
 
 ### Generate tissue mask

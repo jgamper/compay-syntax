@@ -5,7 +5,7 @@ from skimage.draw import polygon
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-from ..utils.slide_utils import get_level
+from .._utils.slide_utils import get_level
 
 def poly_area(x,y):
     """

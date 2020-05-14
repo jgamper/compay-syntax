@@ -11,7 +11,7 @@ from random import shuffle
 from .slides.assign import assign_wsi_plus
 from .tissuemask import TissueMask
 from .annotation import Annotation
-from .utils.misc_utils import item_in_directory
+from ._utils.misc import item_in_directory
 
 
 class Sampler(object):

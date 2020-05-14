@@ -1,20 +1,19 @@
-"""
-Utils module
-"""
-
 import os
 import glob
-from skimage import color
-import numpy as np
+from typeguard import typechecked
+from typing import Any, List, Tuple
 
-def val_in_list(val, search_list, tol=0.01):
+@typechecked
+def val_in_list(val: Any, search_list: List[Any], tol: float=0.01) -> Tuple[bool, int]:
     """
-    Is a value in a list?
+    Search for a value in a list
+    Args:
+        val:
+        search_list:
+        tol:
 
-    :param val:
-    :param search_list:
-    :param tol:
-    :return:
+    Returns:
+
     """
     diffs = [abs(search_list[i] - val) for i in range(len(search_list))]
     minimum = min(diffs)
@@ -23,27 +22,31 @@ def val_in_list(val, search_list, tol=0.01):
     else:
         return (True, diffs.index(minimum))
 
-
-def index_last_non_zero(x):
+@typechecked
+def index_last_non_zero(x: List[int]) -> int:
     """
     Index of last non-zero element of list
-    e.g. for [1,4,3,7,0,0,0,...] would return 3
+        e.g. for [1,4,3,7,0,0,0,...] would return 3
+    Args:
+        x: List
 
-    :param x:
-    :return:
+    Returns:
+        index of last non-zero element
     """
     for idx in range(len(x)):
         if not x[idx]:
             return idx - 1
 
-
-def item_in_directory(search_key, dir):
+@typechecked
+def item_in_directory(search_key: str, dir: str) -> Tuple[bool, str]:
     """
     Search for file in a given directory by a substring.
+    Args:
+        search_key:
+        dir: directory path
 
-    :param search_key: string
-    :param dir: directory
-    :return: (bool, string)
+    Returns:
+        (bool, string)
     """
     if not os.path.isdir(dir):
         return False, 'Not a directory'

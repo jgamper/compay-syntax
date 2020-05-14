@@ -4,12 +4,12 @@ import numpy as np
 import os
 import cv2
 
-from .slides.openslideplus import OpenSlidePlus
+from .slides.slide import OpenSlidePlus
 from .slides.jp2plus import JP2Plus
-from .utils.slide_utils import get_level
+from ._utils.slide_utils import get_level
 from .xml.xml_utils import generate_annotation_mask
 from .xml.xml_utils import XMLDirectoryMissing, XMLFileMissing
-from .utils.misc_utils import item_in_directory
+from ._utils.misc import item_in_directory
 
 
 class Annotation(object):
