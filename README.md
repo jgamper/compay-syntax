@@ -59,7 +59,7 @@ show_PIL(vis, size=8)
 
 # Install
 
-`pip install wsisampler`
+`pip install compay-syntax`
 
 You will need to install openslide. This is included in the dependencies so may be automatically installed. If not I found this to help:
 
