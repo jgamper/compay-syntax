@@ -69,7 +69,3 @@ You will need to install openslide. This is included in the dependencies so may 
 sudo apt-get install openslide-tools
 pip install openslide-python
 ```
-
-# Example usage
-
-Please see demo.ipynb [here](https://github.com/jgamper/WholeSlideImageSampler/blob/master/demo.ipynb).
