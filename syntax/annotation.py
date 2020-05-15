@@ -4,8 +4,8 @@ import numpy as np
 import os
 import cv2
 
-from .slides.slide import OpenSlidePlus
-from .slides.jp2plus import JP2Plus
+from .slide.slide import OpenSlidePlus
+from .slide.jp2plus import JP2Plus
 from ._utils.slide_utils import get_level
 from .xml.xml_utils import generate_annotation_mask
 from .xml.xml_utils import XMLDirectoryMissing, XMLFileMissing

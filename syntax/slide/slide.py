@@ -40,7 +40,7 @@ class Slide(OpenSlide):
         self.ID = os.path.splitext(os.path.basename(slide_path))[0]
 
         # Add level0 magnification.
-        if level0 == 'infer':
+        if level0 == None:
             try:
                 self.level0 = float(self.properties['openslide.objective-power'])
                 if self.verbose:
@@ -68,9 +68,9 @@ class Slide(OpenSlide):
         """
         assert self.level0 >= magnification, 'Magnification not available.'
 
-        higher_mags = [self.mags[i] >= magnification for i in range(len(self.mags))]
+        higher_mags = [self.magnifications[i] >= magnification for i in range(len(self.magnifications))]
         extraction_level = misc.index_last_non_zero(higher_mags)
-        extraction_mag = self.mags[extraction_level]
+        extraction_mag = self.magnifications[extraction_level]
         extraction_size = int(size * extraction_mag / magnification)
 
         # Make sure it's RGB (not e.g. RGBA).

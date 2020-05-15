@@ -3,7 +3,7 @@ import os
 from PIL import Image
 
 from syntax._utils import misc
-from syntax.slides.utils import get_level
+from syntax.slide.utils import get_level
 
 try:
     import matlab

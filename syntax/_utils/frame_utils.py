@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-from ..slides.assign import assign_wsi_plus
+from ..slide.assign import assign_wsi_plus
 
 def get_patch_from_info_dict(info, engine=None):
     """

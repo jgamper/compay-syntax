@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from random import shuffle
 
-from .slides.assign import assign_wsi_plus
+from .slide.assign import assign_wsi_plus
 from .tissuemask import TissueMask
 from .annotation import Annotation
 from ._utils.misc import item_in_directory

@@ -1,5 +1,5 @@
 from typeguard import typechecked
-from syntax.slides.slide import Slide
+from syntax.slide.slide import Slide
 from typing import List
 
 @typechecked
@@ -19,7 +19,7 @@ def level_converter(slide: Slide, coordinate: int, level_in: float, level_out: f
     return int(coordinate * slide.level_downsamples[level_in] / slide.level_downsamples[level_out])
 
 @typechecked
-def get_level(magnification: int, magnification_list: List[int], threshold: float=0.01):
+def get_level(magnification: float, magnification_list: List[float], threshold: float=0.01):
     """
     Get the level closest to a specified magnification.
     Args:

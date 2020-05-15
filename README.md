@@ -10,58 +10,51 @@ Add sourcerer link here.
 
 All contributions are welcome! Please see our [Contributing Guide](https://github.com/jgamper/wsi-syntax) for more details.
 
-Join community discussions on [something]()!
+Join community discussions on [gitter room]()!
 
-# Usage
+# Quick Start
 
-### Generate tissue mask
+### Tissue mask and tiling pipeline
 ```python
-from syntax.slides import assign_wsi
-from sytnax.transformers import TissueMask
-from syntax.transformers.tissue_mask import visualise
+from syntax.slide import Slide
+from syntax.transformers.tissue_mask import OtsuTissueMask
+from syntax.transformers.tiling import SimpleTiling
+from syntax.transformers import Pipeline, visualize_pipeline_results
 
-slide = assign_slide(slide=file, level0=40, hdf5=None)
-slide = TissueMask().fit_transform(X=slide)
-vis = visualise(slide=slide, tissue_mask=slide.tissue_mask)
-show_PIL(vis, size=8)
-
-# Save tissue mask
-slide.save_tissue_mask(path=path_to_tissue_mask)
-```
-
-### Sample tiles from whole slide image
-```python
-from syntax.slides import assign_wsi
-from syntax.transformers.samplers import Sampler
-
-slide = assign_slide(slide=file, level0=40, hdf5=None)
-sampler = Sampler(dataset_name=dataset_name, magnification=40, tile_size=256, ignore_bg=True, max_per_class=20)
-slide = sampler.fit_transform(X=slide)
+slide = Slide(slide_path=slide_path)
+pipeline = Pipeline([OtsuTissueMask(), SimpleTiling(magnification=40,
+                                                  tile_size=224,
+                                                  max_per_class=10)])
+slide = pipeline.fit_transform(slide)
+vis = visualize_pipeline_results(slide=slide, pipeline=pipeline, size=1000)
 show_PIL(vis, size=8)
 ```
 
-### Extract neural features from whole slide image using torchvision resnet18
+### Resnet features and tile clustering pipeline
 ```python
-from syntax.slides import assign_wsi
+from syntax.slide import Slide
 from syntax.transformers.base import StaticTransformer
 from torchvision import models
 
+@apply_to_slide
 class ResnetFeatureTransformer(BaseTransformer):
 
-    def fit(X, y=None):
+    def fit(self, *args, **kwargs):
 
         resnet18 = models.resnet18(pretrained=True)
 
         self.model = nn.Sequential(*list(resnet18.children())[:-1])
 
-    def transform(X, y=None):
+    def transform(x):
 
+        with torch.no_grad():
+            return self.model(x).data.numpy()
 
-
-
-
-slide = assign_slide(slide=file, level0=40, hdf5=None)
-
+slide = Slide(slide_path=slide_path)
+pipeline = Pipeline([ResnetFeatureTransformer(), InductiveClustering()])
+slide = pipeline.fit_transform(slide)
+vis = visualize_pipeline_results(slide=slide, pipeline=pipeline, size=1000)
+show_PIL(vis, size=8)
 ```
 
 # Install

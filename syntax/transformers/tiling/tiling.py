@@ -1,15 +1,14 @@
 import warnings
-import typeguard
+from typeguard import typechecked
 import numpy as np
 from random import shuffle
 import pandas as pd
 from typing import Optional
 from syntax.transformers.base import StaticTransformer
-from syntax.slides import Slide
+from syntax.slide import Slide
 
-
-@typeguard
-class TileExtractor(StaticTransformer):
+@typechecked
+class SimpleTiling(StaticTransformer):
     """The summary line for a class docstring should fit on one line.
 
     If the class has public attributes, they may be documented here
@@ -69,13 +68,13 @@ class TileExtractor(StaticTransformer):
         #  Get classes and approximate coordinates to 'seed' the patch sampling process.
         self._get_classes_and_seeds()
 
-        slide.tile_frame = self._sample_patches()
+        slide.tile_frame = self._sample_patches(self.slide.verbose)
 
         return slide
 
-    def _sample_patches(self):
+    def _sample_patches(self, verbose=False):
         """Sample tile and return in a tile_frame"""
-        frame = pd.DataFrame(data=None, columns=['id', 'w', 'h', 'class', 'mag', 'size', 'parent', 'lvl0'])
+        frame = pd.DataFrame(data=None, columns=['tile_id', 'w', 'h', 'class', 'mag', 'size', 'parent', 'lvl0'])
 
         for c in self.class_list:
             index = self.class_list.index(c)
@@ -91,8 +90,8 @@ class TileExtractor(StaticTransformer):
                         count += 1
                     if count >= (self.max_per_class - 1):
                         break
-
-        print('Rejected {} patches for file {}'.format(self.rejected, self.slide.ID))
+        if verbose:
+            print('Rejected {} patches for file {}'.format(self.rejected, self.slide.ID))
 
         return frame
 
@@ -139,21 +138,21 @@ class TileExtractor(StaticTransformer):
         """
         idx = self.class_list.index(c)
         h, w = self.class_seeds[idx][i]
-        patch = self.slide.get_patch(w, h, self.magnification, self.tile_size)
+        patch = self.slide.get_tile(w, h, self.magnification, self.tile_size)
 
-        tissue_mask_patch = self.tissue_mask.get_patch(w, h, self.magnification, self.tile_size)
+        tissue_mask_patch = self.tissue_mask.get_tile(w, h, self.magnification, self.tile_size)
         if np.sum(tissue_mask_patch) / np.prod(tissue_mask_patch.shape) < 0.9:
             self.rejected += 1
             return None, None
 
         info = {
+            'tile_id': i,
             'w': w,
             'h': h,
-            'parent': self.wsi_file,
+            'parent': self.slide.ID,
             'size': self.tile_size,
             'mag': self.magnification,
             'class': c,
-            'id': self.slide.ID,
             'lvl0': self.slide.level0
         }
 
@@ -161,7 +160,7 @@ class TileExtractor(StaticTransformer):
         if self.annotation is None:
             return patch, info
 
-        annotation_patch = self.annotation.get_patch(w, h, self.magnification, self.tile_size)
+        annotation_patch = self.annotation.get_tile(w, h, self.magnification, self.tile_size)
         annotation_patch = np.asarray(annotation_patch)
         print(annotation_patch.shape)
         pixel_pattern = self.xml_reader.label_to_pixel(c)
@@ -183,8 +182,9 @@ class TileExtractor(StaticTransformer):
 
     def _check_annotation(self, slide: Slide):
         """Checks if has annotation and raises a warning"""
-        if slide.annotation == None:
+        if not hasattr(slide, "annotation"):
             self.annotation = None
-            warnings.warn("{} slide does not have annotation mask supplied".format(self.slide.ID))
+            warning_string = "{} slide does not have annotation mask supplied".format(slide.ID)
+            warnings.warn(warning_string)
         else:
             self.annotation = slide.annotation
