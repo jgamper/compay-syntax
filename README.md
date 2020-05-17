@@ -8,7 +8,7 @@
 
 Add sourcerer link here.
 
-All contributions are welcome! Please see our [Contributing Guide](https://github.com/jgamper/wsi-syntax) for more details.
+All contributions are welcome! Please see our [Contribution guide](https://github.com/jgamper/wsi-syntax) for more details.
 
 # Quick Start
 
