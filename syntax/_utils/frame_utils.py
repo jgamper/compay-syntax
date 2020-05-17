@@ -1,16 +1,13 @@
 import pandas as pd
 import os
 
-from ..slide.assign import assign_wsi_plus
-
-def get_patch_from_info_dict(info, engine=None):
+def get_patch_from_info_dict(slide, info):
     """
     Get a patch from an info dict.
 
     :param info: info dict
     :return: patch (PIL image)
     """
-    slide = assign_wsi_plus(info['parent'], info['lvl0'], engine=engine)
     patch = slide.get_patch(info['w'], info['h'], info['mag'], info['size'])
     return patch
 

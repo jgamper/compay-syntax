@@ -4,6 +4,7 @@ import numpy as np
 from random import shuffle
 import pandas as pd
 from typing import Optional
+from PIL import ImageDraw
 from syntax.transformers.base import StaticTransformer
 from syntax.slide import Slide
 
@@ -71,6 +72,31 @@ class SimpleTiling(StaticTransformer):
         slide.tile_frame = self._sample_patches(self.slide.verbose)
 
         return slide
+
+    @staticmethod
+    def visualize(slide: Slide, size: int):
+        """
+
+        Args:
+            slide:
+            size:
+
+        Returns:
+
+        """
+        wsi_thumb = slide.get_thumbnail(size=(size, size))
+
+        xy = list(zip(slide.tile_frame.w, slide.tile_frame.h))
+
+        for w, h in xy:
+            w = int(w / pow(2, slide.level_count + 2)) + 1
+            h = int(h / pow(2, slide.level_count + 2)) + 1
+            mask = wsi_thumb.copy()
+            mask_draw = ImageDraw.Draw(mask)
+            mask_draw.rectangle(((w, h), (w + 20, h + 20)), fill=255)
+            wsi_thumb.paste(mask)
+
+        return wsi_thumb
 
     def _sample_patches(self, verbose=False):
         """Sample tile and return in a tile_frame"""

@@ -62,16 +62,16 @@ class Pipeline(BaseTransformer):
         Args:
             transformers: Transf
         """
-        self.steps = transformers
+        self.transformers = transformers
 
     def __len__(self):
         return len(self.steps)
 
     def __getitem__(self, ind):
         if type(ind) is int:
-            return self.steps[ind]
+            return self.transformers[ind]
         else:
-            return Pipeline(self.steps[ind])
+            return Pipeline(self.transformers[ind])
 
     def fit(self, slide):
         self.fit_transform(slide)
@@ -79,13 +79,13 @@ class Pipeline(BaseTransformer):
 
     def transform(self, slide):
         slide_output = slide
-        for transformer in self.steps:
+        for transformer in self.transformers:
             slide_output = transformer.transform(slide_output)
         return slide_output
 
     def fit_transform(self, slide):
         slide_output = slide
-        for transformer in self.steps:
+        for transformer in self.transformers:
             slide_output = transformer.fit_transform(slide=slide_output)
         return slide_output
 

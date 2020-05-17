@@ -1,9 +1,11 @@
 import warnings
 from typeguard import typechecked
-import numpy as np
 from skimage import filters, color
-from skimage.morphology import disk
 from skimage.morphology import opening, closing
+import numpy as np
+from skimage.morphology import disk
+from skimage.morphology import dilation
+from PIL import Image
 from syntax.transformers.tissue_mask.mask import TissueMask
 from syntax.transformers.base import StaticTransformer
 from syntax.slide import Slide
@@ -62,9 +64,12 @@ class OtsuTissueMask(StaticTransformer):
         Generate a tissue mask.
         This is achieved by Otsu thresholding on the saturation channel \
         followed by morphological closing and opening to remove noise.
-        :param slide:
-        :param level:
-        :return:
+        Args:
+            slide:
+            level:
+
+        Returns:
+
         """
         if not hasattr(slide, 'jp2'):
             low_res = slide.read_region(location=(0, 0), level=level, size=slide.level_dimensions[level]).convert('RGB') \
@@ -85,6 +90,43 @@ class OtsuTissueMask(StaticTransformer):
         assert mask.dtype == bool, 'Mask not Boolean'
         return mask
 
+    @staticmethod
+    def visualize(slide: Slide, size: int):
+        """
+        Thumbnail visualisation of the transformer application
+        Args:
+            slide:
+            size:
+
+        Returns:
+
+        """
+        tissue_mask = slide.tissue_mask
+        tm = Image.fromarray(tissue_mask.data.astype(float))
+        tm.thumbnail(size=(size, size))
+        tm = np.asarray(tm)
+
+        dilated = dilation(tm, disk(10))
+        contour = np.logical_xor(dilated, tm).astype(np.bool)
+
+        wsi_thumb = np.asarray(slide.get_thumbnail(size=(size, size))).copy()  # Copy to avoid read-only issue.
+        wsi_thumb[contour] = 0
+
+        pil = Image.fromarray(wsi_thumb)
+        return pil
+
     def _check_tissue_mask(self, slide: Slide):
         """Check if slide already has patch frame"""
         return hasattr(slide, "tissue_mask")
+
+    def slide_attribute(self, slide: Slide):
+        """
+        Checks if slide has the generated attributed and returns it
+        Args:
+            slide:
+
+        Returns:
+
+        """
+        if self._check_tissue_mask(slide):
+            return slide.tissue_mask

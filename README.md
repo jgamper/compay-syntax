@@ -26,9 +26,12 @@ pipeline = Pipeline([OtsuTissueMask(), SimpleTiling(magnification=40,
                                                   tile_size=224,
                                                   max_per_class=10)])
 slide = pipeline.fit_transform(slide)
-vis = visualize_pipeline_results(slide=slide, pipeline=pipeline, size=1000)
-show_PIL(vis, size=8)
+visualize_pipeline_results(slide=slide, transformer_list=pipeline.transformers,  title_list=['Tissue Mask', 'Random Tile Sampling'])
 ```
+<p align="center">
+    <img src="docs/source/imgs/simple_pipeline.png" width="600"/>
+<p>
+
 
 ### Resnet features and tile clustering pipeline
 ```python
