@@ -34,34 +34,6 @@ visualize_pipeline_results(slide=slide,
     <img src="docs/source/imgs/simple_pipeline.png" width="600"/>
 <p>
 
-
-### Resnet features and tile clustering pipeline
-```python
-from syntax.slide import Slide
-from syntax.transformers.base import StaticTransformer
-from torchvision import models
-
-@apply_to_slide
-class ResnetFeatureTransformer(BaseTransformer):
-
-    def fit(self, *args, **kwargs):
-
-        resnet18 = models.resnet18(pretrained=True)
-
-        self.model = nn.Sequential(*list(resnet18.children())[:-1])
-
-    def transform(x):
-
-        with torch.no_grad():
-            return self.model(x).data.numpy()
-
-slide = Slide(slide_path=slide_path)
-pipeline = Pipeline([ResnetFeatureTransformer(), InductiveClustering()])
-slide = pipeline.fit_transform(slide)
-vis = visualize_pipeline_results(slide=slide, pipeline=pipeline, size=1000)
-show_PIL(vis, size=8)
-```
-
 # Install
 
 `pip install compay-syntax`
