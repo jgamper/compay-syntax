@@ -8,3 +8,7 @@ __pycache__/
 *.swp
 .idea
 *.DS_Store
+/build
+/compay_syntax.egg-info
+/dist
+

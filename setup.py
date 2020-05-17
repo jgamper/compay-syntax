@@ -4,13 +4,13 @@ with open('README.md') as f:
     readme = f.read()
 
 setup(
-    name='syntax',
-    version='0.0.3',
-    description='A package for WSI sampling and annotations processing',
+    name='compay-syntax',
+    version='0.0.5',
+    description='Syntax - the arrangement of whole-slide-images and their image tiles to create well-formed computational pathology pipelines.',
     long_description=readme,
     author='Jevgenij Gamper & Peter Byfield',
     author_email='jevgenij.gamper5@gmail.com',
-    url='https://github.com/jgamper/WholeSlideImageSampler',
+    url='https://github.com/jgamper/compay-syntax',
     packages=find_packages(),
     install_requires=['numpy',
                       'opencv-python',
@@ -26,6 +26,6 @@ setup(
     classifiers=[
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 3.5'
+        'Programming Language :: Python :: 3.6'
     ]
 )
