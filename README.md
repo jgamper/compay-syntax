@@ -10,8 +10,6 @@ Add sourcerer link here.
 
 All contributions are welcome! Please see our [Contributing Guide](https://github.com/jgamper/wsi-syntax) for more details.
 
-Join community discussions on [gitter room]()!
-
 # Quick Start
 
 ### Tissue mask and tiling pipeline
