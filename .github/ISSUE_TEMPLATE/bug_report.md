@@ -10,12 +10,10 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Load whole-slide
-2. Create pipeline of transformer_one, transformer_two
-3. Run pipeline
-4. Other steps you took
+**Code snippet or Error Message**
+Provide as much information as possible to reproduce the bug.
+* Provide a minimal code snippet example that reproduces the bug.
+* Include error message as a code snippet
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
