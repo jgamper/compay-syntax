@@ -11,7 +11,7 @@
         <img alt="Documentation" src="https://img.shields.io/website/http/jgamper.github.io/syntax.svg?down_color=red&down_message=offline&up_message=online">
     </a>
     <a href="https://github.com/jgamper/compay-syntax/releases">
-        <img alt="GitHub release" src="https://img.shields.io/github/release/jgamper/compay-syntax.svg">
+        <img alt="GitHub release" src="https://img.shields.io/github/v/release/jgamper/compay-syntax?include_prereleases">
     </a>
 </p>
 
