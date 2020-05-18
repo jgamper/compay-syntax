@@ -4,9 +4,6 @@
     <br>
 <p>
 <p align="center">
-    <a href="https://github.com/jgamper/compay-syntax/">
-        <img alt="Build" src="https://travis-ci.com/build/github/jgamper/compay-syntax/master">
-    </a>
     <a href="https://github.com/jgamper/compay-syntax/blob/master/LICENSE">
         <img alt="GitHub" src="https://img.shields.io/github/license/jgamper/compay-syntax.svg?color=blue">
     </a>
@@ -14,7 +11,7 @@
         <img alt="Documentation" src="https://img.shields.io/website/http/jgamper.github.io/syntax.svg?down_color=red&down_message=offline&up_message=online">
     </a>
     <a href="https://github.com/jgamper/compay-syntax/releases">
-        <img alt="GitHub release" src="https://img.shields.io/github/release/jgamper/wsi-syntax.svg">
+        <img alt="GitHub release" src="https://img.shields.io/github/release/jgamper/compay-syntax.svg">
     </a>
 </p>
 
