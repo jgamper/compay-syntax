@@ -19,7 +19,15 @@
 
 [![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/0)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/0)[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/1)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/1)[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/2)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/2)[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/3)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/3)[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/4)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/4)[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/5)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/5)[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/6)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/6)[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/7)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/7)
 
-All contributions are welcome! Please raise an issue for a bug, feature or pull request!
+* All contributions are welcome! Please raise an issue for a bug, feature or pull request!
+
+* <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> about this repo!
+
+* Or give this repo a star! :star:
+
+<p align="center">
+    <img src="https://raw.githubusercontent.com/jgamper/compay-syntax/master/docs/source/imgs/star_syntax.png?token=ADDZO4PH6CJSK5XTSC2ZLXK6ZPXRY" width="600"/>
+<p>
 
 # Quick Start
 
