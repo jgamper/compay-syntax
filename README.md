@@ -45,7 +45,7 @@ visualize_pipeline_results(slide=slide,
 
 # Install
 
-`pip install compay-syntax`
+`pip install compay-syntax==0.4.0`
 
 You will need to install openslide. This is included in the dependencies so may be automatically installed. If not I found this to help:
 
