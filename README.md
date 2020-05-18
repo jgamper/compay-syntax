@@ -21,7 +21,7 @@
 
 * All contributions are welcome! Please raise an issue for a bug, feature or pull request!
 
-* <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> about this repo!
+* <a href="https://twitter.com/share?" class="twitter-share-button" data-text="Check out compay-syntax for custom computational pathology pipelines! " data-url="https://github.com/jgamper/compay-syntax" data-show-count="false">Tweet</a> about this repo!
 
 * Or give this repo a star! :star:
 
