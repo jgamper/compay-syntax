@@ -17,9 +17,9 @@
 
 # Help building our code and community!
 
-Add sourcerer link here.
+[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/0)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/0)[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/1)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/1)[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/2)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/2)[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/3)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/3)[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/4)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/4)[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/5)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/5)[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/6)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/6)[![](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/images/7)](https://sourcerer.io/fame/jgamper/jgamper/compay-syntax/links/7)
 
-All contributions are welcome! Please see our [Contribution guide](https://github.com/jgamper/wsi-syntax) for more details.
+All contributions are welcome! Please raise an issue for a bug, feature or pull request!
 
 # Quick Start
 
