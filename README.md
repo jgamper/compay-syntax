@@ -1,6 +1,6 @@
 <p align="center">
     <br>
-    <img src="docs/source/imgs/syntax_logo_text.png" width="600"/>
+    <img src="https://raw.githubusercontent.com/jgamper/compay-syntax/master/docs/source/imgs/syntax_logo_text.png?token=ADDZO4PH6CJSK5XTSC2ZLXK6ZPXRY" width="600"/>
     <br>
 <p>
 <p align="center">
@@ -43,7 +43,7 @@ visualize_pipeline_results(slide=slide,
                            title_list=['Tissue Mask', 'Random Tile Sampling'])
 ```
 <p align="center">
-    <img src="docs/source/imgs/simple_pipeline.png" width="600"/>
+    <img src="https://raw.githubusercontent.com/jgamper/compay-syntax/master/docs/source/imgs/simple_pipeline.png?token=ADDZO4ISOOTTRG4MMPNYCXS6ZPXPS" width="600"/>
 <p>
 
 # Install
