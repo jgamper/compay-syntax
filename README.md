@@ -23,7 +23,11 @@
 
 * <a href="https://twitter.com/share?" class="twitter-share-button" data-text="Check out compay-syntax for custom computational pathology pipelines! " data-url="https://github.com/jgamper/compay-syntax" data-show-count="false">Tweet</a> about this repo!
 
-* Give this repo a star! <img alt="GitHub stars" src="https://img.shields.io/github/stars/jgamper/compay-syntax?style=social">
+* Give this repo a star! :star:
+
+<p align="center">
+    <img src="https://raw.githubusercontent.com/jgamper/compay-syntax/master/docs/source/imgs/star_syntax.png?token=ADDZO4PH6CJSK5XTSC2ZLXK6ZPXRY" width="600"/>
+<p>
 
 # Quick Start
 
