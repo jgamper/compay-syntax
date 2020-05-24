@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='compay-syntax',
-    version='0.4.0',
+    version='0.4.1',
     description='Syntax - the arrangement of whole-slide-images and their image tiles to create well-formed computational pathology pipelines.',
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
