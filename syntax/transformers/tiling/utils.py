@@ -14,7 +14,7 @@ def get_tile_from_info_dict(slide: Slide, info: Any):
     Returns:
         patch (PIL image)
     """
-    patch = slide.get_patch(info['w'], info['h'], info['mag'], info['size'])
+    patch = slide.get_tile(info['w'], info['h'], info['mag'], info['size'])
     return patch
 
 @typechecked
