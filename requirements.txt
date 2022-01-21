@@ -4,7 +4,7 @@ decorator==4.4.2
 imagecodecs==2020.2.18
 imageio==2.8.0
 ipykernel==5.2.1
-ipython==7.14.0
+ipython==7.16.3
 ipython-genutils==0.2.0
 jedi==0.17.0
 jupyter-client==6.1.3
