@@ -12,7 +12,7 @@ jupyter-core==4.6.3
 kiwisolver==1.2.0
 matplotlib==3.2.1
 networkx==2.4
-numpy==1.17.4
+numpy==1.22.0
 openslide-python==1.1.1
 pandas==1.0.3
 parso==0.7.0
